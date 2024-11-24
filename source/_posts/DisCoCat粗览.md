@@ -2,6 +2,7 @@
 title: DisCoCat粗览
 date: 2024-11-03 14:32:30
 tags: [应用范畴论]
+toc: true
 plugins: 
     mathjax: true
 ---
