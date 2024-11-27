@@ -1,7 +1,8 @@
 ---
 title: DisCoCat粗览
 date: 2024-11-03 14:32:30
-tags: [应用范畴论]
+categories: [范畴论, 应用范畴论]
+tags: [DisCoCat]
 toc: true
 plugins: 
     mathjax: true
