@@ -1,0 +1,45 @@
+widgets:
+    # Table of contents widget configurations
+    -
+        # Where should the widget be placed, left sidebar or right sidebar
+        position: left
+        type: toc
+        # Whether to show the index of each heading
+        index: true
+        # Whether to collapse sub-headings when they are out-of-view
+        collapsed: true
+        # Maximum level of headings to show (1-6)
+        depth: 3
+        # Profile widget configurations
+    -
+        # Where should the widget be placed, left sidebar or right sidebar
+        position: left
+        type: profile
+        # Author name
+        author: 杨荻
+        # Author title
+        author_title: 行有不得，反求诸己。
+        # Author's current location
+        location: 中国 四川 成都 四川大学
+        # URL or path to the avatar image
+        avatar: img/avatar.png
+        # Whether show the rounded avatar image
+        avatar_rounded: true
+        # Email address for the Gravatar
+        gravatar: 
+        # URL or path for the follow button
+        follow_link: https://github.com/Westlifers
+        # Links to be shown on the bottom of the profile widget
+        social_links:
+            Github:
+                icon: fab fa-github
+                url: https://github.com/Westlifers
+            Zhihu:
+                icon: fa-brands fa-zhihu
+                url: https://www.zhihu.com/people/westlifer
+            E-mail:
+                icon: fa-solid fa-envelope
+                url: mailto://mcwestlifer@gmail.com
+            WCA:
+                icon: fa-solid fa-cube
+                url: https://cubing.com/results/person/2023YANG65

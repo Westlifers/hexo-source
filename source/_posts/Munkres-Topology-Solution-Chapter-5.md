@@ -73,14 +73,14 @@ Conversely, suppose for every collection $\mathscr A$ of subsets of $X$ having t
 
 
 
-# §38 The Stone-Cech Compactification
+# §38. The Stone-Cech Compactification
 
-## Ex.38.1.
+## Ex.38.1
 > Verify the statements made in Example 4.
 
 Omitted.
 
-## Ex.38.2.
+## Ex.38.2
 > Show that the bounded continuous function $g:(0,1)\to \Bbb R$ defined by $g(x) =
 \cos(1/x)$ cannot be extended to the compactification of Example 3. Define an imbedding $h : (0, 1) \to [0, 1]^3$ such that the functions $x, \sin(1/x), \cos(1/x)$ are all extendable to the compactification induced by $h$.
 
@@ -88,7 +88,7 @@ Firstly, $g $ is not extendable. Suppose not, if $g $ can be extended to a $\bar
 
 Secondly, $h(x)=(x,\sin(1/x),\cos(1/x))$ will be a desired embedding, as you can readily check like in Stone compactification.
 
-## Ex.38.3.
+## Ex.38.3
 >Under what conditions does a metrizable space have a metrizable compactification?
 
 The answer is $C_2$ condition.
@@ -103,6 +103,6 @@ on $A $.
 
 And recall that every metrizable space is $T_6 $ space, that is to say, every closed set is $G_\delta$. Therefore, we conclude that for each $n $, there exists an $f_n $ s.t. $f_n$ is vanishes precisely *outside* $B_n $. Now by the imbedding theorem (theorem 34.2) we can imbedding $X $ into $[0,1]^\omega$, which is metrizable. Thus $X $ has a metrizable compactification, which is the closure of its image in $[0,1]^\omega$
 
-## Ex.38.4.
+## Ex.38.4
 >Let $Y$ be an arbitrary compactification of $Y$; let $\beta(X)$ be the Stone-Cech compactification. Show there is a continuous surjective closed map $g : \beta(X) \to Y$ that equals the identity on $X$.
 [This exercise makes precise what we mean by saying that $\beta(X)$ is the “maximal”  compactification of $X$. It shows that every compactification of $X$ is equivalent to a quotient space of $\beta(X)$.]
