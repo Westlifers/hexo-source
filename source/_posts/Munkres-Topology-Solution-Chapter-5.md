@@ -98,11 +98,68 @@ If $X $ is a metrizable space with a metrizable compactification $Y $, then $Y $
 Conversely, if $X $ is $C_2$, let $B_n $ be a countable basis for it. We refer to Ex.33.4. :
 >Ex.33.4. Recall that A is a “$G_\delta$ set” in $X $ if $A $ is the intersection of a countable collection of open sets of $X $.
 Theorem. Let $X $ be normal. There exists a continuous function $f : X \to [0, 1]$ such that $f (x) = 0$ for $x \in A$ and $f (x) > 0$ for $x \notin A$, if and only if $A$ is a closed $G_\delta$ set in X.
-A function satisfying the requirements of this theorem is said to vanish precisely
-on $A $.
+A function satisfying the requirements of this theorem is said to vanish precisely on $A $.
 
 And recall that every metrizable space is $T_6 $ space, that is to say, every closed set is $G_\delta$. Therefore, we conclude that for each $n $, there exists an $f_n $ s.t. $f_n$ is vanishes precisely *outside* $B_n $. Now by the imbedding theorem (theorem 34.2) we can imbedding $X $ into $[0,1]^\omega$, which is metrizable. Thus $X $ has a metrizable compactification, which is the closure of its image in $[0,1]^\omega$
 
 ## Ex.38.4
 >Let $Y$ be an arbitrary compactification of $Y$; let $\beta(X)$ be the Stone-Cech compactification. Show there is a continuous surjective closed map $g : \beta(X) \to Y$ that equals the identity on $X$.
 [This exercise makes precise what we mean by saying that $\beta(X)$ is the “maximal”  compactification of $X$. It shows that every compactification of $X$ is equivalent to a quotient space of $\beta(X)$.]
+
+```tikz
+\usepackage{tikz-cd}
+\begin{document}
+    \begin{tikzcd}
+        X && Y \\
+        \\
+        {\beta(X)}
+        \arrow["i", from=1-1, to=1-3, hook]
+        \arrow[from=1-1, to=3-1]
+        \arrow["\beta(x)", from=3-1, to=1-3]
+    \end{tikzcd}
+\end{document}
+```
+
+As shown in the figure, let $j=\beta(i)$ be the continuous extension of the embedding $i$. We show $\beta(i)$ is surjective and closed. 
+
+That it is closed follows from the fact that $j$ is a continuous map between compact Hausdorff spaces. Note that 
+$$
+Y=\mathrm{Cl}_Y i(X)=\mathrm{Cl}_Y j(X)\subset\mathrm{Cl}_Yj(\beta(X))=j(\beta(X))
+$$
+The last equality follows from closedness of $j$.
+
+## Ex.38.5
+> (a) Show that every continuous real-valued function defined on $S_\Omega$ is “eventually constant.” [Hint: First prove that for each $\epsilon$, there is an element $\alpha$ of $S_\Omega$ such that $|f(\beta)-f(\alpha)|<\epsilon$ for all $\beta>\alpha$ Then let $\epsilon=1/n$ for $n\in\Bbb Z_+$ and consider the corresponding points $\alpha_n$.]
+(b) Show that the one-point compactification of $S_\Omega$ and the Stone-Cech compactification are equivalent.
+(c) Conclude that every compactification of $S_\Omega$ is equivalent to the one-point compactification.
+
+We follow the hint.
+
+(a) Suppose contrary to the hint, i.e. $\exists \epsilon_0>0, \forall\alpha,\exists\beta>\alpha$ s.t. $|f(\beta)-f(\alpha)|\ge \epsilon_0$. Now fix an arbitrary $\alpha_1$, we have a corresponding $\beta$, write it as $\alpha_2$. Repeat this process, we will have an increasing sequence $\alpha_n$ satisfying $|f(\alpha_n)-f(\alpha_{n+1})|\ge \epsilon_0$. Since there are countably many $\alpha_n $, they have an upper bound. Let $\alpha$ be their least upper bound. Clearly $\alpha_n\to\alpha $.
+
+By continuity of $f $, there exists a nbhd $U$ of $\alpha$ s.t. $\forall x\in U, |f(x)-f(\alpha)|<\epsilon_0/2$. Choose an $n$ such that $\alpha_n, \alpha_{n+1}\in U$, then the above equation yields $|f(\alpha_n)-f(\alpha_{n+1})|< \epsilon_0$, a contradiction.
+
+(b) By the uniqueness of Stone compactification, it suffices to prove that one point compactification of $S_\Omega$ satisfies the extension property. Let $f:S_\Omega\to\Bbb R$ be continuous. By part (a) $f$ is eventually constant, say eventually be $r$. Let $g:\overline{S_\Omega}\to\Bbb R$ with $g|_{X_\Omega}=f, g(\Omega)=r$. It is easy to verify the continuity of $g $. Thus the one-point compactification is equivalent to the Stone compactification.
+
+(c) Let $Y$ be an arbitrary compactification. By ex.38.4 there exists a continuous surjective closed function $f: \overline{S_\Omega}\to Y$. However, $f$ equals to identity on $X$. $f$ Being surjective, we conclude that $|Y\setminus X|=1$ and $f$ is thus injective. Being closed and continuous, $f$ is thus a homeomorphism, proving equivalence.
+
+## Ex.38.6
+>Let $X$ be completely regular. Show that $X$ is connected if and only if $\beta(X)$ is connected. [Hint: If $X=A\cup B$ is an separation of $X$, let $f(x)=0$ for $x\in A$, $f(x)=1$ for $x\in B$.]
+
+We will use an obvious equivalent characterization of connectedness, which you can prove directly:
+
+> $X$ is connected if and only if every continuous function $X\to 2$ is constant, where $2$ denotes the 2-point space with discrete topology (which is obviously compact Hausdorff).
+
+Suppose $\beta X$ is connected. Let $f:X\to 2$ be an continuous function and extend it to $g: \beta X\to 2$. $g$ is constant, so $f $ is constant. Therefore $X $ is connected.
+
+Conversely, suppose $X $ is connected. Since $X$ is dense in $\beta X $, the connectedness of $X $ implies the connectedness of its closure, i.e. $\beta X $.
+
+## Ex.38.7
+>Let X be a discrete space; consider the space $\beta X$.
+(a) Show that if $A\subset X$, then $\overline A$ and $\overline{X-A}$ are disjoint, where the closures are taken in $\beta X$.
+(b) Show that if $U$ is open in $\beta X$, then $\overline U$ is open in $\beta X$.
+(c) Show that $\beta X$ is totally disconnected.
+
+(a) Since $X$ is discrete, there exists a continuous function $f: X\to I $ s.t. $f(A)=0,f(X\setminus A)=1$. Now extend it to $g: \beta X\to I$. Note that all the spaces involved are Hausdorff, so $g|_{\overline A}$ is uniquely determined by $g|_A=f|_A$. Hence we have $g(\overline A)=0$, similarly $g(\overline{X\setminus A})=1$. Hence disjoint.
+
+(b) This question is asking us to prove that $\beta X$ is *extremely disconnected*.
