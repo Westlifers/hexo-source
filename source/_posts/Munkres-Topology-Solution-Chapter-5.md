@@ -160,6 +160,62 @@ Conversely, suppose $X $ is connected. Since $X$ is dense in $\beta X $, the con
 (b) Show that if $U$ is open in $\beta X$, then $\overline U$ is open in $\beta X$.
 (c) Show that $\beta X$ is totally disconnected.
 
-(a) Since $X$ is discrete, there exists a continuous function $f: X\to I $ s.t. $f(A)=0,f(X\setminus A)=1$. Now extend it to $g: \beta X\to I$. Note that all the spaces involved are Hausdorff, so $g|_{\overline A}$ is uniquely determined by $g|_A=f|_A$. Hence we have $g(\overline A)=0$, similarly $g(\overline{X\setminus A})=1$. Hence disjoint.
+(a) (All closures below in this problem are taken in $\beta X$) Since $X$ is discrete, there exists a continuous function $f: X\to I $ s.t. $f(A)=0,f(X\setminus A)=1$. Now extend it to $g: \beta X\to I$. Note that all the spaces involved are Hausdorff, so $g|_{\overline A}$ is uniquely determined by $g|_A=f|_A$. Hence we have $g(\overline A)=0$, similarly $g(\overline{X\setminus A})=1$. Hence disjoint.
 
-(b) This question is asking us to prove that $\beta X$ is *extremely disconnected*.
+(b) This question is asking us to prove that $\beta X$ is *extremely disconnected*. Similarly to part (a) we have a continuous $g:\beta X\to I $ s.t. $g(\overline{X\cap U})=0, g(\overline{X\setminus U})=1$. But this time notice that $X$ is dense, a standard argument shows $\overline{X\cap U}=\overline{U}$, hence $g(\overline{U})=0$. 
+
+Next we prove $g(\beta X\setminus\overline U)=1$. Suppose not, there exists an $x\notin\overline U $ s.t. $g(x)<1$. By continuity we find a nbhd $U_x$ of $x$ such that $U_x\cap \overline U=\emptyset,g(U_x)<1$. Since $X$ is dense, we have $X\cap U_x\neq\emptyset$. However, $g$ is of value either $0$ or $1$ on $X$, $g(U_x\cap X)<1\implies g(U_x\cap X)=0\implies U_x\cap X\subset X\cap U$, contradicting to $U_x\cap \overline U=\emptyset$.
+
+Therefore, $\overline U=g^{-1}([0,1/2))$ is an open set.
+
+(c) We have a even more general result: An extremely disconnected space is totally disconnected. Let $A$ be a subset of at least two points, say $x\neq y$. By Hausdorff-ness we have disjoint open sets $U,V$ such that $x\in U, y\in V$. Then $y\notin\overline U$, therefore $A\cap\overline U$ is an non-trivial clopen set of $A$. This implies that the only possible connected subspace are singletons.
+
+## Ex.38.8
+>Show that $\beta(\Bbb Z_+)$ has cardinality at least as great as $I^I$ , where $I=[0,1]$. [Hint: The space $I^I$ has a countable dense subset.]
+
+Indeed, $I^I$ is separable. Actually, $\mathfrak{c}$-product of separable spaces is still separable, where $\mathfrak c$ denotes the cardinality of the reals. This is a special case of Hewitt-Marczewski-Pondiczery theorem. FYI see [here](https://math.stackexchange.com/questions/526454/uncountable-product-of-separable-spaces-is-separable). Here we don't need that strong theorem. If you are familiar with analysis, consider the set of polynomials with rational coefficients, then apply Stone-Weierstrass theorem.
+
+Let $D$ be a countable dense subset of $I^I$. Since $\Bbb Z_+$ is discrete, any bijection $f:\Bbb Z_+\to D$ is continuous. Extend it to Stone compactification, we get $g:\beta\Bbb Z_+\to I^I$. Moreover, $\mathrm{im}g\supset D$, and notice that $g$ is a continuous function from a compact space to Hausdorff space, hence closed map. We conclude that $\mathrm{im}g=\overline{\mathrm{im}g}\supset\overline D=I^I$. So $g$ is surjective.
+
+## Ex.38.9
+>(a) If $X$ is normal and $y$ is a point of $\beta(X)-X$, show that $y$ is not the limit of a sequence of points of $X$.
+(b) Show that if $X$ is completely regular and non-compact, then $\beta(X)$ is not metrizable.
+
+(a) Suppose $y$ is the limit of $x_n\in X$ and $y\in\beta X\setminus X$, then the set $\lbrace x_n\rbrace_n\cup\lbrace y\rbrace$ is compact, hence closed. Therefore, $\lbrace x_n\rbrace_n=(\lbrace x_n\rbrace_n\cup\lbrace y\rbrace)\cap X$ is closed in $X$. 
+
+Next, we show $\lbrace x_n\rbrace_n$ is discrete as a subspace. For each $n $, we can separate $x_n,y$ by two disjoint open sets $U\ni x_n,V\ni y$ in $\beta X$. Since $x_n\to y$, $U$ will contain only finitely many $x_m$'s, say $x_{m_1},...,x_{m_k}$. Let $U'=U\setminus\lbrace x_{m_j}\rbrace_{j=1}^k$. Then $U'\cap X$ is a nbhd of $x_n$ that intersects $\lbrace x_n\rbrace_n$ only on $x_n$, proving discreteness of $\lbrace x_n\rbrace_n$.
+
+Finally, we conclude the contradiction. Assign $f(x_n)=z_n=1/2+(-1)^n 1/2$, since $\lbrace x_n\rbrace_n$ is discrete, $f$ is continuous from $\lbrace x_n\rbrace_n$ to $I$. By Tietze's extension theorem, we can extend $f$ to a continuous function $f: X\to I$, and then extend it further to $\beta X\to I$. Thus, $f(y)=f(\lim x_n)=\lim f(x_n)=\lim z_n$. But we know $z_n$ does not converge, a contradiction.
+
+(b) If $X$ is non-compact, then it is a proper subspace of $\beta X$. So there exists an $y\in\beta X\setminus X$. Since $X$ is dense, $y$ is a limit point of $X$. By part (a), there is no sequence converging to $y$, so $\beta X$ does not satisfy the sequence lemma, thus not metrizable
+
+## Ex.38.10
+>We have constructed a correspondence $X\to\beta X$ that assigns, to each completely regular space, its Stone-Cech compactification. Now let us assign, to each continuous map $f:X\to Y$ of completely regular spaces, the unique continuous map $\beta(f):\beta(X)\to\beta(Y)$ that extends the map $i\circ f$, where $i:Y\to\beta(Y)$ is the inclusion map. Verify the following:
+(i) If $\mathbb 1_X:X\to X$ is the identity map of $X$, then $\beta(\mathbb 1_X)$ is the identity map of $\beta(X)$.
+(ii) If $f:X\to Y$ and $g:Y\to Z$, then $\beta(g\circ f)=\beta(g)\circ\beta(f)$. These properties tell us that the correspondence we have constructed is what is called a functor; it is a functor from the “category” of completely regular spaces and continuous maps of such spaces, to the “category” of compact Hausdorff spaces and continuous maps of such spaces. You will see these properties again in Part II of the book; they are fundamental in algebra and in algebraic topology.
+
+This is the only place of Part I of the book where category theory is mentioned. These problems are standard category technics. I'll take part (ii) as example.
+
+```tikz
+\usepackage{tikz-cd}
+\begin{document}
+    \begin{tikzcd}
+        X & Y & Z & X && Z \\
+        \\
+        {\beta X} & {\beta Y} & {\beta Z} & {\beta X} && {\beta Z}
+        \arrow["f", from=1-1, to=1-2]
+        \arrow["i", from=1-1, to=3-1]
+        \arrow["g", from=1-2, to=1-3]
+        \arrow["j", from=1-2, to=3-2]
+        \arrow["k", from=1-3, to=3-3]
+        \arrow["{g\circ f}", from=1-4, to=1-6]
+        \arrow["i"', from=1-4, to=3-4]
+        \arrow["k", from=1-6, to=3-6]
+        \arrow["{\beta f}", dashed, from=3-1, to=3-2]
+        \arrow["{\beta g}", dashed, from=3-2, to=3-3]
+        \arrow["{\beta(g\circ f)}"', dashed, from=3-4, to=3-6]
+    \end{tikzcd}
+\end{document}
+```
+
+Recall that the extension of a function to Stone compactification is unique. Both diagram above commute. So the bottom arrows equal.
