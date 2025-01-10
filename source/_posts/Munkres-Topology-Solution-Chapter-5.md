@@ -13,7 +13,7 @@ plugins:
 
 ## Ex.37.1
 >Let $X$ be a space. Let $\mathscr D$ be a collection of subsets of $X$ that is maximal with respect to the finite intersection property.
-(a) Show that $x\in \bar D$ for every $D\in\mathscr D$ iff every nbhd of $x$ belongs to $\mathscr D$. Which implication uses maximality of $\mathscr D$?
+(a) Show that $x\in \bar D$ for every $D\in\mathscr D$ iff every open nbhd of $x$ belongs to $\mathscr D$. Which implication uses maximality of $\mathscr D$?
 (b) Let $D\in\mathscr D$. Show that if $A\supset D$, then $A\in\mathscr D$
 (c) Show that if $X$ satisfies the $T_1$ axiom, there is at most one point belonging to $\bigcap_{D\in\mathscr D}\bar D$
 
@@ -137,7 +137,7 @@ We follow the hint.
 
 (a) Suppose contrary to the hint, i.e. $\exists \epsilon_0>0, \forall\alpha,\exists\beta>\alpha$ s.t. $|f(\beta)-f(\alpha)|\ge \epsilon_0$. Now fix an arbitrary $\alpha_1$, we have a corresponding $\beta$, write it as $\alpha_2$. Repeat this process, we will have an increasing sequence $\alpha_n$ satisfying $|f(\alpha_n)-f(\alpha_{n+1})|\ge \epsilon_0$. Since there are countably many $\alpha_n $, they have an upper bound. Let $\alpha$ be their least upper bound. Clearly $\alpha_n\to\alpha $.
 
-By continuity of $f $, there exists a nbhd $U$ of $\alpha$ s.t. $\forall x\in U, |f(x)-f(\alpha)|<\epsilon_0/2$. Choose an $n$ such that $\alpha_n, \alpha_{n+1}\in U$, then the above equation yields $|f(\alpha_n)-f(\alpha_{n+1})|< \epsilon_0$, a contradiction.
+By continuity of $f $, there exists an open nbhd $U$ of $\alpha$ s.t. $\forall x\in U, |f(x)-f(\alpha)|<\epsilon_0/2$. Choose an $n$ such that $\alpha_n, \alpha_{n+1}\in U$, then the above equation yields $|f(\alpha_n)-f(\alpha_{n+1})|< \epsilon_0$, a contradiction.
 
 (b) By the uniqueness of Stone compactification, it suffices to prove that one point compactification of $S_\Omega$ satisfies the extension property. Let $f:S_\Omega\to\Bbb R$ be continuous. By part (a) $f$ is eventually constant, say eventually be $r$. Let $g:\overline{S_\Omega}\to\Bbb R$ with $g|_{X_\Omega}=f, g(\Omega)=r$. It is easy to verify the continuity of $g $. Thus the one-point compactification is equivalent to the Stone compactification.
 
@@ -164,7 +164,7 @@ Conversely, suppose $X $ is connected. Since $X$ is dense in $\beta X $, the con
 
 (b) This question is asking us to prove that $\beta X$ is *extremely disconnected*. Similarly to part (a) we have a continuous $g:\beta X\to I $ s.t. $g(\overline{X\cap U})=0, g(\overline{X\setminus U})=1$. But this time notice that $X$ is dense, a standard argument shows $\overline{X\cap U}=\overline{U}$, hence $g(\overline{U})=0$. 
 
-Next we prove $g(\beta X\setminus\overline U)=1$. Suppose not, there exists an $x\notin\overline U $ s.t. $g(x)<1$. By continuity we find a nbhd $U_x$ of $x$ such that $U_x\cap \overline U=\emptyset,g(U_x)<1$. Since $X$ is dense, we have $X\cap U_x\neq\emptyset$. However, $g$ is of value either $0$ or $1$ on $X$, $g(U_x\cap X)<1\implies g(U_x\cap X)=0\implies U_x\cap X\subset X\cap U$, contradicting to $U_x\cap \overline U=\emptyset$.
+Next we prove $g(\beta X\setminus\overline U)=1$. Suppose not, there exists an $x\notin\overline U $ s.t. $g(x)<1$. By continuity we find an open nbhd $U_x$ of $x$ such that $U_x\cap \overline U=\emptyset,g(U_x)<1$. Since $X$ is dense, we have $X\cap U_x\neq\emptyset$. However, $g$ is of value either $0$ or $1$ on $X$, $g(U_x\cap X)<1\implies g(U_x\cap X)=0\implies U_x\cap X\subset X\cap U$, contradicting to $U_x\cap \overline U=\emptyset$.
 
 Therefore, $\overline U=g^{-1}([0,1/2))$ is an open set.
 
@@ -183,7 +183,7 @@ Let $D$ be a countable dense subset of $I^I$. Since $\Bbb Z_+$ is discrete, any 
 
 (a) Suppose $y$ is the limit of $x_n\in X$ and $y\in\beta X\setminus X$, then the set $\lbrace x_n\rbrace_n\cup\lbrace y\rbrace$ is compact, hence closed. Therefore, $\lbrace x_n\rbrace_n=(\lbrace x_n\rbrace_n\cup\lbrace y\rbrace)\cap X$ is closed in $X$. 
 
-Next, we show $\lbrace x_n\rbrace_n$ is discrete as a subspace. For each $n $, we can separate $x_n,y$ by two disjoint open sets $U\ni x_n,V\ni y$ in $\beta X$. Since $x_n\to y$, $U$ will contain only finitely many $x_m$'s, say $x_{m_1},...,x_{m_k}$. Let $U'=U\setminus\lbrace x_{m_j}\rbrace_{j=1}^k$. Then $U'\cap X$ is a nbhd of $x_n$ that intersects $\lbrace x_n\rbrace_n$ only on $x_n$, proving discreteness of $\lbrace x_n\rbrace_n$.
+Next, we show $\lbrace x_n\rbrace_n$ is discrete as a subspace. For each $n $, we can separate $x_n,y$ by two disjoint open sets $U\ni x_n,V\ni y$ in $\beta X$. Since $x_n\to y$, $U$ will contain only finitely many $x_m$'s, say $x_{m_1},...,x_{m_k}$. Let $U'=U\setminus\lbrace x_{m_j}\rbrace_{j=1}^k$. Then $U'\cap X$ is an open nbhd of $x_n$ that intersects $\lbrace x_n\rbrace_n$ only on $x_n$, proving discreteness of $\lbrace x_n\rbrace_n$.
 
 Finally, we conclude the contradiction. Assign $f(x_n)=z_n=1/2+(-1)^n 1/2$, since $\lbrace x_n\rbrace_n$ is discrete, $f$ is continuous from $\lbrace x_n\rbrace_n$ to $I$. By Tietze's extension theorem, we can extend $f$ to a continuous function $f: X\to I$, and then extend it further to $\beta X\to I$. Thus, $f(y)=f(\lim x_n)=\lim f(x_n)=\lim z_n$. But we know $z_n$ does not converge, a contradiction.
 
