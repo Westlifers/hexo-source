@@ -121,3 +121,52 @@ Let $\mathscr{A}=\lbrace U_\alpha\rbrace$ be an open covering of $X$. Pick any e
 >(a) Show that the product of a paracompact space and a compact space is paracompact. [Hint: Use the tube lemma.]
 (b) Conclude that $S_\Omega$ is not paracompact.
 
+(a) Let $X,Y$ be paracompact and compact respectively, and $\mathscr{A}$ be an open covering of $X\times Y$. Since $Y$ is compact, for each $x\in X $, there exists finitely many open sets $U_n(x)\in\mathscr{A}$ that cover $\lbrace x\rbrace\times Y$. By the tube lemma, each $U_n(x)$ actually contains a tube $U_x\times Y$ where $U_x\in\mathcal N(x)$. Now, $\lbrace U_x\rbrace$ forms an open covering of $X$, thus having an open locally finite refinement $\mathscr{B}$ that covers $X$. 
+
+For each $V\in\mathscr{B}$, choose an $x=f(V)\in X$ such that $V\subset U_x$. Then, $\lbrace U_n(f(V))\cap (V\times Y)\rbrace_{V\in\mathscr{B},n}$ is an open covering of $X\times Y$ that is locally finite and refines $\mathscr{A}$, as you can readily check.
+
+(b) Suppose on the contrary $S_\Omega$ is paracompact. Then $S_\Omega\times \overline{S_\Omega}$ is paracompact, by part (a). However, this will lead us to conclude that $S_\Omega\times \overline{S_\Omega}$ is $T_4$ (normal), which is false.
+
+## Ex.41.3
+>Is every locally compact Hausdorff space paracompact?
+
+No, consider $S_\Omega$. We have just proven that it is not paracompact.
+
+## Ex.41.4
+>(a) Show that if $X$ has the discrete topology, then $X$ is paracompact.
+(b) Show that if $f:X\to Y$ is continuous and $X$ is paracompact, the subspace $f(X)$ of $Y$ need not be paracompact.
+
+(a) If $\mathscr{A}$ is an open covering of $X$, then $\lbrace \lbrace x\rbrace\subset X|\exists U\in\mathscr{A},x\in U\rbrace$ is an open refinement of $\mathscr{A}$ that covers $X$.
+
+(b) By part (a), we just need to find a non-paracompact space $X$, then consider the identity map $\mathbb 1: X(\mathrm{Discrete})\to X$. For example, $S_\Omega$.
+
+## Ex.41.5
+>Let $X$ be paracompact. We proved a “shrinking lemma” for arbitrary indexed open coverings of $X$. Here is an “expansion lemma” for arbitrary locally finite indexed families in $X$.
+Lemma. Let $\lbrace B_\alpha\rbrace_{\alpha\in J}$ be a locally finite indexed family of subsets of the paracompact Hausdorff space $X$. Then there is a locally finite indexed family $\lbrace U_\alpha\rbrace_{\alpha\in J}$ of open sets in $X$ such that $B_\alpha\subset U_\alpha$ for each $\alpha$.
+
+We mimic the trick in Lemma 41.3, part $(3)\implies(4)$.
+
+Write $\mathscr{B}=\set{B_\alpha}$. For each point $x\in X$, there is a neighborhood of $x$ that intersects only finitely many elements of $\mathscr{B}$. The collection of all open sets that intersect only finitely many elements of $\mathscr{B}$ is thus an open covering of $X$. There exists an locally finite open refinement of this collection that covers $X$, then form a collection $\mathscr{C}$ that consists of closures of elements in this refinement. Then $\mathscr{C}$ is an locally finite closed covering of $X$.
+
+Next, for each $B_\alpha\in\mathscr{B}$, let $E(B_\alpha)=X\setminus\bigcup_{C\in\mathscr{C}\text{ and }C\subset X\setminus B_\alpha}C$. Now follow the same argument in Lemma 41.3, you know $\mathscr{U}=\set{U_\alpha}:=\set{E(B_\alpha)|\alpha\in J}$ is a locally finite open collection that covers $X$, satisfying $B_\alpha\subset U\alpha$ for each $\alpha$.
+
+## Ex.41.6
+>(a) Let $X$ be a regular space. If $X$ is a countable union of compact subspaces of $X$, then $X$ is paracompact.
+(b) Show $\Bbb R^\infty$ is paracompact as a subspace of $\Bbb R^\omega$ in the box topology.
+
+(a) i.e. show that in $T_3$ cases, $\sigma$-compact implies paracompact.
+
+Let $X=\bigcup C_n$ where $C_n$ are compact in $X$. If $\mathscr{A}$ is an open covering of $X$, for each $n$, there are finitely many elements in $\mathscr{A}$ that covers $C_n$, denote it as $\mathscr{D}_n$. Obviously $\mathscr{D}_n$ is locally finite (since finite) so $\mathscr{D}=\bigcup\mathscr{D}_n$ is countably locally finite and is an open covering of $X$. Thus, every open covering has a countably locally finite open refinement that covers $X$. By Lemma 41.3, $X$ is paracompact.
+
+Note that we actually proved $X$ is Lindelof!
+
+(b) $\Bbb R^\infty=\bigcup_n \Bbb R^n_*$, where $\Bbb R^n_*=\set{(x_i)_i\in\Bbb R^\omega|x_i\in\Bbb R\text{ for }i\le n, x_i=0\text{ otherwise}}\cong\Bbb R^n$ is compact.
+
+That $\Bbb R^\infty$ is $T_3$ (even $T_{3.5}$) in box topology is given in Ex.33.9, using the Urysohn Lemma.
+
+## Ex.41.7
+>Let X be a regular space.
+(a) If $X$ is a finite union of closed paracompact subspaces of $X$, then $X$ is paracompact.
+(b) If $X$ is a countable union of closed paracompact subspaces of $X$ whose interiors cover $X$, show $X$ is paracompact.
+
+
