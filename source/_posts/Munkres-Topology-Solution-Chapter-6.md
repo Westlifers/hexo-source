@@ -107,7 +107,7 @@ Actually the proof of the original version of the last two lemmas in the textboo
 
 Endow $\Bbb Z$ with the order topology (the same as discrete topology), then $\lbrace(-n,n)\rbrace_n$ is an open covering of $\Bbb Z$ without locally finite subcovering
 
-Actually, we can show the following:
+*Actually, we can show the following:
 > TFAE
 (1) $X$ is compact.
 (2) Every open covering of $X$ has a locally finite subcovering.
@@ -169,4 +169,22 @@ That $\Bbb R^\infty$ is $T_3$ (even $T_{3.5}$) in box topology is given in Ex.33
 (a) If $X$ is a finite union of closed paracompact subspaces of $X$, then $X$ is paracompact.
 (b) If $X$ is a countable union of closed paracompact subspaces of $X$ whose interiors cover $X$, show $X$ is paracompact.
 
+(a) Clearly we only need to show the case $n=2$. Suppose $X=A_1\cup A_2$ where $A_i$ is closed paracompact subspace of $X$. For any open covering $\mathscr{U}$ of $X$, the collection $\mathscr{U}_i=\set{U\cap A_i|U\in\mathscr{U}}$ is an open covering of $A_i$, thus have a locally finite *closed* refinement $\mathscr{U}_i'$. Since $A_i$ is closed, every element in $\mathscr{U}_i'$ is also closed in $X$. So $\mathscr{V}=\mathscr{U}_1'\cup\mathscr{U}_2'$ is a closed covering of $X$.
 
+For each $x\in X$, if $x\in A_1$ then it has an open nbhd $U$ in $A_1$, such that $U$ intersects finitely many sets in $\mathscr{U}_1'$. There exists an open set $U'$ of $X$ such that $U=U'\cap A_1$. Similarly if $x\in A_2$ there exists an open set $V'$ of $X$ such that $V=V'\cap A_2$ intersects finitely many sets in $\mathscr{U}_2'$. Note that $U'$ still intersects only finitely many elements in $\mathscr{U}_1'$ and similar to $V'$
+
+Now consider two open sets $U'\setminus A_2, V'\setminus A_1$ of $X$. Note that $U'\setminus A_2\subset U, V'\setminus A_1\subset V$, and neither $U'\setminus A_2$ intersect any element in $\mathscr{U}_2'$ nor $V'\setminus A_1$ intersect any element in $\mathscr{U}_1'$. So, if $x\notin A_1$ then $W=U'\setminus A_2$ is a open nbhd of $x$ that intersects only finitely many elements in $\mathscr{V}$, and $x\notin A_1$ is similar. In the case $x\in A_1\cap A_2$, choose $W=U'\cap V'$ and note that $W\subset U',V'$'. Thus $\mathscr{V}$ is locally finite. By Lemma 41.3, $X$ is paracompact.
+
+*This problem is not hard, but also not so obvious like some readers might think. Note that unlike compactness, it is **NOT** correct that a subspace $Y\subset X$ is paracompact iff every open covering of $Y$ consisting of open sets of $X$ has locally finite open (in the sense of $X$) refinement that covers $Y$. 
+
+(b) Let $\mathscr{U}$ be an open covering of $X=\bigcup X_n$ with $\bigcup(X_n)^\circ=X$. 
+
+For each $n$, 
+$\mathscr{U}_n=\set{U\cap X_n|U\in\mathscr{U}}$ is an open covering of $X_n$. 
+
+Thus there is a family $\mathscr{V}_n'$ of open subsets of $X$ which has the property that $\set{V\cap X_n|V\in\mathscr{V}'_n}$ is a locally-finite open refinement (in $X_n$) of $\mathscr{U}_n$.  Write $\mathscr{V}_n=\set{V\cap(X_n)^\circ|V\in\mathscr{V}'_n}$ to obtain a locally-finite family of open subsets of $X$ which covers the interior $(X_n)^\circ$ and refines $\mathscr{U}_n$. The collection $\mathscr{V}=\bigcup\mathscr{V}_n$ is now a countably locally finite open refinement of $\mathscr{U}$ covering $X$. By Lemma 41.3, $X$ is paracompact
+
+## Ex.41.8
+>Let $p:X\to Y$ be a perfect map. (See Exercise 7 of §31.)
+(a) Show that if $Y$ is paracompact, so is $X$. [Hint: If $\mathscr{A}$ is an open covering of $X$, find a locally finite open covering of $Y$ by sets $B$ such that $p^{-1}(B)$ can be covered by finitely many elements of $\mathscr{A}$; then intersect $p^{-1}(B)$ with these elements of $\mathscr{A}$.]
+(b) Show that if $X$ is a paracompact Hausdorff space, then so is $Y$. [Hint: If $\mathscr{B}$ is a locally finite closed covering of $X$, then $\set{p(B)|B\in\mathscr{B}}$ is a locally finite closed covering of $Y$.]
