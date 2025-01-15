@@ -173,7 +173,7 @@ That $\Bbb R^\infty$ is $T_3$ (even $T_{3.5}$) in box topology is given in Ex.33
 
 For each $x\in X$, if $x\in A_1$ then it has an open nbhd $U$ in $A_1$, such that $U$ intersects finitely many sets in $\mathscr{U}_1'$. There exists an open set $U'$ of $X$ such that $U=U'\cap A_1$. Similarly if $x\in A_2$ there exists an open set $V'$ of $X$ such that $V=V'\cap A_2$ intersects finitely many sets in $\mathscr{U}_2'$. Note that $U'$ still intersects only finitely many elements in $\mathscr{U}_1'$ and similar to $V'$
 
-Now consider two open sets $U'\setminus A_2, V'\setminus A_1$ of $X$. Note that $U'\setminus A_2\subset U, V'\setminus A_1\subset V$, and neither $U'\setminus A_2$ intersect any element in $\mathscr{U}_2'$ nor $V'\setminus A_1$ intersect any element in $\mathscr{U}_1'$. So, if $x\notin A_1$ then $W=U'\setminus A_2$ is a open nbhd of $x$ that intersects only finitely many elements in $\mathscr{V}$, and $x\notin A_1$ is similar. In the case $x\in A_1\cap A_2$, choose $W=U'\cap V'$ and note that $W\subset U',V'$'. Thus $\mathscr{V}$ is locally finite. By Lemma 41.3, $X$ is paracompact.
+Now consider two open sets $U'\setminus A_2, V'\setminus A_1$ of $X$. Note that $U'\setminus A_2\subset U, V'\setminus A_1\subset V$, and neither $U'\setminus A_2$ intersect any element in $\mathscr{U}_2'$ nor $V'\setminus A_1$ intersect any element in $\mathscr{U}_1'$. So, if $x\notin A_1$ then $W=U'\setminus A_2$ is a open nbhd of $x$ that intersects only finitely many elements in $\mathscr{V}$, and $x\notin A_1$ is similar. In the case $x\in A_1\cap A_2$, choose $W=U'\cap V'$ and note that $W\subset U',V'$. Thus $\mathscr{V}$ is locally finite. By Lemma 41.3, $X$ is paracompact.
 
 *This problem is not hard, but also not so obvious like some readers might think. Note that unlike compactness, it is **NOT** correct that a subspace $Y\subset X$ is paracompact iff every open covering of $Y$ consisting of open sets of $X$ has locally finite open (in the sense of $X$) refinement that covers $Y$. 
 
@@ -188,3 +188,64 @@ Thus there is a family $\mathscr{V}_n'$ of open subsets of $X$ which has the pro
 >Let $p:X\to Y$ be a perfect map. (See Exercise 7 of §31.)
 (a) Show that if $Y$ is paracompact, so is $X$. [Hint: If $\mathscr{A}$ is an open covering of $X$, find a locally finite open covering of $Y$ by sets $B$ such that $p^{-1}(B)$ can be covered by finitely many elements of $\mathscr{A}$; then intersect $p^{-1}(B)$ with these elements of $\mathscr{A}$.]
 (b) Show that if $X$ is a paracompact Hausdorff space, then so is $Y$. [Hint: If $\mathscr{B}$ is a locally finite closed covering of $X$, then $\set{p(B)|B\in\mathscr{B}}$ is a locally finite closed covering of $Y$.]
+
+(a) Recall that perfect map is a surjective continuous map that is closed with compact fibers. If $\mathscr{A}$ is an open covering of $X$. WLOG we may assume $\mathscr{A}$ is closed under finite unions. Let $\mathscr{B}=\set{Y\setminus f(X\setminus A)|A\in\mathscr{A}}$. It is clear that $\mathscr{B}$ is a collection of open sets of $Y$. And since $f$ has compact fibers and $\mathscr{A}$ is closed under finite unions, each fiber $f^{-1}(y)$ is contained in an $A\in\mathscr{A}$. Thus,
+$$
+\begin{aligned}
+X\setminus f^{-1}(y)&\supset X\setminus A\\\\
+f(X\setminus f^{-1}(y))&\supset f(X\setminus A)\\\\
+Y\setminus f(X\setminus f^{-1}(y))&\subset Y\setminus f(X\setminus A)\\\\
+=Y\setminus f f^{-1}(Y\setminus\set{y})&\\\\
+=\set{y}&
+\end{aligned}
+$$
+Therefore, $\mathscr{B}$ covers $Y$. So it has a locally finite open refinement $\mathscr{B}'$ that covers $Y$. Now let $\mathscr{A}'=\set{f^{-1}(B')|B'\in\mathscr{B}'}$. This is an open covering of $Y$. It refines $\mathscr{A}$, because for each $A'=f^{-1}(B')\in\mathscr{A}'$ where $B'\in\mathscr{B}'$, there exists an $A\in\mathscr{A}$ such that $B'\subset Y\setminus f(X\setminus A)$. Hence,
+$$
+\begin{aligned}
+A'&\subset f^{-1}(Y\setminus f(X\setminus A))\\\\
+&= X\setminus f^{-1}f(X\setminus A)\\\\
+&\subset A
+\end{aligned}
+$$
+Therefore, $\mathscr{A}'$ refines $\mathscr{A}$. As for locally finiteness, for each $x\in X,\exists V\ni f(x)$, s.t. $V$ intersects finitely many $B'\in\mathscr{B}'$, then $f^{-1}V$ intersects those $f^{-1}B'$. Moreover, if $f^{-1}V\cap f^{-1}B'\neq\emptyset$, we have $\emptyset\neq f(f^{-1}V\cap f^{-1}B')\subset V\cap B'$, meaning that $f^{-1}V$ will only intersect those elements, thus locally finite.
+
+(b) Recall in Ex.31.7 we have proved that if $f:X\to Y$ is perfect map, then $X$ regular implies $Y$ regular. Here $X$ is paracompact Hausdorff, hence regular, hence $Y$ is regular. Let $\mathscr{U}$ be an open covering of $Y $, take the preimages to form an $\mathscr{A}$, which has a **closed** locally finite refinement $\mathscr{A}'$ that covers $X$. Let $\mathscr{B}$ be the images of elements of $\mathscr{A}'$.
+
+Now clearly $\mathscr{B}$ is a closed covering of $Y$. It refines $\mathscr{A}$, for if $B\in\mathscr{B}$, there exists $A'\in\mathscr{A}',A\in\mathscr{A},U\in\mathscr{U}$ such that: $B=f(A')\subset f(A)=ff^{-1}(U)=U$. Now we prove locally finiteness.
+
+For each $y\in Y$, its fiber is compact, thus can be covered by finitely many open sets, each of which intersects finitely many elements in $\mathscr{A}'$, i.e. $f^{-1}y\subset M=\bigcup A_i'$ . Therefore, $y\in f(\bigcup A_i')$. Closed maps send nbhd to nbhd (in particular, in part (a) we proved $N=Y\setminus f(X\setminus A)\subset f(A)$), so there exists $N$ such that $y\in N\subset f(M)$. Similarly we can prove $f^{-1}N\subset M$. Hence $f^{-1}N$ intersects finitely many elements of $\mathscr A'$. Similar to the end of part (a), we know $N$ intersects at most finitely many elements of $\mathscr B$.
+
+## Ex.41.10
+>Theorem. If $X$ is a Hausdorff space that is locally compact and paracompact, then each component of $X$ has a countable basis.
+Proof. If $X_0$ is a component of $X$, then $X_0$ is locally compact and paracompact. Let $\mathscr{C}$ be a locally finite covering of $X_0$ by sets open in $X_0$ that have compact closures. Let $U_1$ be a nonempty element of $\mathscr{C}$, and in general let $U_n$ be the union of all elements of $\mathscr{C}$ that intersect $\overline{U_{n-1}}$. Show $\overline{U_n}$ is compact, and the sets $U_n$ cover $X_0$.
+
+**THIS IS FALSE**. A correction may be changing 'paracompact' to 'metrizable'.
+
+After correction, it is equivalent to proving locally compact connected metrizable space is $C_2$. We show $X$ is a countable union of $C_2$ open subspaces, thus is $C_2$.
+
+We follow the hint. Since $X$ is locally compact, those open sets with compact closures form an open covering. Let $\mathscr{C}$ be a locally finite open refinement of it covering $X$ and $\emptyset\neq U_1\in\mathscr{C}$, $U_2=\bigcup\set{U\in\mathscr{C}|U\cap\overline{U_1}\neq\emptyset}$,...,$U_{n+1}=\bigcup\set{U\in\mathscr{C}|U\cap\overline{U_n}\neq\emptyset}$. We prove by induction that $\overline{U_n}$ is compact. It is clear that $\overline{U_1}$ is compact. Now suppose $\overline{U_n}$ is compact. Since $\mathscr{C}$ is locally finite, for each $x\in\overline{U_n}$, there is an open nbhd $U_x$ of $x$ such that $U_x$ intersects only finitely many elements in $\mathscr{C}$. Since $\overline{U_n}$ is compact, we can cover it by finitely many such $U_x$. In particular, $\overline{U_n}$ intersects only finitely many elements of $\mathscr{C}$. By definition, we know that $U_{n+1}$ is a finite union of $U\in\mathscr{C}$. Therefore, $\overline{U_{n+1}}$ is compact. Hence we conclude all $\overline{U_n}$ are compact.
+
+Now we show $X=\bigcup U_n$, where connectedness is used. Let $x\in\overline{\bigcup U_n}$. Every open nbhd of it intersects $\bigcup U_n$, or equivalently, intersects some $U_n$, hence $\overline{U_n}$. By definition, $x\in U_{n+1}$. Therefore, $x\in\bigcup U_n$, i.e. $\overline{\bigcup U_n}=\bigcup U_n$. Hence $\bigcup U_n$ is a non-empty clopen set. By connectedness, $\bigcup U_n=X$
+
+Finally, we have $X=\bigcup\overline{U_n}$. Each $\overline{U_n}$ is a compact metrizable space, hence $C_2$. Being open subspace of $\overline{U_n}$, $U_n$ is $C_2$. Thus we come to our conclusion.
+
+
+# §42 The Smirnov Metrization Theorem
+
+## Ex.42.1
+>Compare Theorem 42.1 with Exercises 7 and 8 of §34.
+
+There are three theorems concerning local metrizability. I list them below: 
+
+>In the following spaces, local metrizability is equivalent to metrizability.
+(1) compact Hausdorff spaces (Ex.34.7)
+(2) Lindelof regular spaces (Ex.34.8)
+(3) paracompact Hausdorff spaces (Theorem 42.1)
+
+## Ex.42.2
+>(a) Show that for each $x\in S_\Omega$, the section of $S_\Omega$ by $x$ has a countable basis and hence is metrizable.
+(b) Conclude that $S_\Omega$ is not paracompact.
+
+(a) For each $x\in S_\Omega$, denote $S_x$ its section. All open intervals in $S_x$ form a basis of $S_x$. The cardinality is $\aleph_0^2=\aleph_0$, hence $S_x$ is $C_2$. By the Urysohn lemma, $S_x$ is metrizable.
+
+(b) By part (a), $S_\Omega$ is locally metrizable. If moreover $S_\Omega$ is paracompact, then it is metrizable. However, this is false. (Recall that $S_\Omega$ is not compact but is limit point compact).
