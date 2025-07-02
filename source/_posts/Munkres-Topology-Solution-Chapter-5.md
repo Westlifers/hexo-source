@@ -27,7 +27,7 @@ Conversely, suppose $\mathcal N(x)\subset\mathscr D$, using finite intersection 
 
 (b) Let $\mathscr D'=\mathscr D\cup\lbrace A\rbrace$, any finite intersection within $\mathscr D'$ is either a finite intersection within $\mathscr D$ (hence nonempty) or a finite intersection within $\mathscr D$ with $A$: $A\cap D_1\cap...\cap D_n$. Note that $A\cap D_1\cap...\cap D_n\supset D\cap D_1\cap...\cap D_n$, the right side of which is a finite intersection within $\mathscr D$, again nonempty. Therefore $\mathscr D'$ has finite intersection property, and hence equals $\mathcal D$.
 
-(c) **THIS IS FALSE.** $T_2$ is necessary for (c). A counterexample can be found [here.](https://math.stackexchange.com/a/1058472/1109227)
+(c) **<span style="color:red">THIS IS FALSE.</span>** $T_2$ is necessary for (c). A counterexample can be found [here.](https://math.stackexchange.com/a/1058472/1109227)
 
 Suppose there are $x\neq y\in\bigcap_{D\in\mathscr D}\bar D$, by (a) this means $\mathcal N(x),\mathcal N(y)\subset\mathscr D$. Use Hausdorff-ness we get disjoint open sets $U\in\mathcal N(x), V\in\mathcal N(y)$, which contradicts to finite intersection property of $\mathscr D$.
 

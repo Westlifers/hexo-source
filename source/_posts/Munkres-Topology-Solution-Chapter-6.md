@@ -179,8 +179,7 @@ Now consider two open sets $U'\setminus A_2, V'\setminus A_1$ of $X$. Note that 
 
 (b) Let $\mathscr{U}$ be an open covering of $X=\bigcup X_n$ with $\bigcup(X_n)^\circ=X$. 
 
-For each $n$, 
-$\mathscr{U}_n=\set{U\cap X_n|U\in\mathscr{U}}$ is an open covering of $X_n$. 
+For each $n$, $\mathscr{U}_n=\set{U\cap X_n|U\in\mathscr{U}}$ is an open covering of $X_n$. 
 
 Thus there is a family $\mathscr{V}_n'$ of open subsets of $X$ which has the property that $\set{V\cap X_n|V\in\mathscr{V}'_n}$ is a locally-finite open refinement (in $X_n$) of $\mathscr{U}_n$.  Write $\mathscr{V}_n=\set{V\cap(X_n)^\circ|V\in\mathscr{V}'_n}$ to obtain a locally-finite family of open subsets of $X$ which covers the interior $(X_n)^\circ$ and refines $\mathscr{U}_n$. The collection $\mathscr{V}=\bigcup\mathscr{V}_n$ is now a countably locally finite open refinement of $\mathscr{U}$ covering $X$. By Lemma 41.3, $X$ is paracompact
 
@@ -219,7 +218,7 @@ For each $y\in Y$, its fiber is compact, thus can be covered by finitely many op
 >Theorem. If $X$ is a Hausdorff space that is locally compact and paracompact, then each component of $X$ has a countable basis.
 Proof. If $X_0$ is a component of $X$, then $X_0$ is locally compact and paracompact. Let $\mathscr{C}$ be a locally finite covering of $X_0$ by sets open in $X_0$ that have compact closures. Let $U_1$ be a nonempty element of $\mathscr{C}$, and in general let $U_n$ be the union of all elements of $\mathscr{C}$ that intersect $\overline{U_{n-1}}$. Show $\overline{U_n}$ is compact, and the sets $U_n$ cover $X_0$.
 
-**THIS IS FALSE**. A correction may be changing 'paracompact' to 'metrizable'.
+**<span style="color:red">THIS IS FALSE.</span>** A correction may be changing 'paracompact' to 'metrizable'.
 
 After correction, it is equivalent to proving locally compact connected metrizable space is $C_2$. We show $X$ is a countable union of $C_2$ open subspaces, thus is $C_2$.
 
