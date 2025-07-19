@@ -87,28 +87,23 @@ Standard result in analysis, omitted.
 >If $X$ and $Y$ are spaces, define
 $$
 e : X \times \mathcal C(X, Y) \to Y
-$$
-by the equation $e(x, f) = f(x)$; the map $e$ is called the *evaluation map*. Show that if $d$ is a metric for $Y$ and $C(X, Y)$ has the corresponding uniform topology, then $e$ is continuous. We shall generalize this result in §46.
+$$ by the equation $e(x, f) = f(x)$; the map $e$ is called the *evaluation map*. Show that if $d$ is a metric for $Y$ and $C(X, Y)$ has the corresponding uniform topology, then $e$ is continuous. We shall generalize this result in §46.
 
 For all $(x,f)\in X \times \mathcal C(X, Y)$, let $B=B_d(f(x),\epsilon)$ be an open ball nbhd of $e(x,f)=f(x)$. Consider the open nbhd $U=f^{-1}(B_d(f(x),\epsilon/2)\times B_{\overline\rho}(f,\epsilon/2))$ of $(x,f)$, where $\overline\rho$ denotes the uniform metric. If $(y,g)\in U$, then $d(g(y),f(x))\le d(g(y),f(y))+d(f(y),f(x))\le \overline\rho(g,f)+d(f(y),f(x))\le \epsilon/2+\epsilon/2=\epsilon$. Hence $e(y,g)\in B$, which implies continuity of $e$.
 
 ## Ex.43.9
 > Let $(X, d)$ be a metric space. Show that there is an isometric imbedding $h$ of $X$ into a complete metric space $(Y, D)$, as follows: Let $\tilde{X}$ denote the set of all Cauchy sequences
-$$\mathbf{x} = (x_1, x_2, \ldots)$$
-of points of $X$. Define $\mathbf{x} \sim \mathbf{y}$ if
+$$\mathbf{x} = (x_1, x_2, \ldots)$$ of points of $X$. Define $\mathbf{x} \sim \mathbf{y}$ if
 $$
 d(x_n, y_n) \longrightarrow 0.
-$$
-Let $[\mathbf{x}]$ denote the equivalence class of $\mathbf{x}$; and let $Y$ denote the set of these equivalence classes. Define a metric $D$ on $Y$ by the equation
+$$ Let $[\mathbf{x}]$ denote the equivalence class of $\mathbf{x}$; and let $Y$ denote the set of these equivalence classes. Define a metric $D$ on $Y$ by the equation
 $$
 D([\mathbf{x}], [\mathbf{y}]) = \lim_{n \to \infty} d(x_n, y_n).
-$$
-(a) Show that $\sim$ is an equivalence relation, and show that $D$ is a well-defined metric.
+$$ (a) Show that $\sim$ is an equivalence relation, and show that $D$ is a well-defined metric.
 (b) Define $h : X \to Y$ by letting $h(x)$ be the equivalence class of the constant sequence $(x, x, \ldots)$
 $$
 h(x) = [(x, x, \ldots)].
-$$
-Show that $h$ is an isometric imbedding.
+$$ Show that $h$ is an isometric imbedding.
 (c) Show that $h(X)$ is dense in $Y$; indeed, given $\mathbf{x} = (x_1, x_2, \ldots) \in \tilde{X}$, show the sequence $h(x_n)$ of points of $Y$ converges to the point $[\mathbf{x}]$ of $Y$.
 (d) Show that if $A$ is a dense subset of a metric space $(Z, \rho)$, and if every Cauchy sequence in $A$ converges in $Z$, then $Z$ is complete.
 (e) Show that $(Y, D)$ is complete.
@@ -225,8 +220,7 @@ Given $B_C(f, \epsilon)$ and $B_D(g, \delta)$ where $C, D$ are compact, we need 
 The last inclusion follows from triangular inequality: if $p\in B_C(h,\gamma)$, then over $C$ we have 
 $$
 \sup_C d(p(x),f(x))\le \sup_C d(p(x),h(x))+\sup_C d(h(x),f(x))<\epsilon
-$$
-Similarly, $B_{C\cup D}(h,\gamma)\subset B_D(g,\delta)$.
+$$ Similarly, $B_{C\cup D}(h,\gamma)\subset B_D(g,\delta)$.
 
 ## Ex.46.2
 > Prove Theorem 46.7.
@@ -292,8 +286,7 @@ $\set{f_n}$ converges to $0$ in product topology and compact convergence topolog
 >Consider the sequence of functions $f_n : (−1, 1)\to\Bbb R$, defined by
 $$
 f_n(x)=\sum_{k=1}^\infty kx^k
-$$
-(a) Show that $(f_n)$ converges in the topology of compact convergence; conclude that the limit function is continuous. (This is a standard fact about power series.)
+$$ (a) Show that $(f_n)$ converges in the topology of compact convergence; conclude that the limit function is continuous. (This is a standard fact about power series.)
 (b) Show that $(f_n)$ does not converge in the uniform topology.
 
 (a) Any compact set is covered by a closed interval, thus there exists an $M<1$ such that $|kx^k|\le kM^k$ for all $k$. $\sum kM^k$ converges. By Weierstrass' principle, the power series converges (uniformly) on compact sets.
@@ -383,8 +376,7 @@ Note that the compact convergence topology is initial w.r.t. the restriction map
 Now let us characterize the image of $\phi$: 
 $$
 \mathrm{im}\phi=\set{(f_1, f_2, \ldots) \big{|} f_i: A_i\to Y, \forall m,n,f_m|_ {A_m\cap A_n}=f_n|_ {A_m\cap A_n}}.
-$$
-This is closed, because if $(f_i)\notin\mathrm{im}\phi$, say $f_m|_ {A_m\cap A_n}\neq f_n|_ {A_m\cap A_n}$ where $m<n$, then by denoting $\delta=\sup_{A_m\cap A_n}(f_m,f_n)$ we know that $A_1\times\dots\times B_{\bar\rho_n}(f_n,\delta/2)\times\dots\times B_{\bar\rho_m}(f_m,\delta/2)\times\dots$ has empty intersection with $\mathrm{im}\phi$.
+$$ This is closed, because if $(f_i)\notin\mathrm{im}\phi$, say $f_m|_ {A_m\cap A_n}\neq f_n|_ {A_m\cap A_n}$ where $m<n$, then by denoting $\delta=\sup_{A_m\cap A_n}(f_m,f_n)$ we know that $A_1\times\dots\times B_{\bar\rho_n}(f_n,\delta/2)\times\dots\times B_{\bar\rho_m}(f_m,\delta/2)\times\dots$ has empty intersection with $\mathrm{im}\phi$.
 
 (The same holds if we replace $Y^X$ by $C(X,Y)$.)
 
@@ -445,13 +437,11 @@ Recall Ex.46.10 shows that $(\Bbb R^k)^X$ and $C(X, \Bbb R^k)$ are topologically
 First we prove continuity of $f$. 
 $$
 d(f(x),f(x_0))\le d(f(x), f_N(x)) + d(f_N(x),f_N(x_0)) + d(f_N(x_0),f(x_0))
-$$
-Since $f_n$ is equicontinuous, we can choose an open nbhd of $x_0$ such that the first and the last term are sufficiently small for any $N$. Next choose $N$ large enough such that the middle term is sufficiently small.
+$$ Since $f_n$ is equicontinuous, we can choose an open nbhd of $x_0$ such that the first and the last term are sufficiently small for any $N$. Next choose $N$ large enough such that the middle term is sufficiently small.
 
 Next we prove that $f_n$ converges to $f$ in compact convergence topology. i.e. we need to prove that if an equicontinuous sequence $\set{f_n}$ converges to $f$ pointwisely on a compact set, then the convergence is uniform. This is easy: Given $\epsilon>0$, by equicontinuity, for any point $x$ there is an open nbhd $U_x$ such that $d(f_n(x),f_n(y))<\epsilon$ on it. Cover the compact set with finitely many sets $U_{x_1},\dots,U_{x_n}$, on each of which $d(f_n(x),f_n(x_i))<\epsilon$ holds. 
 
 Suppose $x\in U_i$, then we have:
 $$
 d(f_N(x),f(x))<d(f_N(x),f_N(x_i)) + d(f_N(x_i),f(x_i)) + d(f(x_i),f(x))
-$$
-The first term is smaller than $\epsilon$ on $U_i$. The last term is smaller than $\epsilon$ by taking $n\to\infty$ on the first term. The middle term is smaller than $\epsilon$ if $N$ is sufficiently large. Therefore, $d(f_N(x),f(x))$ is dominated by $3\epsilon$ on $U_k$ for large $N$, proving uniformity.
+$$ The first term is smaller than $\epsilon$ on $U_i$. The last term is smaller than $\epsilon$ by taking $n\to\infty$ on the first term. The middle term is smaller than $\epsilon$ if $N$ is sufficiently large. Therefore, $d(f_N(x),f(x))$ is dominated by $3\epsilon$ on $U_k$ for large $N$, proving uniformity.
