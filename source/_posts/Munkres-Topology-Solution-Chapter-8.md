@@ -84,12 +84,26 @@ We follow the hint. Clearly $X=\bigcup A_n$ since $\mathcal F$ is pointwise boun
 ## Ex.48.11
 >Determine whether or not $\Bbb R_l$ is a Baire space.
 
-Yes. First we claim: a subset $D\subset \Bbb R$ is dense in usual topology, if, and only if it is dense in lower limit topology. Suppose it is dense in usual topology. Now given any point $x$, any open nbhd (in $\Bbb R_l$) $[x,x+\epsilon)$, note that $D\cap [x,\infty)$ is also dense in $[x,\infty)$ in usual topology, and $[x,x+\epsilon)$ is open in this topology. Hence $[x,x+\epsilon)\cap D\neq\emptyset$. (NOTE: I am not asserting that if $D$ dense, $A$ closed, then $D\cap A$ dense in $A$! This is true when $\mathrm{int}A\neq\emptyset$, or when $A$ is open. You can also check this claim directly.)
+Yes. First we claim: a subset $D\subset \Bbb R$ is dense in usual topology, if, and only if it is dense in lower limit topology. Suppose it is dense in usual topology. Now given any point $x$, any open nbhd (in $\Bbb R_l$) $[x,x+\epsilon)$, note that $D\cap [x,\infty)$ is also dense in $[x,\infty)$ in usual topology, and $[x,x+\epsilon)$ is open in this topology. Hence $[x,x+\epsilon)\cap D\neq\emptyset$. (**NOTE: I am not asserting that if $D$ dense, $A$ closed, then $D\cap A$ dense in $A$!** This is true when $\mathrm{int}A\neq\emptyset$, or when $A$ is open. You can also check this claim directly.)
 
-As for this problem, let $W_n=\bigcup_{\alpha\in J_n}[a_{n,\alpha},b_{n,\alpha})$ be a sequence of dense open sets in $\Bbb R_l$. Now note that any open nbhd (in $\Bbb R_l$) intersects $W_n$, it must intersects some $(a_{n,\alpha},b_{n,\alpha})$. i.e. $\mathrm{int}_ {\Bbb R} W_n$ is a sequence of dense open sets in $\Bbb R_l$, so dense in $\Bbb R$. Therefore, $\bigcup W_n\supset\bigcup\mathrm{int}_ {\Bbb R}W_n$ is dense.
+As for this problem, let $W_n=\bigcup_{\alpha\in J_n}[a_{n,\alpha},b_{n,\alpha})$ be a sequence of dense open sets in $\Bbb R_l$. Now note that any open nbhd (in $\Bbb R_l$) intersects $W_n$, it must intersects some $(a_{n,\alpha},b_{n,\alpha})$. i.e. $W_n'=\bigcup_{\alpha\in J_n}(a_{n,\alpha},b_{n,\alpha})$ is a sequence of dense open sets in $\Bbb R_l$, so dense in $\Bbb R$. Therefore, $\bigcup W_n\supset\bigcup W_n'$ is dense.
 
 ## Ex.48.12
 >Show that $\Bbb R^J$ is a Baire space in the box, product, and uniform topologies.
 
+For uniform topology $\Bbb R^J$ is clearly Baire, since it is complete.
+
+For product topology, there is no hope for $\Bbb R^J$ to be locally compact or complete metric, since it is not normal if $|J|\ge \mathfrak c$. But we can mimic the proof of theorem 49.2 again. All we need to prove is: if $U_0\supset\overline{U_1}\supset U_1\supset...$, then $\bigcap U_n\neq\emptyset$. However, this follows easily from the fact that a descending sequence of CLOSED intervals has nonempty intersection.
+
+The same applies to box topology. 
+
 ## Ex.48.13
->Let $X$ be a topological space; let $Y$ be a complete metric space. Show that $C(X, Y )$ is a Baire space in the fine topology (see Exercise 11 of §46). [Hint: Given basis elements $B( f_i, \delta_i )$ such that $δ_1 ≤ 1$ and $\delta_{i+1} ≤ \delta_i /3$ and $f_{i+1}\in B( f_i, δ_i /3)$, show that $\bigcap B( f_i, \delta_i )\neq \emptyset$.]
+>Let $X$ be a topological space; let $Y$ be a complete metric space. Show that $C(X, Y )$ is a Baire space in the fine topology (see Exercise 11 of §46). [Hint: Given basis elements $B( f_i, \delta_i )$ such that $\delta_1\le 1$ and $\delta_{i+1}\le \delta_i /3$ and $f_{i+1}\in B( f_i, δ_i /3)$, show that $\bigcap B( f_i, \delta_i )\neq \emptyset$.]
+
+Again, we mimic the proof of theorem 49.2. 
+
+First, we show $C(X,Y)$ in the fine toplogy is regular. This is easy. Given $f\in B(f,\delta)$, we need to show $\overline{B(f,\delta/2)}\subset B(f,\delta)$. Suppose $g\notin B(f,\delta)$, then $B(g,\delta/2)\cap B(f,\delta/2)=\emptyset$. Done.
+
+Next, follow the proof of theorem 49.2, we get a descending chain: $B(f_1,\delta_1)\supset\overline{B(f_2,\delta_2)}\supset B(f_2,\delta_2)\supset...$ with $\delta_1\le 1$ and $\delta_{i+1}\le \delta_i /3$. We are going to show it has nonempty limit. For any $\epsilon>0$, find $N$ such that $(1/3)^N<\epsilon$, then for $m>n\ge N$, $f_m, f_n\in B(f_N,\delta_N)$, so $\bar\rho(f_n,f_N)<\epsilon, \bar\rho(f_m,f_N)<\epsilon$. Hence $\bar\rho(f_n,f_m)<2\epsilon$. This implies that $f_n$ is a Cauchy sequence in the uniform topology. Note that $C(X,Y)$ in the uniform topology is complete, so it has a uniform limit $f$, which is continuous. Therefore, $f\in\bigcap B(f_n,\delta_n)$.
+
+执笔至此，发现维数理论已经全部忘记，索性就写到这吧。维数理论我应该会在准备博资考复习的时候再看一遍，到时通过考试后应该会补充上的，包括前面一些没写的，比如Hausdorff metric的题目等等。Munkres前面有一题总结所有的基本拓扑性质，我写了一张很大的表，展示了许多基本性质的互推关系和不互推的反例，当然并不能覆盖所有的关系，感觉总结出所有的太枯燥了，也没太大意义，有些反例也非常弯弯绕绕，看一遍就忘掉，就算记住也不知道有甚用。明年如果我会做一般拓扑学助教的话就把常用的找个时间做成一张图放出来。
