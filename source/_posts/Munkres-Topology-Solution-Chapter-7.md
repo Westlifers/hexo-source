@@ -177,7 +177,7 @@ An alternative proof would be: $\set{f_n}_n\cup\set{f}$ is compact in uniform to
 
 ## Ex.45.3
 >Prove the following:
-Theorem (Arzela's theorem). Let $X$ be compact; let $f_n\in C(X,\Bbb R^k)$. If the collection $\set{fn}$ is pointwise bounded and equicontinuous, then the sequence $f_n$ has a uniformly convergent subsequence.
+Theorem (Arzela's theorem). Let $X$ be compact; let $f_n\in C(X,\Bbb R^k)$. If the collection $\set{f_n}$ is pointwise bounded and equicontinuous, then the sequence $f_n$ has a uniformly convergent subsequence.
 
 By Ascoli's theorem, $\mathcal{\overline F}$ is compact in uniform topology, so every sequence has a convergent subsequence.
 
