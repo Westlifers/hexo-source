@@ -57,7 +57,12 @@ jobs:
           mkdir -p ~/.ssh/
           echo "$HEXO_DEPLOY_PRIVATE_KEY" > ~/.ssh/id_rsa 
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts  
+          ssh-keyscan github.com >> ~/.ssh/known_hosts 
+      
+      - name: Set up Git identity
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: 部署博客
         run: | 
@@ -65,8 +70,6 @@ jobs:
           # hexo clean 以下的代码都是必需的，不可删去
           git config --global credential.helper store
           git config --global init.defaultBranch master
-          git config --global user.name "${{secrets.GIT_NAME}}"
-          git config --global user.email "${{secrets.GIT_EMAIL}}" 
           git config --global user.password "${{secrets.GIT_PSW}}"
           hexo clean
           hexo g -d
