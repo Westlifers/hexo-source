@@ -106,9 +106,9 @@ deploy:
   # example, https://github.com/hexojs/hexojs.github.io
   branch: master
 
-- type: sftp
-  host: 39.101.138.156
-  user: root
-  pass: yangdi1203.
-  remotePath: /home/blog
+# - type: sftp
+#   host: 39.101.138.156
+#   user: root
+#   pass: yangdi1203.
+#   remotePath: /home/blog
   
