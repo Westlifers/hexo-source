@@ -72,9 +72,5 @@ jobs:
           git config --global init.defaultBranch master
           git config --global user.password "${{secrets.GIT_PSW}}"
           hexo clean
-          hexo g -d
-          cd ./public
-          git init
-          git add .
-          git commit -m 'Update'
-          git push --force --quiet 'https://${{secrets.GH_TOKEN}}@github.com/${{secrets.GH_REF}}' master‍​‍​‍‍‍​‌​‌‌‍
+          hexo g
+          hexo d
