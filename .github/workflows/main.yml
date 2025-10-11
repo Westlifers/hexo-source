@@ -49,19 +49,24 @@ jobs:
         run: |
           npm install
   
+      - name: 配置 SSH 私钥
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.GIT_PRI }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
       - name: 配置 Git
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: 部署博客
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: | 
-          # 配置 Git 使用个人访问令牌进行认证
-          git config --global credential.helper store
           git config --global init.defaultBranch master
-          echo "https://${GH_TOKEN}@github.com" > ~/.git-credentials
           hexo clean
           hexo g
           hexo d
