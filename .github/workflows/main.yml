@@ -66,12 +66,12 @@ jobs:
 
       - name: 部署博客
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GIT_TOKEN }}
         run: | 
-          # 配置 Git 使用 GitHub Token 进行认证
+          # 配置 Git 使用个人访问令牌进行认证
           git config --global credential.helper store
           git config --global init.defaultBranch master
-          echo "https://x-access-token:${GITHUB_TOKEN}@github.com" > ~/.git-credentials
+          echo "https://${GH_TOKEN}@github.com" > ~/.git-credentials
           hexo clean
           hexo g
           hexo d
