@@ -65,12 +65,13 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: 部署博客
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: | 
-          # 以防万一有些遗留代码还是没删
-          # hexo clean 以下的代码都是必需的，不可删去
+          # 配置 Git 使用 GitHub Token 进行认证
           git config --global credential.helper store
           git config --global init.defaultBranch master
-          git config --global user.password "${{secrets.GIT_PSW}}"
+          echo "https://x-access-token:${GITHUB_TOKEN}@github.com" > ~/.git-credentials
           hexo clean
           hexo g
           hexo d
