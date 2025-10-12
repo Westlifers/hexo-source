@@ -245,7 +245,7 @@ widgets:
         # Author's current location
         location: 中国 四川 成都 四川大学
         # URL or path to the avatar image
-        avatar: img/avatar.png
+        avatar: https://west-hexo.oss-cn-chengdu.aliyuncs.com/avatar.png
         # Whether show the rounded avatar image
         avatar_rounded: true
         # Email address for the Gravatar
