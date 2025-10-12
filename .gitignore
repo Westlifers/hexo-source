@@ -6,9 +6,4 @@ node_modules/
 .deploy*/
 _multiconfig.yml
 .vscode/
-
-# 忽略 public 目录下的所有内容
 public/*
-# 但不忽略 img 文件夹
-!public/img/
-!public/CNAME
