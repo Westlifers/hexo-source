@@ -9,11 +9,13 @@ tags:
 - Co/End Calculus
 title: Co/End Calculus
 toc: true
-updated: '2026-05-09T15:56:18.454+08:00'
+updated: '2026-05-09T16:55:30.087+08:00'
 ---
 最近因为在不少文章中遇到End与Coend相关的技术，而且enriched category的课本中也大费周章地定义End，于是决定花些时间专门学习。出乎我意料的是，学习Co/End的核心技术没有花费我多少时间，但我已经看到其强大的作用。
 
 [Co/End Calculus](https://arxiv.org/abs/1501.02503)系统记载了Co/End Calculus（（余）端演算）的内容，我目前只读了前面一点点，这些部分其实在任何涉及到End的范畴论书中应该都会提到。本文仅仅是闲暇时简单记录一下Co/End演算的威力。
+
+<!--more-->
 
 ## Co/End
 
@@ -96,16 +98,57 @@ $$
 > \operatorname{colim}_W F \cong& \int^j Wj \otimes Fj.
 > \end{align*}
 > $$
->
 
 ## Co/End Calculus is powerful
 
 知乎上有一个很有趣的比喻，Kan延拓类比为黎曼积分，它的定义很优美，可以推导出很多美好的性质（All concepts are Kan extensions after all），但通过定义去计算Kan延拓异常困难，而Co/End的出现则与牛顿莱布尼茨公式的地位类似，它使得你可以相对简单地、技术地计算出Kan延拓。
 
-这里我就举两个例子，一个是经典的，一个是我在Handbook上随机找的一个证明，我用Co/End改写了证明，它们都使得证明变得更短且更容易follow
+这里我就举两个例子，一个是经典的，一个是我在Handbook上随机找的一个证明，我用Co/End改写了证明，它们都使得证明变得更短且更容易follow。
 
 ### Pointwise Kan Extension Formula
 
-逐点Kan延拓的公式是$\operatorname{Lan}_F G(D)=\operatorname{colim}()$
+这其实是Kan Extension as Co/End中一个公式，我们演示一下如何通过Co/End演算证明它。逐点左Kan延拓的公式是$\operatorname {Lan}_F G(D)=\operatorname {colim}(F\downarrow D\xrightarrow {\phi} \mathscr C\xrightarrow{F}\mathscr{E})$，把weighted colimit翻译为coend，再回忆左Kan延拓的伴随刻画，我们实际上需要证明的是：对任意$H:\mathscr{D\to E}$，有
+
+$$
+\operatorname{Nat} (\int^C \mathscr D(FC,-)\otimes GC, H)\cong \operatorname{Nat} (G,HF)
+$$
+
+证明就是直接的计算：
+
+$$
+\begin{align*}
+&\operatorname{Nat} \left(\int^C \mathscr D(FC,-)\otimes GC, H\right)\\\\
+\cong&\int_D \mathscr{E} \left(\int^C \mathscr D(FC,D)\otimes GC, HD)\right)\\\\
+\cong&\int_C\int_D \mathscr{E} (\mathscr D(FC,D)\otimes GC, HD))\\\\
+\cong&\int_C\int_D \mathbf{Set} (\mathscr D(FC,D), \mathscr E(GC, HD))\\\\
+\cong&\int_C\operatorname{Nat}(\mathscr{D}(FC,-),\mathscr{E}(GC,H-))\\\\
+\cong&\int_C\mathscr E(GC, HFC)\\\\
+\cong&\operatorname{Nat}(G,HF)
+\end{align*}
+$$
+
+这就完成了证明。
+
 
 ### Dense Generators iff Restricted Yoneda is Fully Faithful
+
+> 设$(G_i)_{i\in I}$ 是$\mathscr C$ 的一族对象，设$\mathscr G$ 是由它们生成的满子范畴，则它是dense family of generators，当且仅当函子$C\mapsto \mathscr{C}(-,C)|_{\mathscr G}$ 是fully faithful的
+
+Handbook对dense family of generators的定义是，$\mathscr C$ 中的对象$C$ 都是遗忘函子$\operatorname{dom}:\mathscr G/C\to\mathscr C$ 的余极限，翻译成co/end语言，就是$C\cong \int^G\mathscr C(G,C)|_{\mathscr G}\otimes i(G)$ （我把符号写得很详细，以免产生误会，尤其是Hom函子取的是限制），现在来算一下这代表了什么：
+
+$$
+\begin{align*}
+&\mathscr{C}(\int^G\mathscr C(G,C)|_{\mathscr G}\otimes i(G), T)\\\\
+\cong&\int_G\mathscr{C}(\mathscr C(G,C)|_{\mathscr G}\otimes i(G), T)\\\\
+\cong& \int_G\mathbf{Set}(\mathscr C(G,C)|_{\mathscr G},\mathscr{C}(i(G), T))\\\\
+\cong&\operatorname{Nat}(\mathscr C(-,C)|_{\mathscr G},\mathscr C(-,T)|_{\mathscr G})
+\end{align*}
+$$
+
+所以Dense当且仅当下式成立，对$C,T$ 自然：
+
+$$
+\operatorname{Nat}(\mathscr C(-,C)|_{\mathscr G},\mathscr C(-,T)|_{\mathscr G})\cong \mathscr C(C,T)
+$$
+
+而这正代表了所要的函子是fully faithful的。
