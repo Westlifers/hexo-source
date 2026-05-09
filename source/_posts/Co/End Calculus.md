@@ -9,7 +9,7 @@ tags:
 - Co/End Calculus
 title: Co/End Calculus
 toc: true
-updated: '2026-05-09T15:55:48.342+08:00'
+updated: '2026-05-09T15:56:18.454+08:00'
 ---
 最近因为在不少文章中遇到End与Coend相关的技术，而且enriched category的课本中也大费周章地定义End，于是决定花些时间专门学习。出乎我意料的是，学习Co/End的核心技术没有花费我多少时间，但我已经看到其强大的作用。
 
@@ -51,7 +51,7 @@ Co/End演算的核心公式主要是以下几条，我一一列出：
 
 $$
 \begin{align*}
-h(y) =& \int_{\mathbb{R}} f(x) \cdot \delta(y-x)\, dx\\
+h(y) =& \int_{\mathbb{R}} f(x) \cdot \delta(y-x)\, dx\\\\
 K(Y) \cong& \int^X KX \times \mathscr{C}(Y,X)
 \end{align*}
 $$
@@ -62,7 +62,7 @@ $$
 >
 > $$
 > \begin{align*}
-> \operatorname{Lan}_F G \cong& \int^{C} \mathscr{D}(FC,-) \otimes GC\\
+> \operatorname{Lan}_F G \cong& \int^{C} \mathscr{D}(FC,-) \otimes GC\\\\
 > \operatorname{Ran}_F G \cong& \int_C \mathscr{D}(-,FC) \pitchfork GC
 > \end{align*}
 > $$
@@ -92,7 +92,20 @@ $$
 > $$
 > \begin{align*}
 > \lim_W F \cong& \int_j Wj \pitchfork Fj,
-> \\
+> \\\\
 > \operatorname{colim}_W F \cong& \int^j Wj \otimes Fj.
 > \end{align*}
 > $$
+>
+
+## Co/End Calculus is powerful
+
+知乎上有一个很有趣的比喻，Kan延拓类比为黎曼积分，它的定义很优美，可以推导出很多美好的性质（All concepts are Kan extensions after all），但通过定义去计算Kan延拓异常困难，而Co/End的出现则与牛顿莱布尼茨公式的地位类似，它使得你可以相对简单地、技术地计算出Kan延拓。
+
+这里我就举两个例子，一个是经典的，一个是我在Handbook上随机找的一个证明，我用Co/End改写了证明，它们都使得证明变得更短且更容易follow
+
+### Pointwise Kan Extension Formula
+
+逐点Kan延拓的公式是$\operatorname{Lan}_F G(D)=\operatorname{colim}()$
+
+### Dense Generators iff Restricted Yoneda is Fully Faithful
