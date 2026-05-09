@@ -9,7 +9,7 @@ tags:
 - Co/End Calculus
 title: Co/End Calculus
 toc: true
-updated: '2026-05-09T19:25:03.517+08:00'
+updated: '2026-05-09T19:31:10.249+08:00'
 ---
 最近因为在不少文章中遇到End与Coend相关的技术，而且enriched category的课本中也大费周章地定义End，于是决定花些时间专门学习。出乎我意料的是，学习Co/End的核心技术不需要花费多少时间，但足以让人看到其强大的作用。
 
@@ -133,21 +133,21 @@ $$
 
 > 设$(G_i)$ 是$\mathscr C$ 的一族对象，设$\mathscr G$ 是由它们生成的满子范畴，则它是dense family of generators，当且仅当函子$C\mapsto \mathscr{C}(-,C) | _ {\mathscr G}$ 是fully faithful的
 
-Handbook对dense family of generators的定义是，$\mathscr C$ 中的对象$C$ 都是遗忘函子$\operatorname{dom}:\mathscr G/C\to\mathscr C$ 的余极限，翻译成co/end语言，就是$C\cong \int^G\mathscr C(G,C)|_{\mathscr G}\otimes i(G)$ （我把符号写得很详细，以免产生误会，尤其是Hom函子取的是限制），现在来算一下这代表了什么：
+Handbook对dense family of generators的定义是，$\mathscr C$ 中的对象$C$ 都是遗忘函子$\operatorname{dom}:\mathscr G/C\to\mathscr C$ 的余极限，翻译成co/end语言，就是$C\cong \int^G\mathscr C(G,C) | _ {\mathscr G}\otimes i(G)$ （我把符号写得很详细，以免产生误会，尤其是Hom函子取的是限制），现在来算一下这代表了什么：
 
 $$
 \begin{align*}
-&\mathscr{C}(\int^G\mathscr C(G,C)|_{\mathscr G}\otimes i(G), T)\\\\
-\cong&\int_G\mathscr{C}(\mathscr C(G,C)|_{\mathscr G}\otimes i(G), T)\\\\
-\cong& \int_G\mathbf{Set}(\mathscr C(G,C)|_{\mathscr G},\mathscr{C}(i(G), T))\\\\
-\cong&\operatorname{Nat}(\mathscr C(-,C)|_{\mathscr G},\mathscr C(-,T)|_{\mathscr G})
+&\mathscr{C}(\int^G\mathscr C(G,C) | _ {\mathscr G}\otimes i(G), T)\\\\
+\cong&\int_G\mathscr{C}(\mathscr C(G,C) | _ {\mathscr G}\otimes i(G), T)\\\\
+\cong& \int_G\mathbf{Set}(\mathscr C(G,C) | _ {\mathscr G},\mathscr{C}(i(G), T))\\\\
+\cong&\operatorname{Nat}(\mathscr C(-,C) | _ {\mathscr G},\mathscr C(-,T) | _ {\mathscr G})
 \end{align*}
 $$
 
 所以Dense当且仅当下式成立，对$C,T$ 自然：
 
 $$
-\operatorname{Nat}(\mathscr C(-,C)|_{\mathscr G},\mathscr C(-,T)|_{\mathscr G})\cong \mathscr C(C,T)
+\operatorname{Nat}(\mathscr C(-,C) | _ {\mathscr G},\mathscr C(-,T) | _ {\mathscr G})\cong \mathscr C(C,T)
 $$
 
 而这正代表了所要的函子是fully faithful的。
