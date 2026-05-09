@@ -9,11 +9,11 @@ tags:
 - Co/End Calculus
 title: Co/End Calculus
 toc: true
-updated: '2026-05-09T16:55:30.087+08:00'
+updated: '2026-05-09T19:25:03.517+08:00'
 ---
-最近因为在不少文章中遇到End与Coend相关的技术，而且enriched category的课本中也大费周章地定义End，于是决定花些时间专门学习。出乎我意料的是，学习Co/End的核心技术没有花费我多少时间，但我已经看到其强大的作用。
+最近因为在不少文章中遇到End与Coend相关的技术，而且enriched category的课本中也大费周章地定义End，于是决定花些时间专门学习。出乎我意料的是，学习Co/End的核心技术不需要花费多少时间，但足以让人看到其强大的作用。
 
-[Co/End Calculus](https://arxiv.org/abs/1501.02503)系统记载了Co/End Calculus（（余）端演算）的内容，我目前只读了前面一点点，这些部分其实在任何涉及到End的范畴论书中应该都会提到。本文仅仅是闲暇时简单记录一下Co/End演算的威力。
+[Co/End Calculus](https://arxiv.org/abs/1501.02503)系统记载了Co/End Calculus（（余）端演算）的内容，我只读了前面一点点，这些部分其实在任何涉及到End的范畴论书中应该都会提到。本文仅仅是闲暇时简单记录一下Co/End演算的威力。
 
 <!--more-->
 
@@ -21,13 +21,13 @@ updated: '2026-05-09T16:55:30.087+08:00'
 
 End有若干种等价定义，但从实用角度来说，它们没有区别，这里我列出最传统的定义：
 
-> 设 $T:\mathscr{C}\nrightarrow D$ 是一个Distributor，一个Wedge是指一族态射 $\tau_C: T(C,C)\to D$ ，而 $T$ 的end是指一个universal wedge $(\int_C T(C,C), \tau)$，使得对任意的Wedge $\tau'$ with vertex D，存在唯一的态射$D\to \int_C T$ 使得所有显然的三角形交换。
+> 设 $T:\mathscr{C}\nrightarrow \mathscr D$ 是一个Distributor，一个Wedge是指一族态射 $\tau_C: T(C,C)\to D$ ，而 $T$ 的end是指一个universal wedge $(\int_C T(C,C), \tau)$，使得对任意的Wedge $\tau'$ with vertex D，存在唯一的态射$D\to \int_C T$ 使得所有显然的三角形交换。
 
 对偶地可以得到coend $\int^C T(C,C)$的定义。当然，一般的书上都会先定义Dinaturality，然后将Wedge定义为常值出发的dinatural transformation，还有使用extranaturality来定义的，会得到稍广义一点的定义，但这对本文来说并不重要，更重要的是co/end究竟有什么用？
 
 ## Co/End Calculus
 
-Co/End演算的核心公式主要是以下几条，我一一列出：
+Co/End演算的核心公式主要是以下几条，我不加证明地一一列出：
 
 ### Fubini Rule
 
@@ -60,7 +60,7 @@ $$
 
 ### Kan Extension as Co/Ends
 
-> $\mathscr{C} \xrightarrow{G} \mathscr{E}, F : \mathscr{C} \to \mathscr{D}$ ，设 $\mathscr{E}$  cocomplete，（complete，如果讨论右Kan延拓） $\mathscr{C}$ 是小范畴，那么：
+> $\mathscr{C} \xrightarrow{G} \mathscr{E}, F : \mathscr{C} \to \mathscr{D}$ ，设 $\mathscr{E}$  cocomplete（complete，如果讨论右Kan延拓）， $\mathscr{C}$ 是小范畴，那么：
 >
 > $$
 > \begin{align*}
@@ -129,10 +129,9 @@ $$
 
 这就完成了证明。
 
-
 ### Dense Generators iff Restricted Yoneda is Fully Faithful
 
-> 设$(G_i)_{i\in I}$ 是$\mathscr C$ 的一族对象，设$\mathscr G$ 是由它们生成的满子范畴，则它是dense family of generators，当且仅当函子$C\mapsto \mathscr{C}(-,C)|_{\mathscr G}$ 是fully faithful的
+> 设$(G_i)$ 是$\mathscr C$ 的一族对象，设$\mathscr G$ 是由它们生成的满子范畴，则它是dense family of generators，当且仅当函子$C\mapsto \mathscr{C}(-,C) | _ {\mathscr G}$ 是fully faithful的
 
 Handbook对dense family of generators的定义是，$\mathscr C$ 中的对象$C$ 都是遗忘函子$\operatorname{dom}:\mathscr G/C\to\mathscr C$ 的余极限，翻译成co/end语言，就是$C\cong \int^G\mathscr C(G,C)|_{\mathscr G}\otimes i(G)$ （我把符号写得很详细，以免产生误会，尤其是Hom函子取的是限制），现在来算一下这代表了什么：
 
