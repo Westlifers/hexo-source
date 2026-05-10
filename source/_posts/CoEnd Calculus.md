@@ -93,7 +93,7 @@ $$
 
 > $$
 > \begin{align*}
-> \lim_W F \cong& \int_j Wj \pitchfork Fj,
+> \operatorname{lim}_W F \cong& \int_j Wj \pitchfork Fj,
 > \\\\
 > \operatorname{colim}_W F \cong& \int^j Wj \otimes Fj.
 > \end{align*}
