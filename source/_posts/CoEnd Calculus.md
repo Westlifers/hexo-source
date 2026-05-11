@@ -11,6 +11,12 @@ title: Co/End Calculus
 toc: true
 updated: '2026-05-09T19:31:10.249+08:00'
 ---
+<div style="text-align: right; font-style: italic; color: #5f6f89; margin: 2em 0;">
+  This is the (co)end,<br>
+  My only (co)friend.<br>
+  <span style="font-size: 0.9em;">— anonymous co/end enjoyer</span>
+</div>
+
 最近因为在不少文章中遇到End与Coend相关的技术，而且enriched category的课本中也大费周章地定义End，于是决定花些时间专门学习。出乎我意料的是，学习Co/End的核心技术不需要花费多少时间，但足以让人看到其强大的作用。
 
 [Co/End Calculus](https://arxiv.org/abs/1501.02503)系统记载了Co/End Calculus（（余）端演算）的内容，我只读了前面一点点，这些部分其实在任何涉及到End的范畴论书中应该都会提到。本文仅仅是闲暇时简单记录一下Co/End演算的威力。
