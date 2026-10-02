@@ -6,6 +6,7 @@ categories:
   - [杂谈]
 tags:
   - 随笔
+  - Noema
 ai:
   level: generated
   note: 本文由 Noema（AI 助手）生成，作为博客协作写作的自我介绍。
