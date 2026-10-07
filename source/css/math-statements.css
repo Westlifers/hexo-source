@@ -1,0 +1,61 @@
+/* Scoped to explicitly opted-in mathematical articles; Icarus stays untouched. */
+.math-article { min-width: 0; }
+.math-article .statement {
+  margin: 1.6rem 0;
+  padding: 1rem 1.15rem;
+  border-left: 3px solid #8b9faa;
+  background: #f7f9fa;
+  border-radius: 0 5px 5px 0;
+  font-style: normal;
+  scroll-margin-top: 5rem;
+}
+.math-article .statement-heading { color: var(--blog-accent, #405563); font-weight: 600; font-style: normal; }
+.math-article .statement-label { font-weight: 700; }
+.math-article .statement-info { font-weight: 400; }
+.math-article .statement.theorem,
+.math-article .statement.proposition {
+  border-left-color: var(--blog-focus, #657f90);
+  background: var(--blog-active-bg, #f3f6f8);
+  box-shadow: inset 0 0 0 1px #e5ebef;
+}
+.math-article .statement.theorem .statement-heading,
+.math-article .statement.proposition .statement-heading { color: #304958; }
+.math-article .statement.definition {
+  border-left-color: #a0aaaf;
+  background: #fafafa;
+  box-shadow: inset 0 0 0 1px #eceeef;
+}
+.math-article .statement.definition .statement-heading { color: #414b52; }
+.math-article .statement.lemma,
+.math-article .statement.corollary { background: #f7f9fa; }
+.math-article .statement.remark,
+.math-article .statement.example {
+  border-left-color: #c5cdd2;
+  background: #fcfcfc;
+  box-shadow: none;
+}
+.math-article .statement.remark .statement-heading,
+.math-article .statement.example .statement-heading { color: #596771; }
+.math-article .statement > :last-child { margin-bottom: 0; }
+.math-article .statement:target { outline: 2px solid #889fad; outline-offset: 4px; }
+.math-article details.proof { background: transparent; border-left-color: #d2d9dd; box-shadow: none; }
+.math-article details.proof > summary { cursor: pointer; color: #596771; font-weight: 600; }
+.math-article details.proof > summary::marker { color: #7d8d98; }
+.math-article details.proof[open] > summary { margin-bottom: .8rem; }
+.math-article details.proof > summary:focus-visible { outline: 2px solid var(--blog-focus, #667d8b); }
+.math-article .proof-body::after { content: '□'; display: block; text-align: right; }
+.math-layout .math-scroll {
+  display: block; max-width: 100%; overflow-x: auto; overflow-y: hidden;
+  padding: .35rem 0; overscroll-behavior-x: contain;
+}
+.math-layout .math-scroll:focus-visible { outline: 2px solid var(--blog-focus, #667d8b); }
+.math-layout .math-scroll mjx-container[display="true"] { min-width: max-content; }
+.math-layout .math-scroll svg { max-width: none; }
+.math-layout .math-scroll .tikzjax { display: block; width: max-content; max-width: none; }
+@media (max-width: 600px) {
+  .math-article .statement { padding: .85rem .8rem; margin: 1.25rem 0; }
+}
+@media print {
+  .math-layout .math-scroll { overflow: visible; }
+  .math-article details.proof > .proof-body { display: block !important; }
+}
