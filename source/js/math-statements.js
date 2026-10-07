@@ -9,6 +9,50 @@
   let scanFrame = 0;
   let firstScan = true;
 
+  // Authors name the exact statement and proof part. Never infer an association
+  // from adjacency: a theorem can have several proofs separated by lemmas.
+  function linkProofs(root) {
+    root.querySelectorAll('.proof[data-proof-of]').forEach(proof => {
+      if (proof.dataset.proofLinked || !proof.id) return;
+      const article = proof.closest('.math-article');
+      const statement = [...(article?.querySelectorAll('.statement[id]:not(.proof)') || [])]
+        .find(item => item.id === proof.dataset.proofOf);
+      if (!statement) return;
+      const label = statement.querySelector('.statement-label')?.textContent
+        .trim().replace(/[.。]\s*$/, '') || '命题';
+      const part = proof.dataset.proofPart;
+      const context = document.createElement('p');
+      context.className = 'proof-context';
+      const lead = document.createElement('strong');
+      lead.textContent = '证明目标：';
+      const target = document.createElement('a');
+      target.href = '#' + encodeURIComponent(statement.id);
+      target.textContent = label;
+      context.append(lead, target);
+      if (part) context.append(document.createTextNode(' · ' + part));
+      proof.before(context);
+      const summary = proof.querySelector(':scope > summary');
+      if (summary) summary.textContent = '证明：' + (part || label);
+      let nav = statement.querySelector(':scope > .statement-proofs');
+      if (!nav) {
+        nav = document.createElement('nav');
+        nav.className = 'statement-proofs';
+        nav.setAttribute('aria-label', label + '的证明位置');
+        const title = document.createElement('span');
+        title.textContent = '证明位置';
+        nav.append(title, document.createElement('ul'));
+        statement.append(nav);
+      }
+      const row = document.createElement('li');
+      const link = document.createElement('a');
+      link.href = '#' + encodeURIComponent(proof.id);
+      link.textContent = part || '完整证明';
+      row.append(link);
+      nav.querySelector('ul').append(row);
+      proof.dataset.proofLinked = 'true';
+    });
+  }
+
   function getMathJax() {
     if (window.MathJax?.typesetPromise) {
       return Promise.resolve(window.MathJax.startup?.promise).then(() => window.MathJax);
@@ -58,6 +102,7 @@
       details.append(summary, body);
       proof.replaceWith(details);
     });
+    linkProofs(root);
     const availableWidth = item => {
       const parent = item.parentElement;
       const block = parent?.closest('p, li, td, th, .proof-body, .statement') || root;

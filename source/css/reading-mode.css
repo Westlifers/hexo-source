@@ -72,16 +72,26 @@
 
 /* A compact launcher, with a separate popover that never enlarges its hitbox. */
 #reading-tool-safe-area { position: fixed; inset: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); visibility: hidden; pointer-events: none; }
-.reading-tools { position: fixed; width: 48px; height: 48px; z-index: 30; margin: 0; padding: 0; }
+.reading-tools { position: fixed; width: 48px; height: 48px; z-index: 110; margin: 0; padding: 0; }
+/* Icarus' sticky cards use 99/100. Keep controls above them, but out of search. */
+body:has(.searchbox.show) .reading-tools { visibility: hidden; pointer-events: none; }
 .reading-tools .reading-launcher { width: 48px; height: 48px; padding: 0; border-radius: 50%; border-color: #e1e5eb; background: #fff; box-shadow: 0 3px 14px rgba(20,28,40,.1); cursor: grab; touch-action: none; user-select: none; }
 .reading-tools[data-reading-active="true"] .reading-launcher { color: var(--blog-accent); background: var(--blog-active-bg); border-color: var(--blog-border); }
-.reading-tools .reading-launcher .reading-icon { width: 21px; height: 21px; }
+.reading-tools .reading-launcher .reading-icon { width: 21px; height: 21px; transition: transform .18s cubic-bezier(.2,.7,.2,1); }
+.reading-tools .reading-launcher[aria-expanded="true"] .reading-icon { transform: rotate(-8deg); }
 .reading-tools.is-dragging .reading-launcher { cursor: grabbing; box-shadow: 0 5px 18px rgba(20,28,40,.16); }
 .reading-tool-actions[hidden] { display: none; }
 .reading-tool-actions { position: absolute; bottom: calc(100% + 8px); display: flex; flex-direction: column; gap: 4px; padding: 6px; overflow-y: auto; overscroll-behavior: contain; background: #fff; border: 1px solid #e1e5eb; border-radius: 10px; box-shadow: 0 4px 20px rgba(20,28,40,.12); }
 .reading-tools[data-direction="down"] .reading-tool-actions { bottom: auto; top: calc(100% + 8px); }
 .reading-tool-actions button { flex: 0 0 auto; width: 100%; justify-content: flex-start; border-color: transparent; }
 .reading-tool-actions [data-reading-reset] { order: 3; color: #667080; }
+.reading-tool-hint { order: 4; margin: .15rem .5rem .3rem; color: #7b8390; font-size: 12px; line-height: 1.5; }
+.reading-tool-status { position: absolute; bottom: calc(100% + 8px); padding: .6rem .75rem; border: 1px solid var(--blog-border); border-radius: 10px; background: #fff; color: var(--blog-accent); box-shadow: 0 4px 20px rgba(20,28,40,.1); font-size: 13px; line-height: 1.5; pointer-events: none; }
+.reading-tool-status:empty { display: none; }
+.reading-tools[data-direction="down"] .reading-tool-status { bottom: auto; top: calc(100% + 8px); }
+@media (prefers-reduced-motion: reduce) {
+  .reading-tools .reading-launcher .reading-icon { transition: none; transform: none; }
+}
 .reading-sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
 /* The mathematical wrapper owns local scrolling in both article layouts. */

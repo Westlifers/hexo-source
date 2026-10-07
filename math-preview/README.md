@@ -32,7 +32,7 @@ front matter 增加 `engine: statement`，仍使用 `plugins: { mathjax: true }`
 
 参见 [](#pre:thm-product)。
 
-::: {.proof #proof-product}
+::: {.proof #proof-product data-proof-of="thm-product"}
 证明内容。
 :::
 ```
@@ -40,6 +40,21 @@ front matter 增加 `engine: statement`，仍使用 `plugins: { mathjax: true }`
 可选类别：`.definition`、`.lemma`、`.theorem`、`.proposition`、`.corollary`、`.remark`、`.example`、`.proof`。ID 应唯一稳定，不能以自动编号充当标签。
 采用类别在前的属性顺序，避免紧邻左花括号的井号被 Hexo 识别为模板注释。以上围栏与引用写法已在草稿和两篇迁移文章实际验证。
 HTML 岛内部 Markdown 不展开；需要 Markdown 的内容使用 fenced div。证明在禁用 JavaScript 时仍完整显示。
+
+分开的证明用 `data-proof-of` 明确指定同篇文章中的命题 ID；不能用自动编号，也不按相邻位置推断。一个定理分成多个证明时，各段再写 `data-proof-part`：
+
+```markdown
+::: {.proof #proof-product-forward data-proof-of="thm-product" data-proof-part="充分性"}
+这一方向的证明。
+:::
+
+::: {.proof #proof-product-backward data-proof-of="thm-product" data-proof-part="必要性"}
+另一方向的证明。
+:::
+```
+
+站点脚本在每段证明前显示指向命题的“证明目标”，并在命题末尾列出所有“证明位置”；点击后会展开目标证明。只有显式且有效的对应关系才添加链接，不会自动关联未声明或不存在的命题。禁用 JavaScript 时仍保留原有命题和完整证明正文。
+
 正常构建排除验收草稿；本地先 `npx hexo clean`，再 `npx hexo generate --draft` 可查看；切回正常构建也先 clean，以免沿用不同草稿状态的缓存。保留逐篇 opt-in，不推断其他历史文章适合整体迁移。
 
 ## 验证与证据

@@ -15,6 +15,39 @@
   let toolPosition;
   let drag;
   let suppressClick = false;
+  let statusTimer;
+  const motions = new WeakMap();
+  const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function showSurface(element, expanded, sheet = false) {
+    if (!element || element.dataset.motionOpen === String(expanded)) return;
+    element.dataset.motionOpen = String(expanded);
+    motions.get(element)?.cancel();
+    element.querySelector('.reading-directory-sheet')?.getAnimations().forEach(animation => animation.cancel());
+    element.inert = !expanded;
+    if (expanded) element.hidden = false;
+    if (reducedMotion() || !element.animate || (!expanded && element.hidden)) {
+      element.hidden = !expanded;
+      return;
+    }
+    const frames = sheet
+      ? [{opacity: 0}, {opacity: 1}]
+      : [{opacity: 0, transform: 'translateY(6px) scale(.98)'}, {opacity: 1, transform: 'none'}];
+    const animation = element.animate(expanded ? frames : [...frames].reverse(), {
+      duration: expanded ? 180 : 130, easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'both'
+    });
+    motions.set(element, animation);
+    if (sheet) element.querySelector('.reading-directory-sheet')?.animate(
+      expanded ? [{transform: 'translateY(16px)'}, {transform: 'none'}]
+        : [{transform: 'none'}, {transform: 'translateY(10px)'}],
+      {duration: expanded ? 180 : 130, easing: 'cubic-bezier(.2,.7,.2,1)'}
+    );
+    animation.finished.then(() => {
+      if (motions.get(element) !== animation) return;
+      element.hidden = !expanded;
+      animation.cancel();
+      motions.delete(element);
+    }).catch(() => { /* Opening/closing again cancels the previous motion. */ });
+  }
   try {
     const saved = JSON.parse(sessionStorage.getItem('reading-tools-position'));
     if (saved && [saved.x, saved.y].every(n => Number.isFinite(n) && n >= 0 && n <= 1)) toolPosition = saved;
@@ -32,11 +65,16 @@
   }
   function fitActions(tools) {
     const actions = tools.querySelector('.reading-tool-actions');
-    if (!actions || actions.hidden) return;
+    const status = tools.querySelector('.reading-tool-status');
+    if (!actions) return;
     const bounds = toolBounds(tools), box = tools.getBoundingClientRect();
     const width = Math.min(184, Math.max(0, bounds.right - bounds.left));
     actions.style.width = `${width}px`;
     actions.style.left = `${clamp(box.left, bounds.left, bounds.right - width) - box.left}px`;
+    if (status) {
+      status.style.width = `${width}px`;
+      status.style.left = actions.style.left;
+    }
     const above = box.top - bounds.top - 8, below = bounds.bottom - box.bottom - 8;
     tools.dataset.direction = above >= below ? 'up' : 'down';
     actions.style.maxHeight = `${Math.max(0, Math.max(above, below))}px`;
@@ -66,16 +104,27 @@
     try { sessionStorage.setItem('reading-tools-position', JSON.stringify(toolPosition)); } catch (_) { /* Keep the in-memory position. */ }
   }
   function resetTools() {
+    const tools = document.querySelector('.reading-tools');
+    const before = tools?.getBoundingClientRect();
     toolPosition = undefined;
     try { sessionStorage.removeItem('reading-tools-position'); } catch (_) { /* The default also works without storage. */ }
     placeTools();
+    const after = tools?.getBoundingClientRect();
+    const status = tools?.querySelector('.reading-tool-status');
+    if (status) {
+      clearTimeout(statusTimer);
+      status.textContent = before && after && Math.hypot(before.left - after.left, before.top - after.top) < 1
+        ? '图标已在默认位置' : '已移回右下角';
+      statusTimer = setTimeout(() => { status.textContent = ''; }, 2400);
+    }
   }
   function expandTools(expanded, focus = false) {
     const tools = document.querySelector('.reading-tools');
     if (!tools) return;
     const launcher = tools.querySelector('[data-reading-launcher]');
     launcher.setAttribute('aria-expanded', String(expanded));
-    tools.querySelector('.reading-tool-actions').hidden = !expanded;
+    showSurface(tools.querySelector('.reading-tool-actions'), expanded);
+    if (expanded) tools.querySelector('.reading-tool-status').textContent = '';
     fitActions(tools);
     if (focus) launcher.focus({preventScroll: true});
   }
@@ -186,7 +235,7 @@
   }
   const close = (restore = false) => {
     const panel = document.getElementById('reading-directory');
-    if (panel) panel.hidden = true;
+    showSurface(panel, false, true);
     body.classList.remove('reading-directory-open');
     document.querySelector('[data-reading-directory]')?.setAttribute('aria-expanded', 'false');
     if (restore && opener?.isConnected) opener.focus({preventScroll: true});
@@ -194,6 +243,7 @@
   function sync() {
     stopTracking();
     close();
+    clearTimeout(statusTimer);
     document.querySelectorAll('.reading-tools, #reading-directory, #reading-tool-safe-area').forEach(el => el.remove());
     const article = document.querySelector('.column-main article.article');
     const isPost = !!article && !document.querySelector('.article-more') && !!document.querySelector('.post-navigation');
@@ -209,7 +259,7 @@
     const tools = document.createElement('div');
     tools.className = 'reading-tools';
     tools.dataset.readingActive = String(enabled);
-    tools.innerHTML = `<button type="button" class="reading-launcher" data-reading-launcher aria-label="阅读工具" aria-expanded="false" aria-controls="reading-tool-actions" aria-describedby="reading-tool-help" title="阅读工具（可拖动）">${launcherIcon}</button><div id="reading-tool-actions" class="reading-tool-actions" role="group" aria-label="阅读工具" hidden><button type="button" data-reading-toggle aria-pressed="${enabled}">${toggleMarkup()}</button><button type="button" data-reading-reset>${resetIcon}<span>重置位置</span></button></div><span id="reading-tool-help" class="reading-sr-only">点击展开或收起；可拖动移动。键盘可用 Alt 加方向键移动，Home 重置位置，Escape 收起。</span>`;
+    tools.innerHTML = `<button type="button" class="reading-launcher" data-reading-launcher aria-label="阅读工具" aria-expanded="false" aria-controls="reading-tool-actions" aria-describedby="reading-tool-help" title="阅读工具（可拖动）">${launcherIcon}</button><div id="reading-tool-actions" class="reading-tool-actions" role="group" aria-label="阅读工具" hidden inert><button type="button" data-reading-toggle aria-pressed="${enabled}">${toggleMarkup()}</button><button type="button" data-reading-reset title="将拖动后的图标移回右下角">${resetIcon}<span>移回右下角</span></button><p class="reading-tool-hint">拖动图标可调整位置</p></div><span class="reading-tool-status" role="status" aria-live="polite" aria-atomic="true"></span><span id="reading-tool-help" class="reading-sr-only">点击展开或收起；可拖动移动。键盘可用 Alt 加方向键移动，Home 移回默认位置，Escape 收起。</span>`;
     // Keep fixed controls outside animated/transformed Icarus article cards.
     body.append(tools);
     placeTools();
@@ -281,7 +331,7 @@
       opener = tools.querySelector('[data-reading-launcher]');
       expandTools(false);
       const panel = document.getElementById('reading-directory');
-      panel.hidden = false;
+      showSurface(panel, true, true);
       body.classList.add('reading-directory-open');
       target.setAttribute('aria-expanded', 'true');
       panel.querySelector('button').focus({preventScroll: true});
@@ -305,7 +355,7 @@
   document.addEventListener('keydown', event => {
     const launcher = event.target.closest('[data-reading-launcher]');
     if (launcher && !body.classList.contains('reading-directory-open')) {
-      if (event.key === 'Home') { event.preventDefault(); resetTools(); }
+      if (event.key === 'Home') { event.preventDefault(); resetTools(); expandTools(false, true); }
       if (event.altKey && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
         event.preventDefault();
         const box = launcher.closest('.reading-tools').getBoundingClientRect();

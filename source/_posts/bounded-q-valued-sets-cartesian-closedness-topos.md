@@ -135,7 +135,7 @@ $$
 特别地，$\kappa_p(q)$ 在对象 $p$ 上幂等。
 :::
 
-::: {.proof #proof-kappa-idempotent}
+::: {.proof #proof-kappa-idempotent data-proof-of="lem-kappa-idempotent"}
 令 $Y=S_p$。取类型分别为 $p,q$ 的两点对称范畴 $A$，所有 hom 都取相应类型的最大箭头，principal maps 记为 $i:Y\to A$、$j:S_q\to A$。integrality 保证传递性；而 $A$ 是 subterminal：任意 maps $F,G:X\to A$ 都有 $FG^*\le A$，于是
 
 $$
@@ -206,7 +206,7 @@ $$
 
 ## 从投影幂等到标量判据，再到 topos { #从-κ-到标量判别与-weak-tabularity }
 
-::: {.proof #proof-bounded-necessity}
+::: {.proof #proof-bounded-necessity data-proof-of="thm-bounded-ccc-topos" data-proof-part="① ⇒ ⑤：笛卡尔闭性 ⇒ (C)"}
 [**笛卡尔闭性推出 (C)。**]{.proof-direction} 设 $a^2\le a$，取 $p=e\vee a$。则
 
 $$
@@ -238,7 +238,7 @@ r\le p,\qquad p(p\to r)=r,\qquad r(p\to r)=r.
 $$
 :::
 
-::: {.proof #proof-bounded-base-maps}
+::: {.proof #proof-bounded-base-maps data-proof-of="lem-bounded-base-maps"}
 设 $f:r\to p$ 左伴随于 $g:p\to r$。unit 与有界性给出
 
 $$
@@ -254,7 +254,7 @@ $$
 同样得到 $g=r$。反过来，前两个条件使标量 $r$ 成为两个方向上的箭头；第三个条件给出 unit，而 counit 是 $r(r\to r)=r\le p$。
 :::
 
-::: {.proof #proof-bounded-sufficiency}
+::: {.proof #proof-bounded-sufficiency data-proof-of="thm-bounded-ccc-topos" data-proof-part="⑤ ⇒ ④：(C) ⇒ weak tabularity"}
 [**(C) 推出 weak tabularity。**]{.proof-direction} 取任意有界对角 $d:p\to q$，令 $u=p\to d$。由 $pu=d\le p$，有
 
 $$
@@ -281,7 +281,9 @@ v=\bigvee\{ba^*\mid a:s\to p,\ b:s\to q\text{ 是底层 maps},\ ba^*\le v\}.
 $$
 :::
 
+::: {.proof #proof-bounded-completion data-proof-of="thm-bounded-ccc-topos" data-proof-part="④ ⇒ ③ ⇒ ② ⇒ ①；localicity"}
 因为 $D_*Q$ integral，[上一篇的表示定理](https://hexo.yougi.top/2026/10/03/integral-quantaloids-weak-tabularity-topos/)把 weak tabularity 识别为 localic Grothendieck topos。那里检查了 local frames、modularity、给定 involution 与闭 cribles 的相容性，并通过 sheaf 表示对**所有左伴随 distributors**取 maps；这里不重复这些通用步骤。Grothendieck topos 是 elementary topos，后者笛卡尔闭，至此 [](#pre:thm-bounded-ccc-topos)的五个条件形成闭环。
+:::
 
 还可写出这个 topos 的 site。在 (C) 下，底层 maps 构成 $Q$ 上的偏序 $P$：
 

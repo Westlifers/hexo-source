@@ -58,13 +58,13 @@ $$
 
 :::
 
-::: {.proof #proof-integral-base-maps}
+::: {.proof #proof-integral-base-maps data-proof-of="lem-integral-base-maps"}
 [](#pre:lem-integral-base-maps)的第一个等式来自 integrality。若 $a,b:s\to p$ 都是 maps，则 $a=ab^*b\le b$，对调即得 $a=b$。对 $a\dashv a^*$ 取 involution，$(a^*)^\circ$ 也是同类型的 map，故 $a^*=a^\circ$。最后，任意 $h:s\to p$ 都有 $h=ha^\circ a\le a$。因此 (WT) 中也可把 $a^*$ 写成 $a^\circ$。
 :::
 
 ## 从 weak tabularity 到 topos { #从-weak-tabularity-到-topos }
 
-::: {.proof #proof-integral-wt-sufficiency}
+::: {.proof #proof-integral-wt-sufficiency data-proof-of="thm-integral-weak-tabularity-topos" data-proof-part="weak tabularity ⇒ topos"}
 假设 (WT)。每个 span 项 $r=ba^\circ$ 满足 $rr^\circ r=r$，于是对任意 $f$，
 
 
@@ -115,7 +115,7 @@ $$
 
 ## 从 topos 恢复每条箭头 { #从-topos-恢复每条箭头 }
 
-::: {.proof #proof-integral-wt-necessity}
+::: {.proof #proof-integral-wt-necessity data-proof-of="thm-integral-weak-tabularity-topos" data-proof-part="topos ⇒ weak tabularity"}
 反过来，假设 $K(\mathcal Q)$ 是 elementary topos。记类型为 $p$ 的 singleton 为 $S_p$。它是 subterminal：若 $F:X\to S_p$ 有右伴随 $G$，unit 和 counit 逐分量给出
 
 
@@ -204,7 +204,9 @@ $$
 又因为 $v=u^{-1}$，它也是 $u$ 的右伴随；右伴随唯一，所以 $u^*=v$，进而 $u^*u=1_{P_w}=B_w$。比较非对角项得到 $f=w$，即 (WT)。
 :::
 
+::: {.proof #proof-integral-localicity data-proof-of="thm-integral-weak-tabularity-topos" data-proof-part="localic Grothendieck topos"}
 [](#pre:thm-integral-weak-tabularity-topos)的两方向证明完毕。充分性已给出 Grothendieck topos，而 singleton 构成小的 subterminal separating family，故由标准的 [localic 判据](https://arxiv.org/abs/1112.2542)（§3），它还是 localic 的。
+:::
 
 
 最后回到 $Q$-Set。设 $(Q,\&amp;,1)$ 是 commutative integral quantale，不必预先假设 divisible。其 [diagonal quantaloid $DQ$](https://arxiv.org/abs/1801.05966)（Proposition 2.2）的箭头 $d:p\to q$ 满足

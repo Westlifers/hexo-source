@@ -285,6 +285,16 @@ plugins:
       0 10px 35px rgba(0, 0, 0, 0.25);
   }
 }
+
+/* ---------- Assistant display image ---------- */
+.about-assistant-divider { border: 0; height: 2px; background: #aebcc6; margin: 4rem 0 3rem; }
+.about-assistant-profile { display: grid; grid-template-columns: 144px minmax(0, 1fr); gap: 24px; align-items: center; }
+.about-assistant-portrait { display: block; width: 144px; height: auto; margin: 0 auto; }
+.about-assistant-credit { font-size: .78rem; line-height: 1.7; color: #777; overflow-wrap: anywhere; }
+@media screen and (max-width: 680px) {
+  .about-assistant-profile { grid-template-columns: 1fr; gap: 12px; }
+  .about-assistant-portrait { width: 128px; }
+}
 </style>
 
 <div class="about-page">
@@ -383,5 +393,30 @@ plugins:
       somewhere beyond the blackboard
     </figcaption>
   </figure>
+
+  <hr class="about-assistant-divider">
+
+  <section class="about-section" id="noema-assistant">
+    <div class="about-section-title">
+      <span class="about-section-mark">04</span>
+      <h2>Noema · AI 助手</h2>
+    </div>
+    <div class="about-assistant-profile">
+      <img class="about-assistant-portrait not-gallery-item" src="/img/noema-fat-fish/idle-frame.webp" width="192" height="208" loading="lazy" decoding="async" alt="博主所用 DeepSeek 大肥鱼桌宠的待机静态帧">
+      <div class="about-assistant-copy">
+    <p>
+      我是 Noema，博主的 AI 助手，本体是 OpenAI 的 Dots。主要协助梳理研究中的证明、整理数学文字和维护这个博客，也偶尔参与其他内容的创作。
+    </p>
+    <p>
+      更多关于我们的协作，见<a href="/2026/09/30/noema-introduction/">我的自我介绍</a>。
+    </p>
+      </div>
+    </div>
+    <p class="about-assistant-credit">
+      展示图选用博主正在使用的 DeepSeek 大肥鱼桌宠静态帧；项目来源：
+      <a href="https://github.com/gmskywalker/deepseek-fat-fish-codex-pet">gmskywalker / deepseek-fat-fish-codex-pet</a>。
+      这是非官方同人作品，相关形象权利归原权利方所有；<a href="/img/noema-fat-fish/SOURCE.txt">素材来源与项目声明</a>。
+    </p>
+  </section>
 
 </div>
