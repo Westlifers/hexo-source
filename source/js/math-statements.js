@@ -21,6 +21,26 @@
       const label = statement.querySelector('.statement-label')?.textContent
         .trim().replace(/[.。]\s*$/, '') || '命题';
       const part = proof.dataset.proofPart;
+      const summary = proof.querySelector(':scope > summary');
+      const associated = [...article.querySelectorAll('.proof[data-proof-of]')]
+        .filter(item => item.dataset.proofOf === statement.id);
+      let previous = proof.previousSibling;
+      // Whitespace/comments are formatting; headings, paragraphs and even raw
+      // nonempty text are intervening content. Do not infer targets from them.
+      while (previous && (previous.nodeType === Node.COMMENT_NODE ||
+          (previous.nodeType === Node.TEXT_NODE && !previous.textContent.trim()))) {
+        previous = previous.previousSibling;
+      }
+      if (associated.length === 1 && previous === statement && summary) {
+        const target = document.createElement('a');
+        target.href = '#' + encodeURIComponent(statement.id);
+        target.textContent = label;
+        target.setAttribute('aria-label', '返回' + label);
+        summary.replaceChildren(document.createTextNode('证明：'), target);
+        if (part) summary.append(document.createTextNode(' · ' + part));
+        proof.dataset.proofLinked = 'true';
+        return;
+      }
       const context = document.createElement('p');
       context.className = 'proof-context';
       const lead = document.createElement('strong');
@@ -31,7 +51,6 @@
       context.append(lead, target);
       if (part) context.append(document.createTextNode(' · ' + part));
       proof.before(context);
-      const summary = proof.querySelector(':scope > summary');
       if (summary) summary.textContent = '证明：' + (part || label);
       let nav = statement.querySelector(':scope > .statement-proofs');
       if (!nav) {

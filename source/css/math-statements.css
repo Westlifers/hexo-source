@@ -43,6 +43,8 @@
 .math-article details.proof > summary::marker { color: #7d8d98; }
 .math-article details.proof[open] > summary { margin-bottom: .8rem; }
 .math-article details.proof > summary:focus-visible { outline: 2px solid var(--blog-focus, #667d8b); }
+.math-article details.proof > summary a { color: inherit; text-decoration: underline; text-underline-offset: .2em; }
+.math-article details.proof > summary a:focus-visible { outline: 2px solid var(--blog-focus, #667d8b); outline-offset: 3px; }
 .math-article .proof-body::after { content: '□'; display: block; text-align: right; }
 .math-article .proof-context { margin: 1.8rem 0 .6rem; color: #596771; font-size: .94em; }
 .math-article .proof-context + .proof { margin-top: .6rem; }
