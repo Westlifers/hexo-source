@@ -51,7 +51,12 @@
 .math-layout .math-scroll:focus-visible { outline: 2px solid var(--blog-focus, #667d8b); }
 .math-layout .math-scroll mjx-container[display="true"] { min-width: max-content; }
 .math-layout .math-scroll svg { max-width: none; }
-.math-layout .math-scroll .tikzjax { display: block; width: max-content; max-width: none; }
+/* Auto margins center diagrams that fit, and resolve to zero when wider.
+   The outer region owns scrolling; override legacy per-post TikZ styles. */
+.article > .content.math-layout .math-scroll > .tikzjax {
+  display: block; width: max-content; max-width: none;
+  margin-inline: auto; overflow: visible;
+}
 @media (max-width: 600px) {
   .math-article .statement { padding: .85rem .8rem; margin: 1.25rem 0; }
 }
