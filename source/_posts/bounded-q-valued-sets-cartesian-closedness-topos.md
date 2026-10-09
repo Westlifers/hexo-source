@@ -183,19 +183,19 @@ $$
 (ri)^*(\ell i)=i^*r^*\ell i=i^*jj^*i=\kappa_p(q).
 $$
 
-令 $C$ 为这两点组成的 full subcategory，$h:C\to B$ 为包含 map，$c_-,c_+:Y\to C$ 为 principal maps。两点类型都是 $p$，所以 integrality 给出常值保类型函子诱导的 $\delta:C\to Y$。配对 $H=\langle h,\delta\rangle:C\to B\times Y$ 仍 fully faithful：
+令 $C$ 为这两点组成的 full subcategory，$h:C\to B$ 为包含 map，$c_-,c_+:Y\to C$ 为 principal maps。两点类型都是 $p$，所以 integrality 给出常值保类型函子诱导的 $\delta:C\to Y$。令 $H=\langle h,\delta\rangle:C\to B\times Y$，则 $Hc_-=L$、$Hc_+=R$。直接估计得到
 
 $$
-C\le H^*H\le H^*\operatorname{pr}_B^*\operatorname{pr}_BH=h^*h=C.
+\begin{aligned}
+\kappa_p(q)
+&=c_+^*Cc_-
+\le c_+^*H^*Hc_-=R^*L\\
+&\le R^*\operatorname{pr}_B^*\operatorname{pr}_BL
+=(ri)^*(\ell i)=\kappa_p(q).
+\end{aligned}
 $$
 
-由 $Hc_-=L$、$Hc_+=R$，得到
-
-$$
-R^*L=c_+^*H^*Hc_-=c_+^*c_-=\kappa_p(q).
-$$
-
-结合 (1) 即得所求。最后由 adjunction 的三角恒等式，
+两个不等式分别来自 $H$ 与 $\operatorname{pr}_B$ 的伴随 unit，故 $R^*L=\kappa_p(q)$。结合 (1) 即得所求。最后由 adjunction 的三角恒等式，
 
 $$
 (\pi\pi^*)^2=\pi\pi^*\pi\pi^*=\pi\pi^*.
