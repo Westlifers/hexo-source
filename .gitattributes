@@ -1,0 +1,2 @@
+# Keep the vendored Lua filter consistent across Windows and CI checkouts.
+math-preview/vendor/statement.lua text eol=lf

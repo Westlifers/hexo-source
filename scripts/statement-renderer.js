@@ -20,7 +20,10 @@ hexo.extend.filter.register('before_post_render', function (data) {
 
 hexo.extend.renderer.register('statement', 'html', function (data) {
   const filter = join(this.base_dir, 'math-preview/vendor/statement.lua');
-  const digest = createHash('sha256').update(readFileSync(filter)).digest('hex');
+  // Git may check out this text file with CRLF on Windows. Verify the pinned
+  // source after normalizing line endings, so checkout format is immaterial.
+  const filterSource = readFileSync(filter, 'utf8').replace(/\r\n/g, '\n');
+  const digest = createHash('sha256').update(filterSource).digest('hex');
   if (digest !== FILTER_SHA256) throw new Error('Statement filter hash mismatch');
   // Preserve embedded HTML islands verbatim, including indented Route Six HTML.
   const args = ['--from=markdown+fenced_divs+raw_html+tex_math_dollars+footnotes-native_divs-native_spans-markdown_in_html_blocks',

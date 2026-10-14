@@ -5,6 +5,8 @@
 
 ## 实现
 
+本地启动需要 Pandoc 在 PATH 中。`statement.lua` 的 SHA256 校验在计算前会将 CRLF 统一为 LF，因此 Windows 与 Linux 的换行差异不会阻止启动；其他内容变更仍会触发校验失败。`.gitattributes` 同时将该文件的检出换行固定为 LF，无需修改全局 `core.autocrlf`。
+
 - `scripts/statement-renderer.js`：仅 `engine: statement` 的文章交给 Pandoc 和固定版本 Statement Lua；执行前校验哈希，超时 30 秒。保留 HTML 岛，待 Hexo 提取 more 后包裹正文与摘要。仅在送入 Pandoc 的数学片段中解码旧稿 ampersand HTML 实体，保持与原浏览器相同的 TeX。继承 Icarus 全局布尔插件开关，保持 PJAX 页面选择器一致。
 - `math-preview/statement.yaml`：中文环境名称，共享编号；证明不编号。
 - `source/css/math-statements.css`：灰蓝与中性浅色层次、锚点高亮、手机局部滚动。
