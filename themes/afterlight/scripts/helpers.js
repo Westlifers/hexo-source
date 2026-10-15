@@ -1,6 +1,8 @@
 'use strict';
 
 const { stripHTML } = require('hexo-util');
+const { disclosureFor } = require(require('node:path').join(hexo.base_dir, 'lib/ai-disclosure.cjs'));
+hexo.extend.helper.register('afterlight_ai', post => disclosureFor(post.ai));
 
 function plain(value) {
   return stripHTML(String(value || '')

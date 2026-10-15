@@ -24,6 +24,23 @@ home:
 math:
   src: https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js
 
+reading:
+  tools: true
+search:
+  enable: true
+  include_pages: true
+gallery:
+  enable: true
+# Existing discussion mapping, unchanged. Local previews never load Giscus.
+comments:
+  enable: true
+  repo: Westlifers/Westlifers.github.io
+  repo_id: R_kgDOGtkQCQ
+  category: Announcements
+  category_id: DIC_kwDOGtkQCc4CA2IO
+  mapping: pathname
+  lang: zh-CN
+
 # Keep article source files unchanged while trying a different presentation.
 article_modes:
   Route-Six.md: poem

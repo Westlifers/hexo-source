@@ -8,7 +8,8 @@
     "deploy": "hexo deploy",
     "server": "hexo server",
     "build:afterlight": "node tools/afterlight-preview.cjs --build-only",
-    "preview:afterlight": "node tools/afterlight-preview.cjs"
+    "preview:afterlight": "node tools/afterlight-preview.cjs",
+    "check:afterlight": "node tools/afterlight-check.cjs"
   },
   "hexo": {
     "version": "7.3.0"

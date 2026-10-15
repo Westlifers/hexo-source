@@ -169,19 +169,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
 .mode-poem .post-header h1 { font-family: Georgia, serif; font-style: italic; }
 .mode-poem .post-content { overflow-wrap: normal; }
 .focus-reading .site-header, .focus-reading .site-footer, .focus-reading .article-outline, .focus-reading .reading-topline { display: none; }
-.focus-reading .post-meta [data-focus] { position: fixed; top: 16px; right: 20px; z-index: 20; background: var(--surface); box-shadow: 0 3px 15px #0001; }
 .focus-reading .post-header { margin-top: 45px; }
-/* Keep existing content engines and their semantic markup; adapt their surface. */
-.afterlight .ai-disclosure { font: 12px/1.8 var(--sans); flex-wrap: wrap; border-radius: 2px; margin-bottom: 2em; background: var(--soft); }
-.afterlight .ai-disclosure__text { color: var(--muted); }
-.afterlight .math-article .statement,
-.afterlight .math-article .statement:is(.definition, .theorem, .proposition, .lemma, .corollary, .remark, .example) { background: var(--soft); border-left-color: var(--sage); box-shadow: none; border-radius: 0; }
-.afterlight .math-article .statement-heading, .afterlight .math-article .statement.theorem .statement-heading, .afterlight .math-article .statement.definition .statement-heading, .afterlight .math-article .statement.proposition .statement-heading, .afterlight .math-article .statement.remark .statement-heading, .afterlight .math-article .statement.example .statement-heading { color: var(--ink); }
-.afterlight .math-article details.proof { background: transparent; border-left-color: var(--rule); }
-.afterlight .math-article details.proof > summary, .afterlight .math-article .proof-context, .afterlight .math-article .statement-proofs > span { color: var(--muted); }
-.afterlight .math-article .statement-proofs a, .afterlight .math-article .proof-context a { color: var(--accent); }
-.afterlight .math-article .statement-proofs { border-top-color: var(--rule); }
-.afterlight .math-scroll { scrollbar-width: thin; scrollbar-color: var(--rule) transparent; }
 .post-content .tikzjax { text-align: center; }
 [data-theme="dark"] .post-content .tikzjax > svg { background: #f7f4ed; padding: 12px; }
 /* Author-specific compatibility is scoped to the existing work, not all HTML. */

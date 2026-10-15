@@ -54,8 +54,8 @@ hexo.extend.filter.register('after_post_render', function (data) {
   return data;
 }, 99);
 
-hexo.extend.injector.register('head_end', () =>
+hexo.extend.injector.register('head_end', () => hexo.config.theme === 'afterlight' ? '' :
   '<link rel="stylesheet" href="' + hexo.config.root + 'css/math-statements.css">');
-hexo.extend.injector.register('body_end', () =>
+hexo.extend.injector.register('body_end', () => hexo.config.theme === 'afterlight' ? '' :
   '<script defer src="' + hexo.config.root + 'js/math-statements.js" data-mathjax-src="' +
   'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>');

@@ -28,7 +28,7 @@ async function main() {
   const cache = fs.mkdtempSync(path.join(state, 'cache-'));
   const output = path.join(state, theme + (root === '/' ? '' : '-subpath'));
   const override = path.join(cache, 'preview.yml');
-  fs.writeFileSync(override, yaml.dump({ theme, public_dir: output, url: `http://127.0.0.1:${port}${root}`, root, deploy: [] }));
+  fs.writeFileSync(override, yaml.dump({ theme, public_dir: output, url: `http://127.0.0.1:${port}${root}`, root, deploy: [], afterlight_preview: true }));
   const hexo = new Hexo(base, { output: cache, config: `${path.join(base, '_config.yml')},${override}`, silent: true });
   await hexo.init();
   await hexo.call('generate', { bail: true });

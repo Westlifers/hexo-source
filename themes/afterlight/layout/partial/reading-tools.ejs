@@ -1,0 +1,15 @@
+<div class="reading-tools" hidden>
+  <button type="button" class="reading-launcher" data-reading-launcher aria-label="阅读工具" aria-expanded="false" aria-controls="reading-actions" aria-describedby="reading-tool-help" title="阅读工具（可拖动）"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M12 5C9 3 6 3 3 4v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1Zm0 0v15"/></svg></button>
+  <div id="reading-actions" class="reading-actions" hidden>
+    <button type="button" data-focus aria-pressed="false">专注阅读</button>
+    <% if (outline) { %><button type="button" data-directory-open aria-haspopup="dialog">文章目录</button><% } %>
+    <button type="button" data-reading-top>回到顶部</button>
+    <button type="button" data-reading-reset>重置位置</button>
+  </div>
+  <span class="sr-only" id="reading-tool-help">点击展开；拖动调整位置。键盘用 Alt 加方向键移动，Home 重置位置，Escape 收起。</span>
+  <span class="sr-only" data-reading-status role="status"></span>
+</div>
+<% if (outline) { %><dialog id="reading-directory" class="afterlight-dialog directory-dialog" aria-labelledby="directory-heading">
+  <div class="dialog-heading"><h2 id="directory-heading">文章目录</h2><button type="button" data-dialog-close aria-label="关闭目录">×</button></div>
+  <nav aria-label="文章章节"><%- outline %></nav>
+</dialog><% } %>
