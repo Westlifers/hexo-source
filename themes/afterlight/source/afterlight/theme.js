@@ -1,18 +1,18 @@
 (() => {
   const appearance = document.querySelector('button[data-appearance]');
-  const modes = ['system', 'light', 'dark'];
-  const labels = { system: '随系统', light: '浅色', dark: '深色' };
+  const labels = { light: '浅色', dark: '深色' };
   function syncAppearance() {
     const value = window.afterlightAppearance.get();
     appearance.querySelector('[data-appearance-label]').textContent = labels[value];
-    appearance.setAttribute('aria-label', `当前${labels[value]}，切换配色`);
+    appearance.setAttribute('aria-label', `当前${labels[value]}，切换为${labels[value === 'light' ? 'dark' : 'light']}`);
+    appearance.setAttribute('aria-pressed', String(value === 'dark'));
   }
   if (appearance && window.afterlightAppearance) {
     appearance.hidden = false;
     syncAppearance();
     appearance.addEventListener('click', () => {
       const current = window.afterlightAppearance.get();
-      window.afterlightAppearance.set(modes[(modes.indexOf(current) + 1) % modes.length]);
+      window.afterlightAppearance.set(current === 'light' ? 'dark' : 'light');
       syncAppearance();
     });
   }

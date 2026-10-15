@@ -1,6 +1,6 @@
 <header class="site-header shell">
   <a class="brand" href="<%= url_for('/') %>" aria-label="<%= theme.brand.name %>，首页">
-    <img src="<%= url_for(theme.brand.logo) %>" alt="<%= theme.brand.name %>" width="2033" height="610">
+    <span class="brand-signature" style="--signature: url('<%= url_for(theme.brand.logo) %>')" aria-hidden="true"></span>
   </a>
   <span class="brand-note"><%= theme.brand.subtitle %></span>
   <nav class="site-nav" aria-label="主导航">
