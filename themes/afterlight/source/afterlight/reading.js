@@ -4,7 +4,12 @@
   const tools = document.querySelector('.reading-tools'), launcher = tools?.querySelector('[data-reading-launcher]'), actions = tools?.querySelector('.reading-actions');
   const directory = document.getElementById('reading-directory');
   const focusButtons = [...document.querySelectorAll('[data-focus]')];
-  let enabled = false, position, drag, suppressClick = false, frame;
+  let enabled = false, position, drag, suppressClick = false, frame, statusTimer;
+  function announce(text) {
+    const status = tools?.querySelector('[data-reading-status]'); if (!status) return;
+    clearTimeout(statusTimer); status.textContent = text; status.classList.add('is-visible');
+    statusTimer = setTimeout(() => status.classList.remove('is-visible'), 1800);
+  }
   try {
     enabled = sessionStorage.getItem('afterlight-reading-focus') === 'true';
     const stored = JSON.parse(sessionStorage.getItem('afterlight-reading-position'));
@@ -20,14 +25,17 @@
   function expand(value, restore = false) {
     if (!tools) return;
     actions.hidden = !value; launcher.setAttribute('aria-expanded', String(value));
+    if (value) tools.querySelector('[data-reading-status]').classList.remove('is-visible');
     place();
     if (restore) launcher.focus({ preventScroll: true });
   }
   const clamp = (n, min, max) => Math.max(min, Math.min(n, Math.max(min, max)));
   function bounds() {
     const viewport = window.visualViewport;
-    const left = (viewport?.offsetLeft || 0) + 12, top = (viewport?.offsetTop || 0) + 12;
-    return { left, top, right: left + (viewport?.width || innerWidth) - 24, bottom: top + (viewport?.height || innerHeight) - 24 };
+    const style = getComputedStyle(document.documentElement);
+    const safeTop = parseFloat(style.getPropertyValue('--safe-top')) || 0, safeBottom = parseFloat(style.getPropertyValue('--safe-bottom')) || 0;
+    const left = (viewport?.offsetLeft || 0) + 12, top = (viewport?.offsetTop || 0) + 12 + safeTop;
+    return { left, top, right: left + (viewport?.width || innerWidth) - 24, bottom: (viewport?.offsetTop || 0) + (viewport?.height || innerHeight) - 12 - safeBottom };
   }
   function place(point) {
     if (!tools) return;
@@ -37,6 +45,8 @@
     tools.style.left = x + 'px'; tools.style.top = y + 'px';
     const width = Math.min(176, b.right - b.left);
     actions.style.width = width + 'px'; actions.style.left = clamp(x, b.left, b.right - width) - x + 'px';
+    const status = tools.querySelector('[data-reading-status]');
+    status.style.right = 'auto'; status.style.left = actions.style.left; status.style.width = width + 'px';
     const above = y - b.top - 8, below = b.bottom - y - h - 8;
     tools.dataset.direction = above > below ? 'up' : 'down';
     actions.style.maxHeight = Math.max(above, below, 0) + 'px';
@@ -48,9 +58,9 @@
   }
   function reset() {
     position = undefined; try { sessionStorage.removeItem('afterlight-reading-position'); } catch (_) {}
-    place(); expand(false, true); tools.querySelector('[data-reading-status]').textContent = '已移回右下角';
+    place(); expand(false, true); announce('已移回右下角');
   }
-  focusButtons.forEach(button => button.addEventListener('click', () => { setFocus(!enabled); expand(false); }));
+  focusButtons.forEach(button => button.addEventListener('click', () => { setFocus(!enabled); expand(false, !!button.closest('.reading-tools')); announce(enabled ? '已进入专注阅读' : '已恢复页面布局'); }));
   const outline = document.querySelector('.article-outline details');
   if (outline && matchMedia('(max-width: 900px)').matches) outline.open = false;
   const chapters = [...document.querySelectorAll('.article-outline a, #reading-directory nav a')].map(link => {

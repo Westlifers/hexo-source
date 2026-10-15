@@ -7,6 +7,17 @@
   const retry = dialog.querySelector('[data-search-retry]');
   let entries, pending, timer;
   const normalize = value => value.normalize('NFKC').toLocaleLowerCase();
+  function highlight(value, terms) {
+    const fragment = document.createDocumentFragment();
+    const pattern = new RegExp(terms.map(term => term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'giu');
+    let cursor = 0;
+    for (const match of value.matchAll(pattern)) {
+      fragment.append(value.slice(cursor, match.index));
+      const mark = document.createElement('mark'); mark.textContent = match[0]; fragment.append(mark);
+      cursor = match.index + match[0].length;
+    }
+    fragment.append(value.slice(cursor)); return fragment;
+  }
   function render() {
     results.replaceChildren();
     const query = normalize(input.value.trim()).slice(0, 200);
@@ -22,9 +33,9 @@
     status.textContent = found.length ? `找到 ${found.length} 篇文字` : '没有找到，试试另一个词。';
     found.forEach(({ entry, offset }) => {
       const row = document.createElement('li'), link = document.createElement('a'), title = document.createElement('strong'), excerpt = document.createElement('p');
-      link.href = entry.url; title.textContent = entry.title;
+      link.href = entry.url; title.append(highlight(entry.title, terms));
       const start = Math.max(0, offset - 35);
-      excerpt.textContent = (start ? '…' : '') + entry.text.slice(start, start + 115) + (entry.text.length > start + 115 ? '…' : '');
+      excerpt.append(highlight((start ? '…' : '') + entry.text.slice(start, start + 115) + (entry.text.length > start + 115 ? '…' : ''), terms));
       link.append(title, excerpt); row.append(link); results.append(row);
     });
   }
@@ -32,6 +43,7 @@
     if (entries) { render(); return; }
     if (pending) return pending;
     status.textContent = '正在查找文章…'; retry.hidden = true;
+    dialog.setAttribute('aria-busy', 'true');
     pending = (async () => {
       try {
         const response = await fetch(dialog.dataset.index);
@@ -42,7 +54,7 @@
       } catch (_) {
         entries = undefined;
         status.textContent = '暂时无法加载文章，请重试。'; retry.hidden = false;
-      } finally { pending = undefined; }
+      } finally { pending = undefined; dialog.setAttribute('aria-busy', 'false'); }
     })();
     return pending;
   }
