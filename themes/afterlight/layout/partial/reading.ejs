@@ -1,0 +1,17 @@
+<% const mode = afterlight_mode(entry); const outline = mode === 'poem' ? '' : toc(entry.content, { max_depth: 3, list_number: false }); %>
+<div class="reading-page shell mode-<%= mode %>">
+  <div class="reading-topline"><a href="<%= url_for('/archives/') %>">← 所有文字</a><span class="mono"><%= mode === 'math' ? 'NOTES & IDEAS' : mode === 'poem' ? 'POETRY / AFTER DARK' : 'WORDS & LIFE' %></span></div>
+  <header class="post-header">
+    <div class="post-kicker"><% entry.categories?.each(cat => { %><a href="<%= url_for(cat.path) %>"><%= cat.name %></a><% }); %></div>
+    <h1><%= entry.title %></h1>
+    <div class="post-meta"><time datetime="<%= date_xml(entry.date) %>"><%= date(entry.date, 'YYYY 年 M 月 D 日') %></time><span>杨荻</span><span>约 <%= afterlight_reading_time(entry) %> 分钟</span><button type="button" data-focus aria-pressed="false" hidden>专注阅读</button></div>
+  </header>
+  <div class="reading-grid <%= outline ? 'has-outline' : '' %>">
+    <% if (outline) { %><aside class="article-outline"><details open><summary>本文目录 <span aria-hidden="true">↕</span></summary><nav aria-label="本文目录"><%- outline %></nav></details></aside><% } %>
+    <article class="article"><div class="content post-content"><%- entry.content %></div></article>
+  </div>
+  <% if (isPost) { %>
+  <div class="post-end"><span aria-hidden="true">✳</span><p>写到这里，感谢你读到这里。</p><div class="post-tags"><% entry.tags?.each(tag => { %><a href="<%= url_for(tag.path) %>"># <%= tag.name %></a><% }); %></div></div>
+  <nav class="post-navigation" aria-label="相邻文章"><% if (entry.prev) { %><a href="<%= url_for(entry.prev.path) %>"><span>← 较新的文字</span><strong><%= entry.prev.title %></strong></a><% } else { %><span></span><% } %><% if (entry.next) { %><a href="<%= url_for(entry.next.path) %>"><span>较早的文字 →</span><strong><%= entry.next.title %></strong></a><% } %></nav>
+  <% } %>
+</div>

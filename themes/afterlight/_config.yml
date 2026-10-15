@@ -1,0 +1,33 @@
+brand:
+  logo: /img/Yougi.png
+  name: Yougi 杨荻
+  subtitle: 生活、文字与一些数学
+
+home:
+  introduction_post: 做一首世俗的诗.md
+  title_lines:
+    - 做一首
+    - 世俗的诗。
+  quote: 我喜欢独处，但喜欢的是将自己置身在人群、车海中的孤独。
+  image: /img/selfie2.jpg
+  image_alt: 山与云之下的杨荻
+  image_caption: somewhere beyond the blackboard
+  featured:
+    - source: 日光之下，有一只白猫.md
+      image: 1.jpg
+      image_alt: 日光下抬头望向镜头的白猫
+      label: 日光里的片刻
+    - source: Route-Six.md
+      label: 城市入夜以后
+      quote: For a few more stops, the darkness leaves a little room for me.
+
+math:
+  src: https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js
+
+# Keep article source files unchanged while trying a different presentation.
+article_modes:
+  Route-Six.md: poem
+  日光之下，有一只白猫.md: custom
+  about/index.md: standard
+
+plugins: {}

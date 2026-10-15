@@ -1,0 +1,40 @@
+<% const firstPage = !page.current || page.current === 1; const intro = afterlight_post(theme.home.introduction_post); %>
+<% if (firstPage) { %>
+<section class="home-hero shell" aria-labelledby="home-heading">
+  <div class="hero-copy">
+    <p class="eyebrow"><span class="little-star" aria-hidden="true">✳</span> A PERSONAL JOURNAL</p>
+    <h1 id="home-heading"><% theme.home.title_lines.forEach((line, index) => { %><span class="<%= index === 1 ? 'hero-accent' : '' %>"><%= line %></span><% }); %></h1>
+    <p class="hero-quote"><%= theme.home.quote %></p>
+    <% if (intro) { %><a class="underlined-link" href="<%= url_for(intro.path) %>">从这篇文字认识我 <span aria-hidden="true">↗</span></a><% } %>
+    <div class="hero-bottom"><span class="mono">CHENGDU, CN</span><a href="#recent">向下，看看最近写了什么 <span aria-hidden="true">↓</span></a></div>
+  </div>
+  <figure class="hero-photo">
+    <div class="photo-mat"><img src="<%= url_for(theme.home.image) %>" alt="<%= theme.home.image_alt %>" width="3712" height="5568" fetchpriority="high"></div>
+    <figcaption><span>01 / 生活的另一面</span><em><%= theme.home.image_caption %></em></figcaption>
+  </figure>
+</section>
+<section class="featured-section shell" aria-labelledby="selected-heading">
+  <div class="section-heading"><div><p class="eyebrow">SELECTED MOMENTS</p><h2 id="selected-heading">在日光与夜色之间</h2></div><span class="section-note">挑两篇，慢慢读。</span></div>
+  <div class="featured-grid">
+  <% afterlight_featured().forEach((item, index) => { %>
+    <article class="featured-story <%= item.image ? 'with-image' : 'without-image' %>">
+      <% if (item.image) { %><a class="featured-image" href="<%= url_for(item.post.path) %>"><img src="<%= url_for(item.image) %>" alt="<%= item.image_alt || item.post.title %>" loading="lazy" width="4344" height="5792"></a><% } %>
+      <div class="featured-copy">
+        <p class="eyebrow"><%= item.label %><span class="feature-number">0<%= index + 1 %></span></p>
+        <h3><a href="<%= url_for(item.post.path) %>"><%= item.post.title %></a></h3>
+        <% if (item.quote) { %><p class="feature-quote"><%= item.quote %></p><% } else { %><p class="feature-description"><%= afterlight_summary(item.post, 70) %></p><% } %>
+        <div class="feature-bottom"><time datetime="<%= date_xml(item.post.date) %>"><%= date(item.post.date, 'YYYY.MM.DD') %></time><a href="<%= url_for(item.post.path) %>" aria-label="阅读 <%= item.post.title %>">读下去 <span aria-hidden="true">↗</span></a></div>
+      </div>
+    </article>
+  <% }); %>
+  </div>
+</section>
+<% } %>
+<section class="recent-section shell" id="recent" aria-labelledby="recent-heading">
+  <div class="section-heading"><div><p class="eyebrow">THE JOURNAL<%= firstPage ? '' : ' / PAGE ' + page.current %></p><h2 id="recent-heading">最近写下的</h2></div><a class="underlined-link" href="<%= url_for('/archives/') %>">全部归档 ↗</a></div>
+  <%- partial('partial/post-list', { posts: page.posts }) %>
+  <%- partial('partial/pagination') %>
+</section>
+<% if (firstPage) { %>
+<aside class="home-note shell"><span class="little-star" aria-hidden="true">✳</span><p>所写下的，是数学，也是生活。<br><span>诗、音乐、游戏，与城市里偶然遇到的故事。</span></p><a class="underlined-link" href="<%= url_for('/about/') %>">关于杨荻 ↗</a></aside>
+<% } %>

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title><%= page.title ? afterlight_plain(page.title) + ' · ' : '' %><%= theme.brand.name %></title>
+  <meta name="description" content="<%= page.content ? afterlight_summary(page, 150) : theme.brand.subtitle %>">
+  <link rel="icon" href="<%= url_for('/afterlight/favicon.svg') %>" type="image/svg+xml">
+  <link rel="stylesheet" href="<%= url_for('/afterlight/theme.css') %>">
+  <script src="<%= url_for('/afterlight/appearance.js') %>"></script>
+  <% if (page.content && (page.plugins?.mathjax || page.engine === 'statement')) { %>
+  <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]},chtml:{matchFontHeight:false}};</script>
+  <script defer src="<%= theme.math.src %>"></script>
+  <% } %>
+</head>
+<body class="afterlight <%= is_home() ? 'view-home' : 'view-inner' %>">
+  <a class="skip-link" href="#main">跳到正文</a>
+  <%- partial('partial/header') %>
+  <main id="main"><%- body %></main>
+  <%- partial('partial/footer') %>
+  <script defer src="<%= url_for('/afterlight/theme.js') %>"></script>
+</body>
+</html>

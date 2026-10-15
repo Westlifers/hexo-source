@@ -1,0 +1,12 @@
+<header class="site-header shell">
+  <a class="brand" href="<%= url_for('/') %>" aria-label="<%= theme.brand.name %>，首页">
+    <img src="<%= url_for(theme.brand.logo) %>" alt="<%= theme.brand.name %>" width="2033" height="610">
+  </a>
+  <span class="brand-note"><%= theme.brand.subtitle %></span>
+  <nav class="site-nav" aria-label="主导航">
+    <a href="<%= url_for('/') %>" <%- is_home() ? 'aria-current="page"' : '' %>>首页</a>
+    <a href="<%= url_for('/archives/') %>" <%- is_archive() ? 'aria-current="page"' : '' %>>归档</a>
+    <a href="<%= url_for('/about/') %>" <%- page.path === 'about/index.html' ? 'aria-current="page"' : '' %>>关于</a>
+  </nav>
+  <button class="appearance-toggle" type="button" data-appearance aria-label="切换配色" hidden><span class="appearance-symbol" aria-hidden="true">◐</span><span data-appearance-label>配色</span></button>
+</header>
