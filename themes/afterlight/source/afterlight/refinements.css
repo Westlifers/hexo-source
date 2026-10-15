@@ -11,9 +11,10 @@ button, a, summary { touch-action: manipulation; }
 .theme-changing :is(body, .photo-mat, .featured-story, .home-note, .afterlight-dialog, .reading-launcher, .reading-actions, .ai-disclosure) { transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease; }
 .featured-story { transition: box-shadow 220ms var(--ease), transform 220ms var(--ease); }
 .without-image { background: radial-gradient(ellipse at 100% 0, #62746625, transparent 70%), #263739; }
-.post-row { position: relative; transition: background-color 160ms ease; }
+.post-row { position: relative; isolation: isolate; }
+.post-row::before { content: ''; position: absolute; inset: 5px -18px; z-index: -1; pointer-events: none; border-radius: 8px; background: linear-gradient(90deg, transparent, var(--surface) 40px, var(--surface) calc(100% - 40px), transparent); opacity: 0; transition: opacity 180ms ease; }
 .post-arrow { transition: transform 180ms var(--ease), color 180ms ease; }
-.post-row:focus-within { background: var(--surface); }
+.post-row:focus-within::before { opacity: .85; }
 .post-taxonomy a { padding-block: 5px; }
 .underlined-link, .feature-bottom a, .post-navigation a { transition: color 160ms ease, border-color 160ms ease; }
 .underlined-link { min-height: 36px; }
@@ -60,7 +61,7 @@ button, a, summary { touch-action: manipulation; }
 .gallery-controls button { border-radius: 50%; }
 @media (hover: hover) and (pointer: fine) {
   .featured-story:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
-  .post-row:hover { background: var(--surface); }
+  .post-row:hover::before { opacity: .85; }
   .post-row:hover .post-arrow { transform: translate(2px, -2px); }
   .white-cat-essay figure a:hover img { transform: scale(1.025); }
   .nav-search:hover, .dialog-heading button:hover, .gallery-controls button:not(:disabled):hover, .search-results a:hover, .directory-dialog a:hover { background: var(--soft); }
