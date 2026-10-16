@@ -32,7 +32,7 @@ hexo.extend.helper.register('afterlight_mode', function (post) {
 hexo.extend.helper.register('afterlight_featured', function () {
   return (hexo.theme.config.home?.featured || []).map(item => {
     const post = findPost(item.source);
-    return post ? { ...item, post, image: item.image ? post.path + item.image : null } : null;
+    return post ? { ...item, post, image: item.image ? post.path + item.image : null, imageSource: item.image ? post.source.replace(/\.[^.]+$/, '') + '/' + item.image : null } : null;
   }).filter(Boolean).slice(0, 2);
 });
 hexo.extend.helper.register('afterlight_reading_time', post =>

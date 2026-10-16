@@ -8,7 +8,7 @@
     <% if (intro) { %><a class="underlined-link" href="<%= url_for(intro.path) %>">从这篇文字认识我 <span aria-hidden="true">↗</span></a><% } %>
   </div>
   <figure class="hero-photo">
-    <div class="photo-mat"><img src="<%= url_for(theme.home.image) %>" alt="<%= theme.home.image_alt %>" width="3712" height="5568" fetchpriority="high"></div>
+    <div class="photo-mat"><%- partial('partial/home-image', { source: theme.home.image.replace(/^\/+/, ''), image: theme.home.image, alt: theme.home.image_alt, width: 3712, height: 5568, priority: true, sizes: '(max-width: 650px) calc(100vw - 75px), (max-width: 1200px) max(220px, calc(40vw - 80px)), 420px' }) %></div>
     <figcaption><em><%= theme.home.image_caption %></em></figcaption>
   </figure>
 </section>
@@ -17,7 +17,7 @@
   <div class="featured-grid">
   <% afterlight_featured().forEach(item => { %>
     <article class="featured-story <%= item.image ? 'with-image' : 'without-image' %>">
-      <% if (item.image) { %><a class="featured-image" href="<%= url_for(item.post.path) %>"><img src="<%= url_for(item.image) %>" alt="<%= item.image_alt || item.post.title %>" loading="lazy" width="4344" height="5792"></a><% } %>
+      <% if (item.image) { %><a class="featured-image" href="<%= url_for(item.post.path) %>"><%- partial('partial/home-image', { source: item.imageSource, image: item.image, alt: item.image_alt || item.post.title, width: 4344, height: 5792, priority: false, sizes: '(max-width: 360px) calc(100vw - 42px), (max-width: 650px) 300px, (max-width: 900px) calc(55vw - 50px), 300px' }) %></a><% } %>
       <div class="featured-copy">
         <p class="eyebrow"><%= item.label %></p>
         <h3><a href="<%= url_for(item.post.path) %>"><%= item.post.title %></a></h3>
