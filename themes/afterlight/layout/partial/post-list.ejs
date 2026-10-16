@@ -1,0 +1,14 @@
+<div class="post-list">
+<% posts.each(post => {
+  const summary = afterlight_summary(post, 72);
+  const tags = post.tags?.toArray() || [];
+  const taxonomy = tags.length ? tags : (post.categories?.toArray() || []);
+%>
+  <article class="post-row">
+    <time datetime="<%= date_xml(post.date) %>"><span><%= date(post.date, 'MM.DD') %></span><small><%= date(post.date, 'YYYY') %></small></time>
+    <div><h3><a href="<%= url_for(post.path) %>"><%= post.title %></a></h3><% if (summary) { %><p><%= summary %></p><% } %></div>
+    <div class="post-taxonomy" aria-label="<%= tags.length ? '文章标签' : '文章分类' %>"><% taxonomy.forEach(item => { %><a href="<%= url_for(item.path) %>"><%= item.name %></a><% }); %></div>
+    <a class="post-arrow" href="<%= url_for(post.path) %>" aria-label="阅读 <%= post.title %>">↗</a>
+  </article>
+<% }); %>
+</div>

@@ -1,38 +1,10 @@
-const AI_LEVELS = {
-  assisted: {
-    label: 'AI 辅助',
-    icon: '◇',
-    text: '本文使用生成式 AI 辅助资料检索、讨论或文字润色，内容由作者审定。'
-  },
-
-  substantial: {
-    label: 'AI 深度辅助',
-    icon: '◈',
-    text: '本文在资料检索、观点讨论、结构组织及文字撰写中较多使用生成式 AI。核心观点、材料取舍与最终内容由作者审定。'
-  },
-
-  generated: {
-    label: 'AI 生成',
-    icon: '◆',
-    text: '本文主体文本由生成式 AI 生成，并经作者审阅与修订。'
-  }
-};
+const { disclosureFor } = require('../lib/ai-disclosure.cjs');
 
 hexo.extend.filter.register('after_post_render', function (data) {
-  if (!data.ai) return data;
-
-  const level =
-    typeof data.ai === 'string'
-      ? data.ai
-      : data.ai.level;
-
-  const info = AI_LEVELS[level];
+  if (hexo.config.theme === 'afterlight') return data;
+  const info = disclosureFor(data.ai);
   if (!info) return data;
-
-  const note =
-    typeof data.ai === 'object' && data.ai.note
-      ? data.ai.note
-      : info.text;
+  const { level, note } = info;
 
   const disclosure = `
 <div class="ai-disclosure ai-disclosure--${level}">
@@ -55,6 +27,7 @@ hexo.extend.filter.register('after_post_render', function (data) {
 hexo.extend.injector.register(
   'head_end',
   () => {
+    if (hexo.config.theme === 'afterlight') return '';
     const css = hexo.extend.helper.get('css').bind(hexo);
     return css('/css/ai-disclosure.css');
   }

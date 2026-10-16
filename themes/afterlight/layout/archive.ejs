@@ -1,0 +1,5 @@
+<section class="archive-page shell">
+  <header class="section-heading"><div><p class="eyebrow">THE ARCHIVE</p><h1><%= page.category || page.tag || '写过的，都在这里。' %></h1></div><span class="section-note"><%= page.category ? '分类' : page.tag ? '标签' : '沿着时间，慢慢翻。' %></span></header>
+  <%- partial('partial/post-list', { posts: page.posts }) %>
+  <%- partial('partial/pagination') %>
+</section>

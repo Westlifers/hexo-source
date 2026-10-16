@@ -1,0 +1,4 @@
+<section class="comments-section" aria-labelledby="comments-heading" data-comments data-preview="<%= config.afterlight_preview === true %>" data-repo="<%= theme.comments.repo %>" data-repo-id="<%= theme.comments.repo_id %>" data-category="<%= theme.comments.category %>" data-category-id="<%= theme.comments.category_id %>" data-mapping="<%= theme.comments.mapping %>" data-lang="<%= theme.comments.lang %>">
+  <h2 id="comments-heading">留言</h2>
+  <% if (config.afterlight_preview) { %><p>本地预览暂不加载评论。</p><% } else { %><button type="button" data-comments-load hidden>展开评论</button><noscript><p>启用 JavaScript 后可加载评论。</p></noscript><p data-comments-status role="status"></p><div class="giscus"></div><% } %>
+</section>
