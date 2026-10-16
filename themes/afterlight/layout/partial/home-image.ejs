@@ -1,5 +1,5 @@
 <% const optimized = afterlight_image(source); const srcset = format => optimized[format].map(item => url_for(item.url) + ' ' + item.width + 'w').join(', '); %>
 <picture class="home-image">
   <% if (optimized) { %><source type="image/webp" srcset="<%= srcset('webp') %>" sizes="<%= sizes %>"><% } %>
-  <img src="<%= url_for(optimized ? (optimized.jpeg.find(item => item.width >= 800) || optimized.jpeg[0]).url : image) %>"<% if (optimized) { %> srcset="<%= srcset('jpeg') %>" sizes="<%= sizes %>"<% } %> alt="<%= alt %>" width="<%= width %>" height="<%= height %>" loading="<%= priority ? 'eager' : 'lazy' %>" fetchpriority="<%= priority ? 'high' : 'auto' %>" decoding="async">
+  <img src="<%= url_for(optimized ? (optimized.jpeg.find(item => item.width >= 800) || optimized.jpeg[0]).url : image) %>"<% if (optimized) { %> srcset="<%= srcset('jpeg') %>" sizes="<%= sizes %>"<% } %> alt="<%= alt %>"<% if (Number(width) > 0 && Number(height) > 0) { %> width="<%= width %>" height="<%= height %>"<% } %> loading="<%= priority ? 'eager' : 'lazy' %>" fetchpriority="<%= priority ? 'high' : 'auto' %>" decoding="async">
 </picture>

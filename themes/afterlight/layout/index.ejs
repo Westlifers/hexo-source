@@ -2,27 +2,27 @@
 <% if (firstPage) { %>
 <section class="home-hero shell" aria-labelledby="home-heading">
   <div class="hero-copy">
-    <p class="eyebrow"><span class="little-star" aria-hidden="true">✳</span> A PERSONAL JOURNAL</p>
+    <% if (theme.home.eyebrow) { %><p class="eyebrow"><span class="little-star" aria-hidden="true">✳</span> <%= theme.home.eyebrow %></p><% } %>
     <h1 id="home-heading"><% theme.home.title_lines.forEach((line, index) => { %><span class="<%= index === 1 ? 'hero-accent' : '' %>"><%= line %></span><% }); %></h1>
-    <p class="hero-quote"><%= theme.home.quote %></p>
-    <% if (intro) { %><a class="underlined-link" href="<%= url_for(intro.path) %>">从这篇文字认识我 <span aria-hidden="true">↗</span></a><% } %>
+    <% if (theme.home.quote) { %><p class="hero-quote"><%= theme.home.quote %></p><% } %>
+    <% if (intro && theme.home.introduction_label) { %><a class="underlined-link" href="<%= url_for(intro.path) %>"><%= theme.home.introduction_label %> <span aria-hidden="true">↗</span></a><% } %>
   </div>
   <figure class="hero-photo">
-    <div class="photo-mat"><%- partial('partial/home-image', { source: theme.home.image.replace(/^\/+/, ''), image: theme.home.image, alt: theme.home.image_alt, width: 3712, height: 5568, priority: true, sizes: '(max-width: 650px) calc(100vw - 75px), (max-width: 1200px) max(220px, calc(40vw - 80px)), 420px' }) %></div>
-    <figcaption><em><%= theme.home.image_caption %></em></figcaption>
+    <div class="photo-mat"><%- partial('partial/home-image', { source: theme.home.image.replace(/^\/+/, ''), image: theme.home.image, alt: theme.home.image_alt, width: theme.home.image_width, height: theme.home.image_height, priority: true, sizes: '(max-width: 650px) calc(100vw - 75px), (max-width: 1200px) max(220px, calc(40vw - 80px)), 420px' }) %></div>
+    <% if (theme.home.image_caption) { %><figcaption><em><%= theme.home.image_caption %></em></figcaption><% } %>
   </figure>
 </section>
 <section class="featured-section shell" aria-labelledby="selected-heading">
-  <div class="section-heading"><h2 id="selected-heading">在日光与夜色之间</h2></div>
+  <div class="section-heading"><h2 id="selected-heading"><%= theme.home.featured_title %></h2></div>
   <div class="featured-grid">
   <% afterlight_featured().forEach(item => { %>
     <article class="featured-story <%= item.image ? 'with-image' : 'without-image' %>">
-      <% if (item.image) { %><a class="featured-image" href="<%= url_for(item.post.path) %>"><%- partial('partial/home-image', { source: item.imageSource, image: item.image, alt: item.image_alt || item.post.title, width: 4344, height: 5792, priority: false, sizes: '(max-width: 360px) calc(100vw - 42px), (max-width: 650px) 300px, (max-width: 900px) calc(55vw - 50px), 300px' }) %></a><% } %>
+      <% if (item.image) { %><a class="featured-image" href="<%= url_for(item.post.path) %>"><%- partial('partial/home-image', { source: item.imageSource, image: item.image, alt: item.image_alt || item.post.title, width: item.image_width, height: item.image_height, priority: false, sizes: '(max-width: 360px) calc(100vw - 42px), (max-width: 650px) 300px, (max-width: 900px) calc(55vw - 50px), 300px' }) %></a><% } %>
       <div class="featured-copy">
         <p class="eyebrow"><%= item.label %></p>
         <h3><a href="<%= url_for(item.post.path) %>"><%= item.post.title %></a></h3>
         <% if (item.quote) { %><p class="feature-quote"><%= item.quote %></p><% } else { %><p class="feature-description"><%= afterlight_summary(item.post, 70) %></p><% } %>
-        <div class="feature-bottom"><time datetime="<%= date_xml(item.post.date) %>"><%= date(item.post.date, 'YYYY.MM.DD') %></time><a href="<%= url_for(item.post.path) %>" aria-label="阅读 <%= item.post.title %>">读下去 <span aria-hidden="true">↗</span></a></div>
+        <div class="feature-bottom"><time datetime="<%= date_xml(item.post.date) %>"><%= date(item.post.date, 'YYYY.MM.DD') %></time><a href="<%= url_for(item.post.path) %>" aria-label="阅读 <%= item.post.title %>"><%= theme.home.read_more_label %> <span aria-hidden="true">↗</span></a></div>
       </div>
     </article>
   <% }); %>
@@ -30,10 +30,10 @@
 </section>
 <% } %>
 <section class="recent-section shell" id="recent" aria-labelledby="recent-heading">
-  <div class="section-heading"><h2 id="recent-heading">最近写下的</h2><a class="underlined-link" href="<%= url_for('/archives/') %>">全部归档 ↗</a></div>
+  <div class="section-heading"><h2 id="recent-heading"><%= theme.home.recent_title %></h2><% if (theme.home.archive_link?.label && theme.home.archive_link?.url) { %><a class="underlined-link" href="<%= url_for(theme.home.archive_link.url) %>"><%= theme.home.archive_link.label %> ↗</a><% } %></div>
   <%- partial('partial/post-list', { posts: page.posts }) %>
   <%- partial('partial/pagination') %>
 </section>
-<% if (firstPage) { %>
-<aside class="home-note shell" aria-label="关于作者"><p>生活、文字与数学</p><a class="underlined-link" href="<%= url_for('/about/') %>">关于我 ↗</a></aside>
+<% if (firstPage && theme.home.note?.enable !== false && (theme.home.note?.text || (theme.home.note?.link?.label && theme.home.note?.link?.url))) { %>
+<aside class="home-note shell" aria-label="关于作者"><% if (theme.home.note.text) { %><p><%= theme.home.note.text %></p><% } %><% if (theme.home.note.link?.label && theme.home.note.link?.url) { %><a class="underlined-link" href="<%= url_for(theme.home.note.link.url) %>"><%= theme.home.note.link.label %> ↗</a><% } %></aside>
 <% } %>

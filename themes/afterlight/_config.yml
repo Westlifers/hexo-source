@@ -1,10 +1,33 @@
 brand:
   logo: /afterlight/signature.svg
   name: Yougi 杨荻
+  author: 杨荻
   subtitle: 生活、文字与一些数学
 
+# 按顺序显示；站内地址以 / 开头，外链使用完整 https:// 地址。
+navigation:
+  - label: 首页
+    url: /
+  - label: 归档
+    url: /archives/
+  - label: 关于
+    url: /about/
+
+footer:
+  link:
+    label: 翻翻旧文
+    url: /archives/
+  credit: Afterlight
+
+archive:
+  eyebrow: THE ARCHIVE
+  title: 写过的，都在这里。
+  note: 沿着时间，慢慢翻。
+
 home:
+  eyebrow: A PERSONAL JOURNAL
   introduction_post: 做一首世俗的诗.md
+  introduction_label: 从这篇文字认识我
   title_lines:
     - 做一首
     - 世俗的诗。
@@ -12,10 +35,28 @@ home:
   image: /img/selfie2.jpg
   image_alt: 山与云之下的杨荻
   image_caption: somewhere beyond the blackboard
+  # 原图像素尺寸；显示尺寸和裁切仍由样式控制。
+  image_width: 3712
+  image_height: 5568
+  featured_title: 在日光与夜色之间
+  read_more_label: 读下去
+  recent_title: 最近写下的
+  archive_link:
+    label: 全部归档
+    url: /archives/
+  # 可设 enable: false 隐藏首页底部整块。
+  note:
+    enable: true
+    text: 生活、文字与数学
+    link:
+      label: 关于我
+      url: /about/
   featured:
     - source: 日光之下，有一只白猫.md
       image: 1.jpg
       image_alt: 日光下抬头望向镜头的白猫
+      image_width: 4344
+      image_height: 5792
       label: 日光里的片刻
     - source: Route-Six.md
       label: 城市入夜以后
@@ -26,6 +67,9 @@ math:
 
 reading:
   tools: true
+  archive_link:
+    label: 所有文字
+    url: /archives/
 search:
   enable: true
   include_pages: true

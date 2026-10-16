@@ -17,6 +17,20 @@ function findPost(source) {
 }
 
 hexo.extend.helper.register('afterlight_post', findPost);
+hexo.extend.helper.register('afterlight_nav_current', function (url) {
+  // Config paths are site-relative, independent of the deployment subdirectory.
+  // External, query and fragment links do not represent the current page.
+  if (typeof url !== 'string' || /^(?:[a-z][a-z\d+.-]*:|\/\/)|[?#]/i.test(url)) return false;
+  const normalize = value => {
+    try { value = decodeURI(String(value)); } catch { return null; }
+    return value.replace(/^\/+/, '').replace(/(^|\/)index\.html$/, '$1').replace(/\/+$/, '');
+  };
+  const target = normalize(url), current = normalize(this.page.path);
+  if (target === null) return false;
+  if (target === '') return this.is_home();
+  if (target === 'archives') return this.is_archive();
+  return current === target;
+});
 hexo.extend.helper.register('afterlight_summary', function (post, length = 90) {
   // Math source and custom HTML excerpts are often unsuitable as a list preview.
   if (!post.description && (post.engine === 'statement' || post.plugins?.mathjax)) return '';
