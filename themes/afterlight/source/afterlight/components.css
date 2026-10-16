@@ -41,7 +41,7 @@
 .gallery-controls { display: flex; align-items: center; justify-content: space-between; gap: 20px; font-size: 12px; }
 .gallery-controls button { min-width: 44px; min-height: 44px; border: 1px solid var(--rule); background: transparent; color: var(--ink); }
 .gallery-controls button:disabled { opacity: .35; cursor: default; }
-.comments-section { max-width: 760px; margin: 50px auto 0; padding-top: 25px; border-top: 1px solid var(--rule); }
+.comments-section { max-width: 720px; margin: 50px auto 0; padding-top: 25px; border-top: 1px solid var(--rule); }
 .comments-section h2 { font: 400 24px/1.5 var(--serif); margin: 0 0 20px; }
 .comments-section p { color: var(--muted); font-size: 12px; }
 .comments-section iframe { width: 100%; }

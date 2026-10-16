@@ -4,6 +4,8 @@
 
 日常修改请先看 [Afterlight 日常维护说明](MAINTENANCE.md)：包含首页文案、图片及优化、导航、评论、文章与关于页的修改位置，以及本地预览步骤。
 
+后续本地视觉迭代保留暖纸／夜色风格，调整了首屏错位排版与照片纸页、精选作品层次、列表字号和阅读宽度。普通正文为 720px／18px，数学正文保持 820px／16px；手机另有字号适配。设计与验收记录见 [视觉迭代说明](../../afterlight-planning/VISUAL_REFRESH.md)，此轮尚未发布。
+
 ## 本地预览
 
 在博客根目录运行：
@@ -31,6 +33,7 @@ npm run build:afterlight
 - `layout/partial/reading.ejs`：文章与普通页面的阅读框架。
 - `source/afterlight/components.css`：搜索、阅读工具、目录弹层、图片浏览、AI 说明及评论区的样式。
 - `source/afterlight/refinements.css`：第三阶段的层次、操作状态、过渡、手机导航与特殊作品的主题适配。
+- `source/afterlight/night-lines.svg`：无封面精选卡片上的原创夜行线条，作为 CSS 背景，不参与正文或图片浏览。
 - `source/afterlight/{reading,search,gallery,math,comments}.js`：各自的页面交互；共用原生 dialog 的关闭与焦点管理。
 
 精选文章按源文件名关联到真实 Hexo 文章。相对封面文件名按该文章的实际生成路径解析；没有图片时使用文字版式。普通文章无需新增任何字段。首页时间列表遵循 Hexo 分页，第一页的精选不会删减列表中的文章。
@@ -49,7 +52,7 @@ npm run build:afterlight
 
 图库支持手机横向滑动切图、加载与失败反馈，固定展示区减少切换时的布局跳动；纵向滚动与双指缩放保持浏览器行为。搜索提供命中高亮和加载状态。阅读工具切换专注、重置位置时显示短暂反馈。
 
-动效集中在首页轻微入场、卡片悬停、按钮按压、手动配色切换、弹层开合与图片载入；不等待滚动才显示正文。CSS 和 JavaScript 均响应 `prefers-reduced-motion`。手机导航采用签名／功能按钮与导航链接两行布局，主要按钮至少 44px 高；弹层根据可视视口高度调整。
+动效集中在首页标题与照片的入场、卡片悬停阴影、按钮按压、手动配色切换、弹层开合与图片载入；精选卡片不再逐个入场，不等待滚动才显示正文。CSS 和 JavaScript 均响应 `prefers-reduced-motion`。手机导航采用签名／功能按钮与导航链接两行布局，主要按钮至少 44px 高；弹层根据可视视口高度调整。
 
 Pandoc／Lua 内容生成仍属于站点渲染器；证明折叠、证明互链、目标锚点展开和局部数学滚动由主题内的 `math.js`／`math.css` 负责。MathJax 由主题统一初始化，每篇正文只主动排版一次。普通页面导航替代 PJAX，无需原 Insight 节点恢复或 PJAX 缓存锚点修复。
 

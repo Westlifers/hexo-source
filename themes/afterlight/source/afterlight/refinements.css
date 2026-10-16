@@ -10,7 +10,7 @@ button, a, summary { touch-action: manipulation; }
 .appearance-toggle[aria-pressed="true"] .appearance-symbol { transform: rotate(180deg); }
 .theme-changing :is(body, .photo-mat, .featured-story, .home-note, .afterlight-dialog, .reading-launcher, .reading-actions, .ai-disclosure) { transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease; }
 .featured-story { transition: box-shadow 220ms var(--ease), transform 220ms var(--ease); }
-.without-image { --accent: #e3a187; background: radial-gradient(ellipse at 100% 0, #62746625, transparent 70%), #263739; }
+.without-image { --accent: #e5ad91; background: #263a35; }
 .archive-page .section-note { color: var(--muted); font-size: 12px; }
 .archive-page h1 { text-wrap: balance; overflow-wrap: anywhere; }
 .afterlight .about-page { --text-color: var(--ink); }
@@ -21,12 +21,24 @@ button, a, summary { touch-action: manipulation; }
 /* The Co/End epigraph carries this original inline color. Keep its source intact. */
 .afterlight .post-content > div[style*="color: #5f6f89"] { color: var(--muted) !important; }
 .post-row { position: relative; isolation: isolate; }
-.post-row::before { content: ''; position: absolute; inset: 5px -18px; z-index: -1; pointer-events: none; border-radius: 8px; background: linear-gradient(90deg, transparent, var(--surface) 40px, var(--surface) calc(100% - 40px), transparent); opacity: 0; transition: opacity 180ms ease; }
+.post-row::before { content: ''; position: absolute; inset: 5px -18px; z-index: -1; pointer-events: none; border-radius: 8px; background: linear-gradient(90deg, transparent, var(--surface) 48px, var(--surface) calc(100% - 48px), transparent); opacity: 0; transition: opacity 180ms ease; }
 .post-arrow { transition: transform 180ms var(--ease), color 180ms ease; }
 .post-row:focus-within::before { opacity: .85; }
 .post-taxonomy a { padding-block: 5px; }
 .underlined-link, .feature-bottom a, .post-navigation a { transition: color 160ms ease, border-color 160ms ease; }
-.underlined-link { min-height: 36px; }
+.underlined-link { min-height: 40px; text-underline-offset: 6px; }
+.hero-copy > .underlined-link { gap: 28px; border-bottom-color: var(--rule); }
+.hero-copy > .underlined-link:hover { border-bottom-color: var(--accent); }
+.hero-copy > .underlined-link span { transition: transform 180ms var(--ease); }
+.hero-copy > .underlined-link:hover span { transform: translate(3px, -3px); }
+.brand { transition: color 180ms ease; }
+.site-nav a { transition: color 180ms ease; }
+.post-meta button[aria-pressed="true"] { background: var(--soft); border-color: var(--sage); color: var(--sage); }
+.archive-page > .section-heading { padding-bottom: 24px; }
+.afterlight .about-avatar { border-radius: 3px; padding: 7px; background: var(--surface); border: 1px solid var(--rule); box-shadow: 6px 6px 0 var(--soft); }
+.afterlight .about-intro h1 { font-weight: 400; }
+.afterlight .about-tags span { border-radius: 3px; }
+.afterlight .about-section h2 { font-weight: 400; }
 .post-content :where(a):hover { text-decoration-color: var(--accent); }
 .post-meta, .post-kicker { font-size: 12px; }
 .post-kicker { flex-wrap: wrap; }
@@ -69,7 +81,7 @@ button, a, summary { touch-action: manipulation; }
 .gallery-controls { padding-bottom: env(safe-area-inset-bottom, 0px); }
 .gallery-controls button { border-radius: 50%; }
 @media (hover: hover) and (pointer: fine) {
-  .featured-story:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .featured-story:hover { box-shadow: var(--shadow); }
   .post-row:hover::before { opacity: .85; }
   .post-row:hover .post-arrow { transform: translate(2px, -2px); }
   .white-cat-essay figure a:hover img { transform: scale(1.025); }
@@ -88,10 +100,10 @@ button:not(:disabled):active { transform: translateY(1px); }
   .site-nav { grid-column: 1 / -1; grid-row: 2; margin: 0; gap: 24px; font-size: 13px; }
   .site-nav a { min-width: 44px; min-height: 44px; text-align: center; padding-block: 10px; }
   .site-nav [aria-current="page"]::after { bottom: 6px; }
-  .home-hero { padding-top: 30px; }
+  .home-hero { padding-top: 36px; }
   .post-content { font-size: 17px; }
   .mode-math .post-content { font-size: 16px; }
-  .post-row p { font-size: 12px; }
+  .post-row p { font-size: 13px; }
   .post-meta { font-size: 11px; }
   .post-meta button { min-height: 44px; font-size: 12px; }
   .post-taxonomy a { min-height: 30px; }

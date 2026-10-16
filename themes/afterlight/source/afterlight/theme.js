@@ -35,7 +35,7 @@
   }
   document.querySelectorAll('.hero-copy > .eyebrow, .home-hero h1 > span, .hero-quote, .hero-copy > .underlined-link')
     .forEach((element, index) => enter(element, index * 75));
-  // Pictures/cards enter once as they reach the viewport, including on phones.
+  // The photograph completes the opening sequence; later reading stays still.
   let observer;
   if (!reduced.matches && 'IntersectionObserver' in window) {
     observer = new IntersectionObserver(entries => entries.forEach(entry => {
@@ -43,7 +43,7 @@
       observer.unobserve(entry.target);
       enter(entry.target, entry.target.matches('.hero-photo') ? 120 : 0, entry.target.matches('.hero-photo'));
     }), { threshold: .12 });
-    document.querySelectorAll('.hero-photo, .featured-story').forEach(element => observer.observe(element));
+    document.querySelectorAll('.hero-photo').forEach(element => observer.observe(element));
   }
   reduced.addEventListener('change', event => {
     if (!event.matches) return;
