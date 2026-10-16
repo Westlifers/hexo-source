@@ -30,6 +30,11 @@
   }).observe(mount, { childList: true, subtree: true });
   new MutationObserver(sync).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
   addEventListener('message', event => {
-    if (event.origin === 'https://giscus.app' && event.source === mount.querySelector('iframe')?.contentWindow && event.data?.giscus?.error) fail();
+    if (event.origin !== 'https://giscus.app' || event.source !== mount.querySelector('iframe')?.contentWindow) return;
+    const error = event.data?.giscus?.error;
+    // Giscus creates a discussion on the first comment/reaction. Its client
+    // treats this response as an empty thread, not a broken widget.
+    if (typeof error === 'string' && error.includes('Discussion not found')) return;
+    if (error) fail();
   });
 })();
