@@ -55,7 +55,7 @@ AI 说明在文章标题信息区由模板渲染一次。`lib/ai-disclosure.cjs`
 
 配色仅有浅色和深色，首次默认浅色；旧版本保存的“随系统”偏好按浅色处理。手动选择会保存，操作系统的配色变化不会再改变页面。
 
-Giscus 沿用原仓库、讨论分类及 `pathname` 映射，正式站点上点击“展开评论”才加载，配色随主题更新；实现依据 [Giscus 的配置消息接口](https://github.com/giscus/giscus/blob/main/ADVANCED-USAGE.md#parent-to-giscus-message-events)。预览构建自动设置 `afterlight_preview: true`，浏览器另有本机地址检查，因此本地不连接评论服务。已用完全拦截网络的模拟客户端验证加载、失败重试和主题通信；尚未验证线上讨论读取、登录及提交。
+Giscus 沿用原仓库、讨论分类及 `pathname` 映射，正式站点上点击“展开评论”才加载，配色随主题更新；实现依据 [Giscus 的配置消息接口](https://github.com/giscus/giscus/blob/main/ADVANCED-USAGE.md#parent-to-giscus-message-events)。预览构建自动设置 `afterlight_preview: true`，浏览器另有本机地址检查，因此本地不连接评论服务。已用完全拦截网络的模拟客户端验证加载、失败重试和主题通信。首次评论前的 `Discussion not found` 按正常空讨论处理，保留评论框；其他错误仍提示重试。正式发布时补查真实评论框加载，未执行登录或提交评论。
 
 MathJax 与 TikZ 字体沿用现有 CDN 依赖。本文档不承诺离线数学渲染；文章及图库保留原图，首页使用下面说明的响应式衍生图。已抽测本地 `/simple/` 子路径的搜索、导航和数学资源，目标 CI、线上评论、完整发布元信息和实体手机验收仍留待后续阶段。
 
