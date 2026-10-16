@@ -71,7 +71,7 @@ MathJax 与 TikZ 字体沿用现有 CDN 依赖。本文档不承诺离线数学�
 
 ## Icarus 与 Git
 
-站点 `_config.yml` 仍选择 Icarus，旧主题继续正常使用。旧阅读、数学前端资源和 AI 正文注入仅在 Afterlight 下停用；原前端文件完整保留，Icarus 仍使用它们。没有修改依赖目录或文章源文件。
+2026-10-16 用户确认采用 Afterlight，站点 `_config.yml` 已切换为 Afterlight。Icarus 及原前端文件仍完整保留，旧阅读、数学前端资源和 AI 正文注入仅在 Afterlight 下停用。需要回退时可将正式主题重新设为 Icarus；验证回退时仍使用隔离预览命令。
 
 可用下面的命令在独立目录验证旧主题：
 
