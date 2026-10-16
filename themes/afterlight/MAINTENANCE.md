@@ -10,9 +10,11 @@
 | 首页主照片 | 同上 → `home.image`；当前原图为 `source/img/selfie2.jpg` |
 | 首页两篇精选及配图 | 同上 → `home.featured` |
 | 签名、显示名称、页面描述回退文案 | 同上 → `brand` |
-| “在日光与夜色之间”“最近写下的”“生活、文字与数学”等固定文字 | `themes/afterlight/layout/index.ejs` |
-| 页头“首页／归档／关于”导航 | `themes/afterlight/layout/partial/header.ejs` |
-| 页脚链接、署名 | `themes/afterlight/layout/partial/footer.ejs` |
+| 首页区块标题、链接、底部短句 | `themes/afterlight/_config.yml` → `home`，详见下表 |
+| 页头“首页／归档／关于”导航 | 同上 → `navigation` |
+| 文章及页脚署名 | 同上 → `brand.author` |
+| 页脚链接与主题署名 | 同上 → `footer` |
+| 归档页标题与说明 | 同上 → `archive` |
 | 关于页内容与照片 | `source/about/index.md` |
 | 文章正文、标题、摘要和标签 | `source/_posts/` 下对应的文章文件 |
 | 评论开关、仓库、分类、语言 | `themes/afterlight/_config.yml` → `comments` |
@@ -46,9 +48,26 @@ home:
 - `introduction_post` 是“从这篇文字认识我”的目标文章源文件名，包含 `.md`，不带 `_posts/`。找不到文章时，这个链接会隐藏。
 - `image_alt` 描述照片内容，供辅助阅读与图片无法显示时使用；`image_caption` 是照片下方可见的小字。
 
-下列文字直接写在 `themes/afterlight/layout/index.ejs` 中，可以按原文搜索后修改：`A PERSONAL JOURNAL`、`从这篇文字认识我`、`在日光与夜色之间`、`最近写下的`、`全部归档`、`读下去`、`生活、文字与数学`、`关于我`。只改文字时保留周围标签、类名和链接表达式。
+常改文案已集中到主题配置，无需编辑模板：
 
-`brand.name` 用于浏览器标题、页头辅助说明和页脚名称；`brand.subtitle` 用于页面描述的回退，并不是首页可见的引言。文章信息栏的“杨荻”和页脚版权署名目前分别写在 `layout/partial/reading.ejs`、`layout/partial/footer.ejs`，不会随 `brand.name` 自动改变。
+| 当前显示 | 配置字段 |
+| --- | --- |
+| A PERSONAL JOURNAL | `home.eyebrow` |
+| 从这篇文字认识我 | `home.introduction_label` |
+| 在日光与夜色之间 | `home.featured_title` |
+| 最近写下的 | `home.recent_title` |
+| 读下去 | `home.read_more_label` |
+| 全部归档 | `home.archive_link.label`；地址为 `.url` |
+| 生活、文字与数学 | `home.note.text` |
+| 关于我 | `home.note.link.label`；地址为 `.url` |
+| THE ARCHIVE／写过的，都在这里。／沿着时间，慢慢翻。 | `archive.eyebrow`／`archive.title`／`archive.note` |
+| 文章顶部“所有文字” | `reading.archive_link.label`；地址为 `.url` |
+
+可将 `home.note.enable` 设为 `false` 隐藏首页底部整块。`home.eyebrow`、`home.quote`、`home.image_caption`、`home.introduction_label`、`archive.eyebrow`、`archive.note` 可填 `""` 隐藏对应内容。首页底部的文字与链接可以分别隐藏；配置链接的 `label` 或 `url` 填 `""` 即隐藏该链接。区块标题和“读下去”等必要标签应保持非空。
+
+`brand.name` 用于浏览器标题、页头辅助说明和页脚名称；`brand.author` 统一控制文章信息栏和页脚版权署名；`brand.subtitle` 用于页面描述的回退，并不是首页可见的引言。分类和标签页面仍以真实分类／标签名称为标题。
+
+编辑 YAML 时使用空格缩进；文案含 `: `、`#` 等特殊字符时用引号包裹。文案按普通文字输出，不执行 HTML。链接后的方向箭头由模板添加，无需在配置中再写一次。
 
 ### 两篇精选
 
@@ -92,7 +111,7 @@ categories: [杂谈]
 3. 重新构建预览，检查桌面和手机上的取景。当前主图使用 `object-fit: cover`，裁切位置由 `theme.css` 中的 `.hero-photo img` 控制；精选图由 `.featured-image img` 控制，文件后面的手机规则也可能覆盖它。
 4. 为新图重新生成优化文件，方法见下节。
 
-模板 `themes/afterlight/layout/index.ejs` 的两个 `partial/home-image` 调用目前分别写有原图尺寸 `3712 × 5568`、`4344 × 5792`。更换不同尺寸照片时，也应更新对应 `width`、`height`；画框的实际显示尺寸仍由 CSS 决定。
+原图尺寸现在也在主题配置中：主图为 `home.image_width`／`home.image_height`，精选图为对应 `home.featured` 项的 `image_width`／`image_height`。当前分别为 `3712 × 5568`、`4344 × 5792`。更换不同尺寸照片时一并更新，无需修改模板；画框的实际显示尺寸仍由 CSS 决定。
 
 ### 保持图片加载速度
 
@@ -131,15 +150,25 @@ npm run build:afterlight
 
 ## 导航与页脚
 
-导航目前不是配置列表，而是 `themes/afterlight/layout/partial/header.ejs` 中的三个链接。改标签文字即可重命名；新增站内链接时沿用 `url_for`，以兼容子路径，例如：
+导航直接在主题配置的 `navigation` 列表中维护，按列表顺序显示：
 
-```ejs
-<a href="<%= url_for('/about/') %>" <%- page.path === 'about/index.html' ? 'aria-current="page"' : '' %>>关于</a>
+```yaml
+navigation:
+  - label: 首页
+    url: /
+  - label: 归档
+    url: /archives/
+  - label: 关于
+    url: /about/
 ```
 
-添加新页面时同时创建对应内容源文件，并为链接设置正确的当前页判断。不要只加链接而没有目标页面。手机导航目前为两行布局，链接变多或名称变长后应重新查看窄屏效果。
+修改 `label` 重命名，移动整个条目调整顺序，删除条目移除导航链接；`navigation: []` 隐藏整个导航列表。站内 `url` 从 `/` 写起，不包含部署子目录，模板自动处理；外链使用完整 `https://...` 地址，默认在当前标签页打开。
 
-页脚在 `themes/afterlight/layout/partial/footer.ejs`。左侧名称来自 `brand.name`，版权年份自动更新；“翻翻旧文”和版权署名在模板内修改。右上角搜索按钮受主题配置 `search.enable` 控制；配色按钮保持浅色／深色二选。
+首页导航在首页分页时仍高亮，归档导航在年份、月份和归档分页中仍高亮；其他站内导航按页面路径匹配，兼容末尾 `/` 和 `index.html`。外链以及含查询参数／锚点的链接不标记为当前页。添加新页面时同时创建对应内容源文件，不要只加链接而没有目标页面。手机导航目前为两行布局，链接变多或名称变长后应重新查看窄屏效果。
+
+页脚左侧名称来自 `brand.name`，版权署名来自 `brand.author`，年份自动更新。“翻翻旧文”的文字与地址在 `footer.link.label`／`footer.link.url` 中维护；版权后的 `Afterlight` 在 `footer.credit` 中修改，填 `""` 可连同分隔符一起隐藏。布局模板仍位于 `layout/partial/footer.ejs`，但以上修改已无需动模板。
+
+右上角搜索按钮受主题配置 `search.enable` 控制；配色按钮保持浅色／深色二选。
 
 ## 评论
 

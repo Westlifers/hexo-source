@@ -1,5 +1,5 @@
 <section class="archive-page shell">
-  <header class="section-heading"><div><p class="eyebrow">THE ARCHIVE</p><h1><%= page.category || page.tag || '写过的，都在这里。' %></h1></div><span class="section-note"><%= page.category ? '分类' : page.tag ? '标签' : '沿着时间，慢慢翻。' %></span></header>
+  <header class="section-heading"><div><% if (theme.archive.eyebrow) { %><p class="eyebrow"><%= theme.archive.eyebrow %></p><% } %><h1><%= page.category || page.tag || theme.archive.title %></h1></div><% if (page.category || page.tag || theme.archive.note) { %><span class="section-note"><%= page.category ? '分类' : page.tag ? '标签' : theme.archive.note %></span><% } %></header>
   <%- partial('partial/post-list', { posts: page.posts }) %>
   <%- partial('partial/pagination') %>
 </section>

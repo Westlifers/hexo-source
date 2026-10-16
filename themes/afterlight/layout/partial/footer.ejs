@@ -1,4 +1,4 @@
 <footer class="site-footer shell">
   <a class="footer-name" href="<%= url_for('/') %>"><%= theme.brand.name %></a>
-  <div class="footer-links"><a href="<%= url_for('/archives/') %>">翻翻旧文 ↗</a><span>© <%= new Date().getFullYear() %> 杨荻 · Afterlight</span></div>
+  <div class="footer-links"><% if (theme.footer.link?.label && theme.footer.link?.url) { %><a href="<%= url_for(theme.footer.link.url) %>"><%= theme.footer.link.label %> ↗</a><% } %><span>© <%= new Date().getFullYear() %> <%= theme.brand.author %><% if (theme.footer.credit) { %> · <%= theme.footer.credit %><% } %></span></div>
 </footer>

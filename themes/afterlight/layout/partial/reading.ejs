@@ -1,10 +1,10 @@
 <% const mode = afterlight_mode(entry); const content = mode === 'poem' ? entry.content : afterlight_reading_content(entry.content); const outline = mode === 'poem' ? '' : toc(content, { max_depth: 3, list_number: false }); const ai = afterlight_ai(entry); %>
 <div class="reading-page shell mode-<%= mode %>">
-  <div class="reading-topline"><a href="<%= url_for('/archives/') %>">← 所有文字</a></div>
+  <% if (theme.reading.archive_link?.label && theme.reading.archive_link?.url) { %><div class="reading-topline"><a href="<%= url_for(theme.reading.archive_link.url) %>">← <%= theme.reading.archive_link.label %></a></div><% } %>
   <header class="post-header">
     <div class="post-kicker"><% entry.categories?.each(cat => { %><a href="<%= url_for(cat.path) %>"><%= cat.name %></a><% }); %></div>
     <h1><%= entry.title %></h1>
-    <div class="post-meta"><time datetime="<%= date_xml(entry.date) %>"><%= date(entry.date, 'YYYY 年 M 月 D 日') %></time><span>杨荻</span><span>约 <%= afterlight_reading_time(entry) %> 分钟</span><button type="button" data-focus aria-pressed="false" hidden>专注阅读</button></div>
+    <div class="post-meta"><time datetime="<%= date_xml(entry.date) %>"><%= date(entry.date, 'YYYY 年 M 月 D 日') %></time><span><%= theme.brand.author %></span><span>约 <%= afterlight_reading_time(entry) %> 分钟</span><button type="button" data-focus aria-pressed="false" hidden>专注阅读</button></div>
     <% if (ai) { %><aside class="ai-disclosure" aria-label="AI 使用说明"><strong><span aria-hidden="true"><%= ai.icon %></span> <%= ai.label %></strong><div><%- ai.note %></div></aside><% } %>
   </header>
   <div class="reading-grid <%= outline ? 'has-outline' : '' %>">

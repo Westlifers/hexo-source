@@ -24,7 +24,7 @@ npm run build:afterlight
 
 ## 可调整的设计入口
 
-- `_config.yml`：签名、首页标题与引言、主图、精选文章及作品类型。
+- `_config.yml`：签名与署名、导航列表、首页文案与链接、主图及原图尺寸、精选文章、归档文案、页脚、评论和作品类型。日常内容调整集中在此，完整字段见维护说明。
 - `source/afterlight/theme.css`：颜色、字体、间距、阅读宽度、响应式布局与既有作品的局部适配。
 - `source/afterlight/signature.svg`：手绘 Yougi 矢量签名。页头将透明 SVG 作为遮罩，使用当前文字颜色，浅深背景共用同一份轮廓；替换时也应使用透明背景的轮廓素材。
 - `layout/index.ejs`：首页构图。
@@ -88,3 +88,5 @@ Git 仅允许本地提交。除非用户明确要求，不推送、合并到主�
 先构建两个独立输出，并启动 Afterlight 本地预览，再运行 `npm run check:afterlight`。检查工具需要开发环境的 Playwright 和本机 Chrome；可以用 `AFTERLIGHT_PLAYWRIGHT_MODULE` 指向已有 Playwright 模块，`AFTERLIGHT_BROWSER` 选择浏览器 channel。没有将浏览器测试包加入博客的发布依赖。
 
 检查覆盖文章内容与旧主题对比、全部本地链接、搜索、证明锚点、阅读状态、拖动、触摸、图库、40 个响应式状态、音频、无脚本与禁用存储的降级。结果写入忽略目录 `.afterlight-preview/phase-two-checks.json`；完整阶段记录见 `afterlight-planning/PHASE_TWO.md`。
+
+配置维护的专项检查：`node tools/afterlight-config-check.cjs`，使用相同 Playwright 环境，无需预览服务。它在忽略目录内生成独立测试配置，检查自定义文案、导航排序与当前页、外链、子路径、署名、图片尺寸、文字转义和可选区块隐藏，不改作者配置，不连接线上服务。
