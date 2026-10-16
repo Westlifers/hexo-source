@@ -10,7 +10,16 @@ button, a, summary { touch-action: manipulation; }
 .appearance-toggle[aria-pressed="true"] .appearance-symbol { transform: rotate(180deg); }
 .theme-changing :is(body, .photo-mat, .featured-story, .home-note, .afterlight-dialog, .reading-launcher, .reading-actions, .ai-disclosure) { transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease; }
 .featured-story { transition: box-shadow 220ms var(--ease), transform 220ms var(--ease); }
-.without-image { background: radial-gradient(ellipse at 100% 0, #62746625, transparent 70%), #263739; }
+.without-image { --accent: #e3a187; background: radial-gradient(ellipse at 100% 0, #62746625, transparent 70%), #263739; }
+.archive-page .section-note { color: var(--muted); font-size: 12px; }
+.archive-page h1 { text-wrap: balance; overflow-wrap: anywhere; }
+.afterlight .about-page { --text-color: var(--ink); }
+.afterlight :is(.about-subtitle, .about-section-mark, .about-photo figcaption, .about-assistant-credit, .about-tags span) { color: var(--muted); }
+.afterlight :is(.about-tags span, .about-game-list span) { background: var(--soft); border-color: var(--rule); }
+.afterlight .route-six-song .song-caption { color: var(--muted); }
+.afterlight .route-six-song .song-player { border-color: var(--rule); background: var(--surface); }
+/* The Co/End epigraph carries this original inline color. Keep its source intact. */
+.afterlight .post-content > div[style*="color: #5f6f89"] { color: var(--muted) !important; }
 .post-row { position: relative; isolation: isolate; }
 .post-row::before { content: ''; position: absolute; inset: 5px -18px; z-index: -1; pointer-events: none; border-radius: 8px; background: linear-gradient(90deg, transparent, var(--surface) 40px, var(--surface) calc(100% - 40px), transparent); opacity: 0; transition: opacity 180ms ease; }
 .post-arrow { transition: transform 180ms var(--ease), color 180ms ease; }
@@ -71,6 +80,7 @@ button:not(:disabled):active { transform: translateY(1px); }
 @keyframes tool-arrive { from { opacity: .4; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 @keyframes breathe { from { opacity: .35; } to { opacity: 1; } }
 @media (max-width: 650px) {
+  .archive-page .section-heading { flex-direction: column; align-items: flex-start; gap: 10px; }
   .site-header { display: grid; grid-template-columns: minmax(0, 1fr) 44px 44px; gap: 0 6px; padding-block: 8px 0; }
   .brand { width: 126px; grid-column: 1; grid-row: 1; }
   .nav-search { grid-column: 2; grid-row: 1; }
@@ -102,4 +112,8 @@ button:not(:disabled):active { transform: translateY(1px); }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+@media print {
+  :root, :root[data-theme="dark"] { color-scheme: light; --paper: #fff; --surface: #fff; --soft: #f2f2f2; --ink: #222; --muted: #555; --rule: #ccc; --accent: #84422e; --sage: #40543c; }
+  body.modal-open { overflow: visible; }
 }

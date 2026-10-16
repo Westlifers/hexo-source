@@ -3,7 +3,7 @@
   if (!root) return;
   // Preserve links to other pages; only plain pictures or original-image links open here.
   const images = [...root.querySelectorAll('img')].filter(img => {
-    if (img.closest('[data-no-gallery], .no-gallery, .tikzjax, mjx-container')) return false;
+    if (img.closest('[data-no-gallery], .no-gallery, .not-gallery-item, .tikzjax, mjx-container')) return false;
     const link = img.closest('a');
     if (!link) return true;
     const url = new URL(link.href, location.href);

@@ -2,6 +2,7 @@
 (() => {
   const root = document.querySelector('[data-article-content]');
   if (!root) return;
+  const mathSource = document.currentScript.dataset.mathSrc;
   // Authors name the exact statement and proof part. Never infer an association
   // from adjacency: a theorem can have several proofs separated by lemmas.
   function linkProofs(root) {
@@ -138,14 +139,29 @@
     if (link && link.pathname === location.pathname && link.hash && link.hash === location.hash) requestAnimationFrame(revealTarget);
   });
   if (location.hash) revealTarget();
-  Promise.resolve(window.MathJax?.startup?.promise).then(async () => {
+  // Load the external engine after local controls have initialized. A slow CDN
+  // must not block all later deferred scripts (search, appearance and reading).
+  const note = document.createElement('p');
+  note.className = 'math-status'; note.setAttribute('role', 'status');
+  const loadingTimer = setTimeout(() => {
+    note.textContent = '公式正在加载，正文和阅读工具仍可使用。';
+    root.before(note);
+  }, 1500);
+  const ready = window.MathJax?.startup?.promise || new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = mathSource; script.async = true;
+    script.addEventListener('load', () => resolve(window.MathJax?.startup?.promise), { once: true });
+    script.addEventListener('error', () => reject(new Error('MathJax unavailable')), { once: true });
+    document.head.append(script);
+  });
+  Promise.resolve(ready).then(async () => {
     if (!window.MathJax?.typesetPromise) throw new Error('MathJax unavailable');
     await window.MathJax.typesetPromise([root]);
+    clearTimeout(loadingTimer); note.remove();
     enhance(root);
     if (location.hash) revealTarget();
   }).catch(() => {
-    const note = document.createElement('p');
-    note.className = 'math-status'; note.setAttribute('role', 'status');
+    clearTimeout(loadingTimer);
     note.textContent = '公式暂未完成排版，联网后刷新可重试。';
     root.before(note);
   });

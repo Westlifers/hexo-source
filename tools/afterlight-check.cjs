@@ -81,6 +81,36 @@ const routes = {
     await page.unroute('**/afterlight/search.json'); await page.keyboard.press('Escape');
     checks.push('search: title/body/tag index, no drafts or CSS, keyboard, empty results, failure and retry');
 
+    // Raw HTML pages need usable anchors too; legacy gallery opt-outs survive.
+    await goto('about/');
+    const aboutLinks = page.locator('.article-outline a');
+    assert((await aboutLinks.count()) >= 5);
+    assert(await aboutLinks.evaluateAll(links => links.every(link =>
+      link.hash && document.querySelector('[data-article-content]').contains(document.getElementById(decodeURIComponent(link.hash.slice(1)))))));
+    await aboutLinks.last().click();
+    assert(await page.evaluate(() => document.getElementById(decodeURIComponent(location.hash.slice(1)))?.textContent.includes('Noema')));
+    assert.equal(await page.locator('.not-gallery-item.gallery-trigger').count(), 0);
+    assert.equal(await page.locator('.not-gallery-item').getAttribute('role'), null);
+    checks.push('raw HTML about-page headings have working anchors; legacy excluded images stay outside the gallery');
+
+    // A stalled external math engine must not hold local controls hostage.
+    const slowMath = await browser.newPage();
+    let stalled;
+    await slowMath.route('**/tex-mml-chtml.js', route => { stalled = route; });
+    await slowMath.goto(new URL(routes.math, base).href, { waitUntil: 'domcontentloaded' });
+    await slowMath.locator('[data-search-open]').click();
+    assert(await slowMath.locator('#search-dialog').evaluate(element => element.open));
+    await slowMath.keyboard.press('Escape');
+    await slowMath.waitForFunction(() => !document.querySelector('#search-dialog').open);
+    await slowMath.locator('button[data-appearance]').click();
+    await slowMath.locator('.post-meta [data-focus]').click();
+    assert(await slowMath.locator('body').evaluate(element => element.classList.contains('focus-reading')));
+    await slowMath.waitForFunction(() => document.querySelector('.math-status')?.textContent.includes('正在加载'));
+    await stalled.abort();
+    await slowMath.waitForFunction(() => document.querySelector('.math-status')?.textContent.includes('暂未完成'));
+    await slowMath.close();
+    checks.push('slow or failed MathJax leaves search, theme and reading controls usable, with loading/failure feedback');
+
     await goto(routes.math);
     await page.waitForFunction(() => document.querySelectorAll('mjx-container').length > 20);
     assert.equal(await page.locator('mjx-merror').count(), 0);

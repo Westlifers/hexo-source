@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title><%= page.title ? afterlight_plain(page.title) + ' · ' : '' %><%= theme.brand.name %></title>
-  <meta name="description" content="<%= page.content ? afterlight_summary(page, 150) : theme.brand.subtitle %>">
+  <meta name="description" content="<%= (page.content && afterlight_summary(page, 150)) || (page.title ? afterlight_plain(page.title) + ' · ' : '') + theme.brand.subtitle %>">
   <link rel="icon" href="<%= url_for('/afterlight/favicon.svg') %>" type="image/svg+xml">
   <link rel="stylesheet" href="<%= url_for('/afterlight/theme.css') %>">
   <link rel="stylesheet" href="<%= url_for('/afterlight/components.css') %>">
@@ -14,7 +14,6 @@
   <% if (page.content && (page.plugins?.mathjax || page.engine === 'statement' || page.tikzjax)) { %>
   <link rel="stylesheet" href="<%= url_for('/afterlight/math.css') %>">
   <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]},chtml:{matchFontHeight:false},startup:{typeset:false}};</script>
-  <script defer src="<%= theme.math.src %>"></script>
   <% } %>
 </head>
 <body class="afterlight <%= is_home() ? 'view-home' : 'view-inner' %>">
@@ -30,7 +29,7 @@
   <script defer src="<%= url_for('/afterlight/reading.js') %>"></script>
   <% if (theme.gallery.enable) { %><script defer src="<%= url_for('/afterlight/gallery.js') %>"></script><% } %>
   <% if (theme.comments.enable) { %><script defer src="<%= url_for('/afterlight/comments.js') %>"></script><% } %>
-  <% if (page.plugins?.mathjax || page.engine === 'statement' || page.tikzjax) { %><script defer src="<%= url_for('/afterlight/math.js') %>"></script><% } %>
+  <% if (page.plugins?.mathjax || page.engine === 'statement' || page.tikzjax) { %><script defer src="<%= url_for('/afterlight/math.js') %>" data-math-src="<%= theme.math.src %>"></script><% } %>
   <% } %>
 </body>
 </html>

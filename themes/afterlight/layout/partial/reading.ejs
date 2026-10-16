@@ -1,4 +1,4 @@
-<% const mode = afterlight_mode(entry); const outline = mode === 'poem' ? '' : toc(entry.content, { max_depth: 3, list_number: false }); const ai = afterlight_ai(entry); %>
+<% const mode = afterlight_mode(entry); const content = mode === 'poem' ? entry.content : afterlight_reading_content(entry.content); const outline = mode === 'poem' ? '' : toc(content, { max_depth: 3, list_number: false }); const ai = afterlight_ai(entry); %>
 <div class="reading-page shell mode-<%= mode %>">
   <div class="reading-topline"><a href="<%= url_for('/archives/') %>">← 所有文字</a></div>
   <header class="post-header">
@@ -9,7 +9,7 @@
   </header>
   <div class="reading-grid <%= outline ? 'has-outline' : '' %>">
     <% if (outline) { %><aside class="article-outline"><details open><summary>本文目录 <span aria-hidden="true">↕</span></summary><nav aria-label="本文目录"><%- outline %></nav></details></aside><% } %>
-    <article class="article"><div class="content post-content" data-article-content><%- entry.content %></div></article>
+    <article class="article"><div class="content post-content" data-article-content><%- content %></div></article>
   </div>
   <% if (isPost) { %>
   <div class="post-end"><span aria-hidden="true">✳</span><div class="post-tags"><% entry.tags?.each(tag => { %><a href="<%= url_for(tag.path) %>"># <%= tag.name %></a><% }); %></div></div>
