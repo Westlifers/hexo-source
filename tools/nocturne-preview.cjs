@@ -76,7 +76,15 @@ async function main() {
     };
     fs.writeFileSync(path.join(state, `build-nocturne${suffix}.json`), JSON.stringify(report, null, 2));
     console.log(`Built Nocturne: ${posts.length} posts, ${routes.length} routes. Output: ${output}`);
-  } finally { await hexo.exit(); }
+  } finally {
+    try { await hexo.exit(); }
+    finally {
+      // These are disposable build inputs, separate from the served preview.
+      const resolvedCache = fs.realpathSync(cache);
+      if (path.dirname(resolvedCache) !== fs.realpathSync(state) || !path.basename(resolvedCache).startsWith('cache-')) throw new Error('Invalid preview cache directory');
+      fs.rmSync(resolvedCache, { recursive: true, force: true });
+    }
+  }
   if (args.includes('--build-only')) return;
   const app = connect();
   app.use((req, res, next) => {

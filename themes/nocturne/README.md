@@ -28,9 +28,9 @@ node tools/nocturne-check.cjs --subpath
 - 首页以中文身份、英文场景和全宽弦图开场；珍珠白、淡金与冷银的细线沿真实连接缓慢流动。下接真实作品、时间列表和文章关系星图。正文进入侧边目录与单栏文字的安静布局。关于页采用大字姓名、悬浮人像、自然变换交换图与错落的个人介绍。
 - 日间阅读采用淡紫灰底色，首页弦图和星图保留夜间舞台。
 
-从作者真实文章中提炼“抽象结构 / 具体生活”的张力。没有沿用 Afterlight 的纸色、签名和首页排版。首页引文来自《做一首世俗的诗》和《Route Six》；摄影全部来自既有文章，压缩副本位于主题 `images/`，不改动原图。
+从作者真实文章中提炼“抽象结构 / 具体生活”的张力。首页句子结合《做一首世俗的诗》《上海、杭州游记》和《Route Six》的城市旁观意象创作；它不是文章原句的直接引用。摄影全部来自既有文章，压缩副本位于主题 `images/`，不改动原图。
 
-参考研究：[Bruno Simon 的空间交互作品](https://bruno-simon.com/)与 [Codrops 实验视觉案例](https://tympanus.net/codrops/hub/all/page/3/)。借鉴空间交互和材质表现的思路；WebGL 图形、交互和版式为本项目自行实现，没有复制参考站代码或素材。
+参考研究：[Bruno Simon 的空间交互作品](https://bruno-simon.com/)与 [Codrops 实验视觉案例](https://tympanus.net/codrops/hub/all/page/3/)。借鉴空间交互和材质表现的思路；主题视觉、交互和版式为本项目自行实现，没有复制参考站代码或素材。
 
 ## 功能与操作
 
@@ -48,20 +48,24 @@ node tools/nocturne-check.cjs --subpath
 
 主题配置为 `themes/nocturne/_config.yml`。作者名字、简介、数学 CDN、评论仓库可在这里维护。首页三篇精选目前按真实源文件名在 `layout/index.ejs` 中选择，替换时修改对应 `n_post(...)` 和配图。文章照常添加，不需要补封面或新 front-matter。
 
-### 首页句子试映
+### 首页句子与弦图
 
-当前候选固定为 S、M、A、C、R、U、E、X、Y。原先六句推荐全部保留，E 是 `The city I watch is full of other people's evenings.`；X、Y 分别是窗光与千百人夜晚的新句。`home.string_candidate: X` 只是首轮试映的起点，尚未定稿。仅本地预览显示折叠的“试映中的句子”选择器，并接受 `?sentence=E` 等参数；正式页面只显示配置的句子。
+首页使用已确定的句子：
 
-数据与渲染分开：`source/nocturne/strings/candidates.json` 保存九句、原始端口、连续线、Cup/Cap/Swap 与来源；`raw/` 保存原始 SVG，`provenance/` 保存 CCG 和图数据。SVG 与浏览器共用同一渲染器。构建时另生成精简交互数据：九句试映约 75 KB，正式页面的 X 单句约 9 KB，不在浏览器加载解析模型。
+> The city I watch is full of other people's evenings.
+
+本地预览与正式页面使用同一幅 E 弦图。句子直接来自图数据，不通过主题配置、选择器或查询参数切换。
+
+数据与渲染分开：`source/nocturne/strings/evenings.json` 是单个图对象，包含 `schemaVersion: 1`、E 的句文、原始端口、连续线、Cup/Cap/Swap、来源与 `method`。原始图为 `strings/raw/E.svg`，解析依据为 `strings/provenance/E-ccg.json` 和 `E-diagram.json`。构建时输出 `/nocturne/strings/evenings-runtime.json`，仅包含浏览器交互需要的数据。首帧 SVG 与增强后的图共用同一渲染器，浏览器不加载解析模型。
 
 复现导出（使用已安装的本地 lambeq 0.4.3 环境，不下载模型）：
 
 ```powershell
-& E:/anaconda/envs/discocat/python.exe -B tools/export-nocturne-strings.py
-node tools/nocturne-strings-check.cjs
+& E:/anaconda/envs/discocat/python.exe -B tools/export-nocturne-evenings.py
+node tools/nocturne-evenings-check.cjs
 ```
 
-导出器优先读取仓库中的 CCG；显式 `--reparse` 才重新使用本地 Bobcat 模型。原始图不做 rewrite。首页给纯 cup 图放柔曲率，E 的 cap/swap 图保留原路径，所有端口连接不变。几何检查对当前九句核对端口、输出、来源与采样交叉数；新增句子后需重跑并视觉检查，不能据此保证任意未来图的曲率都安全。`people` 与 `'s` 是两个真实词框，不为排版合并。
+导出器优先读取仓库中的 CCG；显式 `--reparse` 才重新使用本地 Bobcat 模型。原始图不做 rewrite。首页保留 E 的 cap/swap 路径和端口连接；几何检查核对端口、输出、来源与采样交叉数。修改图数据或渲染器后需重跑检查并复核视觉。`people` 与 `'s` 是两个真实词框，不为排版合并。
 
 如需覆盖文章的星图分组，可加：
 

@@ -1,13 +1,13 @@
-"""Export the nine frozen Nocturne sentences without changing their diagrams.
+"""Export Nocturne's chosen sentence without changing its parsed diagram.
 
 Run with the existing lambeq 0.4.3 environment, for example::
 
-    python -B tools/export-nocturne-strings.py
+    python -B tools/export-nocturne-evenings.py
 
-Checked-in CCG trees make ordinary regeneration independent of a parser model.
+The checked-in CCG tree makes regeneration independent of a parser model.
 For a deliberate fresh parse, pass --reparse and --model PATH to a complete
 local Bobcat model. All Hugging Face access is forced offline; this tool never
-installs packages or downloads a model. The gallery cache is optional.
+installs packages or downloads a model.
 
 Geometry follows DrawableDiagram, including every Cup, Cap and Swap. Helpers
 are traversed into continuous strands, but their identities remain in the data.
@@ -36,35 +36,7 @@ sys.dont_write_bytecode = True
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSET_PREFIX = "nocturne/strings"
-CANDIDATES = [
-    ("S", "让公交带我走",
-     "I let the bus carry me through other people's evenings.",
-     "我任公交载着我，穿过别人的夜晚。", "let + 裸不定式 + 路径"),
-    ("M", "看城市入夜",
-     "From across the river, I watch the city fill with other people's evenings.",
-     "我隔着河，看城市渐渐盛满别人的夜晚。", "感知动词 + 裸不定式"),
-    ("A", "隔岸城市",
-     "The city across the river is full of other people's evenings.",
-     "河对岸的城市，盛满了别人的夜晚。", "名词后置地点修饰"),
-    ("C", "亮起的城市",
-     "The city that glows across the river is full of other people's evenings.",
-     "隔江亮着的那座城，盛满了别人的夜晚。", "主语关系从句"),
-    ("R", "车窗里的片刻",
-     "Through the bus window, I catch glimpses of other people's evenings.",
-     "隔着公交车窗，我瞥见别人夜晚的几个片刻。", "前置地点 + 名词补足"),
-    ("U", "我静坐，城市入夜",
-     "I sit by the river while the city fills with other people's evenings.",
-     "我坐在河边，城市渐渐盛满别人的夜晚。", "两个事件 + while 从句"),
-    ("E", "留下观看者",
-     "The city I watch is full of other people's evenings.",
-     "我望着的这座城，盛满了别人的夜晚。", "零关系从句"),
-    ("X", "为别人亮着的窗",
-     "I let the bus carry me past windows lit for someone else.",
-     "我任公交载着我，经过一扇扇为别人亮着的窗。", "let + 路径 + 过去分词修饰"),
-    ("Y", "千百人的夜晚",
-     "I watch a thousand evenings unfold across the river.",
-     "我隔江望着，千百人的夜晚正徐徐展开。", "感知动词 + 裸不定式 + 地点"),
-]
+SENTENCE = "The city I watch is full of other people's evenings."
 
 
 def write_json(path: Path, value: object) -> None:
@@ -330,19 +302,16 @@ def main() -> None:
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--output", type=Path,
                      default=ROOT / "themes/nocturne/source/nocturne/strings")
-    cli.add_argument("--cache", type=Path,
-                     default=ROOT / ".nocturne-preview/hero-lab/discocat-variants")
     cli.add_argument("--model", type=Path,
                      default=Path.home() / ".cache/lambeq/bobcat/bert")
     cli.add_argument("--reparse", action="store_true",
-                     help="Regenerate all CCG trees using the existing local model")
+                     help="Regenerate the CCG tree using the existing local model")
     args = cli.parse_args()
 
     import matplotlib
     matplotlib.use("Agg")
     matplotlib.rcParams.update({"savefig.dpi": 180, "svg.fonttype": "none",
                                 "svg.hashsalt": "nocturne-strings-v1"})
-    from lambeq import BobcatParser
     from lambeq.text2diagram.ccg_tree import CCGTree
 
     versions = {name: importlib.metadata.version(name)
@@ -352,72 +321,48 @@ def main() -> None:
                            "review API and diagram changes before updating it")
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
-    parser = tokenizer = None
-    catalog = {"schemaVersion": 1, "defaultId": "S",
-               "coordinateSystem": {"unit": "lambeq drawing unit",
-                                    "xDirection": "right", "yDirection": "down",
-                                    "wordTop": 0, "wordHeight": 0.5},
-               "method": {"generator": "tools/export-nocturne-strings.py",
-                          "versions": versions, "parser": "Bobcat (local bert)",
-                          "tokenizer": "spaCy blank English tokenizer",
-                          "conversion": "CCGTree.to_diagram(planar=False, collapse_noun_phrases=True)",
-                          "rewrites": [],
-                          "geometry": "DrawableDiagram; exact quadratic-to-cubic conversion; continuous strands retain all helper connections",
-                          "semantics": "Syntactic composition only; no learned lexical tensors or sentence vectors are evaluated."},
-               "variants": []}
-
-    for identifier, title, sentence, translation, structure in CANDIDATES:
-        ccg_path = output / "provenance" / f"{identifier}-ccg.json"
-        cached_path = args.cache / f"{identifier}-ccg.json"
-        tree_path = next((p for p in (ccg_path, cached_path) if p.is_file()), None)
-        if tree_path and not args.reparse:
-            tree_json = json.loads(tree_path.read_text(encoding="utf-8-sig"))
-            tree = CCGTree.from_json(tree_json)
-            if "".join(leaf_tokens(tree_json)) != re.sub(r"\s+", "", sentence):
-                raise ValueError(f"{identifier}: cached CCG does not match frozen sentence")
-        else:
-            if parser is None:
-                if not (args.model / "pytorch_model.bin").is_file():
-                    raise FileNotFoundError("Missing local Bobcat model; no download will be attempted")
-                import spacy
-                tokenizer = spacy.blank("en").tokenizer
-                parser = BobcatParser(model_name_or_path=str(args.model.resolve()),
-                                      verbose="suppress")
-            tokens = [token.text for token in tokenizer(sentence)]
-            tree = parser.sentence2tree(tokens, tokenised=True)
-            tree_json = tree.to_json()
-        diagram = tree.to_diagram(planar=False, collapse_noun_phrases=True)
-        if str(diagram.cod) != "s":
-            raise ValueError(f"{identifier}: unexpected output {diagram.cod}")
-        geometry = continuous_geometry(diagram)
-        write_json(ccg_path, tree_json)
-        diagram_path = output / "provenance" / f"{identifier}-diagram.json"
-        write_json(diagram_path, diagram.to_json())
-        raw_path = output / "raw" / f"{identifier}.svg"
-        raw_render(diagram, raw_path)
-        row = {"id": identifier, "title": title, "sentence": sentence,
-               "translation": translation, "structure": structure,
-               "tokens": leaf_tokens(tree_json), **geometry,
-               "rawSvg": f"{ASSET_PREFIX}/raw/{identifier}.svg",
-               "provenance": {"ccg": f"{ASSET_PREFIX}/provenance/{identifier}-ccg.json",
-                              "diagram": f"{ASSET_PREFIX}/provenance/{identifier}-diagram.json",
-                              "ccgSha256": sha256(ccg_path.read_bytes()).hexdigest()}}
-        catalog["variants"].append(row)
-        # Keep the old gallery and manifest untouched; only add the two new exports.
-        if identifier in ("X", "Y") and args.cache.is_dir():
-            write_json(cached_path, tree_json)
-            write_json(args.cache / f"{identifier}-diagram.json", diagram.to_json())
-            (args.cache / f"{identifier}-ccg.txt").write_text(tree.deriv(), encoding="utf-8")
-            for extension in ("svg", "png", "pdf"):
-                raw_render(diagram, args.cache / f"{identifier}.{extension}")
-        print(json.dumps({"id": identifier, **row["stats"]}), flush=True)
-
-    expected = {row[0] for row in CANDIDATES}
-    assert {v["id"] for v in catalog["variants"]} == expected
-    e = next(v for v in catalog["variants"] if v["id"] == "E")
-    assert e["stats"]["caps"] == e["stats"]["swaps"] == 1, "E's raw cap/swap must survive"
-    write_json(output / "candidates.json", catalog)
-    print(f"Exported {len(catalog['variants'])} faithful diagrams to {output}")
+    ccg_path = output / "provenance" / "E-ccg.json"
+    if not args.reparse:
+        tree_json = json.loads(ccg_path.read_text(encoding="utf-8-sig"))
+        tree = CCGTree.from_json(tree_json)
+    else:
+        if not (args.model / "pytorch_model.bin").is_file():
+            raise FileNotFoundError("Missing local Bobcat model; no download will be attempted")
+        import spacy
+        from lambeq import BobcatParser
+        tokenizer = spacy.blank("en").tokenizer
+        parser = BobcatParser(model_name_or_path=str(args.model.resolve()),
+                              verbose="suppress")
+        tokens = [token.text for token in tokenizer(SENTENCE)]
+        tree = parser.sentence2tree(tokens, tokenised=True)
+        tree_json = tree.to_json()
+    if "".join(leaf_tokens(tree_json)) != re.sub(r"\s+", "", SENTENCE):
+        raise ValueError("CCG does not match the chosen sentence")
+    diagram = tree.to_diagram(planar=False, collapse_noun_phrases=True)
+    geometry = continuous_geometry(diagram)
+    if geometry["stats"]["caps"] != 1 or geometry["stats"]["swaps"] != 1:
+        raise ValueError("The original cap and swap must survive")
+    write_json(ccg_path, tree_json)
+    write_json(output / "provenance" / "E-diagram.json", diagram.to_json())
+    raw_render(diagram, output / "raw" / "E.svg")
+    data = {"schemaVersion": 1,
+            "method": {"generator": "tools/export-nocturne-evenings.py",
+                       "versions": versions, "parser": "Bobcat (local bert)",
+                       "tokenizer": "spaCy blank English tokenizer",
+                       "conversion": "CCGTree.to_diagram(planar=False, collapse_noun_phrases=True)",
+                       "rewrites": [],
+                       "geometry": "DrawableDiagram; exact quadratic-to-cubic conversion; continuous strands retain all helper connections",
+                       "semantics": "Syntactic composition only; no learned lexical tensors or sentence vectors are evaluated."},
+            "id": "E", "title": "留下观看者", "sentence": SENTENCE,
+            "translation": "我望着的这座城，盛满了别人的夜晚。",
+            "structure": "零关系从句", "tokens": leaf_tokens(tree_json),
+            **geometry, "rawSvg": f"{ASSET_PREFIX}/raw/E.svg",
+            "provenance": {"ccg": f"{ASSET_PREFIX}/provenance/E-ccg.json",
+                           "diagram": f"{ASSET_PREFIX}/provenance/E-diagram.json",
+                           "ccgSha256": sha256(ccg_path.read_bytes()).hexdigest()}}
+    write_json(output / "evenings.json", data)
+    print(json.dumps({"id": "E", **data["stats"]}), flush=True)
+    print(f"Exported the chosen diagram to {output / 'evenings.json'}")
 
 
 if __name__ == "__main__":

@@ -3,13 +3,12 @@
   const hero = document.querySelector('[data-string-hero]');
   if (!hero || !window.NocturneStringDiagram) return;
   const stage = hero.querySelector('[data-string-stage]');
-  const select = hero.querySelector('[data-string-candidate]');
   const motion = hero.querySelector('[data-string-motion]');
   const detail = hero.querySelector('[data-string-detail]');
   const scale = hero.querySelector('[data-string-scale]');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let paused = reduced.matches, visible = true, pinned = null;
-  let variants, current, diagram;
+  let current, diagram;
   let selectionStatus = hero.querySelector('[data-string-selection]');
   if (!selectionStatus) {
     selectionStatus = document.createElement('p');
@@ -54,17 +53,11 @@
       selectionStatus.textContent = word ? `${word.text} 的连线已突出${others.length ? '，相接词框：' + others.join('、') : ''}。再次选择可取消。` : '已显示全部连线。';
     }
   }
-  function draw(candidate) {
-    current = candidate;
+  function draw(sentence) {
+    current = sentence;
     pinned = null;
-    stage.innerHTML = window.NocturneStringDiagram.render(candidate, { interactive: true });
+    stage.innerHTML = window.NocturneStringDiagram.render(sentence, { interactive: true });
     diagram = stage.querySelector('.string-diagram');
-    hero.dataset.candidate = candidate.id;
-    hero.querySelector('[data-string-sentence]').textContent = candidate.sentence;
-    hero.querySelector('[data-string-translation]').textContent = candidate.translation;
-    const original = hero.querySelector('[data-string-original]');
-    if (original) original.href = new URL(candidate.rawSvg.replace(/^nocturne\/strings\//, ''), new URL(hero.dataset.stringRoot, location.href)).href;
-    if (select) select.value = candidate.id;
     const scroller = stage.closest('[data-string-scroll]') || stage.parentElement;
     if (scroller) scroller.scrollLeft = 0;
     selectionStatus.textContent = '';
@@ -116,15 +109,6 @@
     detail.setAttribute('aria-pressed', String(shown));
     detail.querySelector('[data-control-label]').textContent = shown ? '收起类型' : '展开类型';
   });
-  select?.addEventListener('change', () => {
-    const candidate = variants?.find(item => item.id === select.value);
-    if (!candidate) return;
-    draw(candidate);
-    const url = new URL(location.href);
-    url.searchParams.set('sentence', candidate.id);
-    history.replaceState(null, '', url);
-    selectionStatus.textContent = '已切换为：' + candidate.sentence;
-  });
   if ('IntersectionObserver' in window) new IntersectionObserver(entries => {
     visible = entries[0].isIntersecting; syncMotion();
   }, { threshold: 0 }).observe(stage);
@@ -136,15 +120,10 @@
   fetch(hero.dataset.source, { signal: controller.signal }).then(response => {
     if (!response.ok) throw new Error('Sentence data unavailable');
     return response.json();
-  }).then(collection => {
-    if (collection.schemaVersion !== 1 || !Array.isArray(collection.variants)) throw new Error('Unknown sentence data');
-    variants = collection.variants;
-    const requested = select ? new URLSearchParams(location.search).get('sentence') : null;
-    const initial = variants.find(candidate => candidate.id === requested) || variants.find(candidate => candidate.id === hero.dataset.candidate) || variants.find(candidate => candidate.id === collection.defaultId) || variants[0];
-    if (!initial) throw new Error('No sentence available');
-    draw(initial);
+  }).then(sentence => {
+    if (sentence.schemaVersion !== 1 || sentence.id !== 'E') throw new Error('Unknown sentence data');
+    draw(sentence);
     hero.classList.add('string-ready');
-    if (select) select.disabled = false;
     if (detail) detail.disabled = false;
     if (scale) scale.disabled = false;
     if (motion) motion.disabled = reduced.matches;
