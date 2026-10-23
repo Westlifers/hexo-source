@@ -1,0 +1,20 @@
+<div class="about-experience">
+  <div class="about-geometry" aria-hidden="true">
+    <svg viewBox="0 0 1000 700" fill="none">
+      <defs>
+        <linearGradient id="about-morphism" x1="50" y1="40" x2="920" y2="650" gradientUnits="userSpaceOnUse"><stop stop-color="#e9bf97"/><stop offset=".5" stop-color="#b6bddd"/><stop offset="1" stop-color="#e9bf97"/></linearGradient>
+        <marker id="about-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="m1 1 7 4-7 4" stroke="currentColor" fill="none"/></marker>
+      </defs>
+      <g class="about-diagram-frame"><path d="M100 160 640 70 900 505 350 625Z"/><path d="M100 160 350 625M640 70 900 505"/><path d="M100 160 900 505M640 70 350 625" stroke-dasharray="3 12"/><ellipse cx="500" cy="345" rx="445" ry="290" transform="rotate(-16 500 345)"/></g>
+      <g class="about-diagram-arrows" marker-end="url(#about-arrow)"><path d="M154 160 587 88"/><path d="M400 605 847 518"/><path d="m129 209 195 358"/><path d="m670 117 200 338"/></g>
+      <g class="about-diagram-flow"><path pathLength="1" d="M154 160 587 88"/><path pathLength="1" d="M400 605 847 518"/><path pathLength="1" d="m129 209 195 358"/><path pathLength="1" d="m670 117 200 338"/></g>
+      <g class="about-diagram-points"><circle cx="100" cy="160" r="5"/><circle cx="640" cy="70" r="5"/><circle cx="900" cy="505" r="5"/><circle cx="350" cy="625" r="5"/></g>
+      <g class="about-diagram-labels"><text x="65" y="130">F(X)</text><text x="610" y="40">F(Y)</text><text x="870" y="555">G(Y)</text><text x="300" y="675">G(X)</text><text x="350" y="100">F(f)</text><text x="610" y="595">G(f)</text><text x="150" y="390">ηₓ</text><text x="800" y="290">ηᵧ</text></g>
+    </svg>
+  </div>
+  <div class="shell about-shell">
+    <div class="about-preface"><span>关于这个宇宙的主人</span><span>在抽象与日常之间</span></div>
+    <article class="article about-article"><div class="content post-content about-prose" data-article-content><%- n_reading_content(page.content) %></div></article>
+    <div class="about-outro"><p>文字，是另一些相遇。</p><a href="<%= url_for('/archives/') %>">走进我的文字 <span aria-hidden="true">↗</span></a><a href="<%= url_for('/atlas/') %>">探索思想的星图 <span aria-hidden="true">↗</span></a></div>
+  </div>
+</div>

@@ -6,25 +6,37 @@
   position: relative;
   color: var(--atlas-ink);
 }
-.atlas-plot { position: relative; min-height: 320px; }
-.atlas-svg { display: block; width: 100%; height: auto; overflow: visible; }
-.atlas-orbit { fill: none; stroke: #b4a0c7; stroke-opacity: .16; stroke-width: .7; stroke-dasharray: 2 7; }
-.atlas-orbit-inner { stroke-opacity: .08; stroke-dasharray: none; }
-.atlas-topic { fill: #b5a4bd; font-size: 14px; letter-spacing: .18em; }
-.atlas-topic-count { fill: #94819d; font-size: 10px; letter-spacing: .08em; }
-.atlas-edge { fill: none; stroke: #bea7d4; stroke-width: .7; stroke-opacity: .09; pointer-events: none; transition: stroke-opacity .25s, stroke-width .25s; }
-.atlas-edge-tag { stroke: #e9c8a0; stroke-opacity: .2; }
-.atlas-node { cursor: pointer; outline: none; transition: opacity .25s; }
+.atlas-plot { position: relative; min-height: 320px; isolation: isolate; overflow: hidden; margin-block: 12px; background: radial-gradient(ellipse at 47% 44%, #30203b30, transparent 70%); }
+.atlas-plot::after { content: ''; position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 65px 14px #17131f88; }
+.atlas-svg { display: block; width: 100%; height: auto; overflow: hidden; }
+.atlas-deep-field { fill: #dccfed; pointer-events: none; }
+.atlas-region { transition: opacity .65s; pointer-events: none; }
+.atlas-region.is-outside { opacity: .12; }
+.atlas-region-field { opacity: .8; transition: opacity .7s; }
+.atlas-region.is-current .atlas-region-field { opacity: 1; }
+.atlas-orbit { fill: none; stroke: var(--atlas-region-color, #b4a0c7); stroke-opacity: .24; stroke-width: .65; stroke-dasharray: 1 8; }
+.atlas-orbit-inner { stroke-opacity: .12; stroke-dasharray: none; }
+.atlas-topic { fill: var(--atlas-region-color, #b5a4bd); font-size: 14px; letter-spacing: .12em; opacity: .72; }
+.atlas-topic-count { fill: #a495ae; font-size: 10px; letter-spacing: .08em; }
+.atlas-edge { fill: none; stroke: var(--atlas-edge-color, #bea7d4); stroke-width: .75; stroke-opacity: .16; pointer-events: none; transition: stroke-opacity .65s, stroke-width .4s; }
+.atlas-edge-tag { stroke-opacity: .32; }
+.atlas-edge.is-within { stroke-opacity: .42; stroke-width: 1; }
+.atlas-edge.is-bridge { stroke-opacity: .15; }
+.atlas-edge.is-outside { stroke-opacity: .025; }
+.atlas-node { cursor: pointer; outline: none; transition: opacity .55s; }
+.atlas-node.is-outside { opacity: .13; }
 .atlas-node-hit { fill: transparent; }
-.atlas-node-halo { fill: var(--atlas-star); opacity: .035; transition: opacity .25s; }
-.atlas-node-core { fill: var(--atlas-star); filter: drop-shadow(0 0 5px var(--atlas-star)); transition: r .25s; }
+.atlas-node-halo { fill: var(--atlas-star); opacity: .055; filter: blur(3px); transition: opacity .25s; }
+.atlas-node-core { fill: #f8f2ff; filter: drop-shadow(0 0 6px var(--atlas-star)); transition: r .25s; }
+.atlas-node-ring { fill: none; stroke: var(--atlas-star); stroke-width: .7; stroke-opacity: .38; }
 .atlas-node-rays { fill: none; stroke: var(--atlas-star); stroke-width: .55; stroke-opacity: .65; }
-.atlas-node-label { fill: #c7bacb; font-size: 12px; font-family: inherit; paint-order: stroke fill; stroke: #211728; stroke-width: 3px; stroke-linejoin: round; transition: fill .25s; }
-.atlas-svg.has-focus .atlas-node:not(.is-related) { opacity: .22; }
-.atlas-svg.has-focus .atlas-edge { stroke-opacity: .025; }
-.atlas-svg.has-focus .atlas-edge.is-related { stroke-opacity: .6; stroke-width: 1.1; }
+.atlas-node-label { fill: #d7c8dc; font-size: 12px; font-family: inherit; paint-order: stroke fill; stroke: #211728; stroke-width: 3px; stroke-linejoin: round; transition: fill .25s; }
+.atlas-svg.has-focus .atlas-node:not(.is-related) { opacity: .2; }
+.atlas-svg.has-focus .atlas-node.is-outside { opacity: .09; }
+.atlas-svg.has-focus .atlas-edge { stroke-opacity: .04; }
+.atlas-svg.has-focus .atlas-edge.is-related { stroke-opacity: .8; stroke-width: 1.25; }
 .atlas-node.is-active .atlas-node-halo, .atlas-node.is-selected .atlas-node-halo { opacity: .15; }
-.atlas-node.is-active .atlas-node-core, .atlas-node.is-selected .atlas-node-core { r: 5.5; }
+.atlas-node.is-active .atlas-node-core, .atlas-node.is-selected .atlas-node-core { r: 5; }
 .atlas-node.is-active .atlas-node-label, .atlas-node.is-selected .atlas-node-label { fill: #fff1db; }
 .atlas-node:focus-visible .atlas-node-hit { stroke: #f0d3ac; stroke-width: 1.5; stroke-dasharray: 2 3; }
 .atlas-node:focus-visible .atlas-node-label { fill: #fff1db; }
@@ -50,6 +62,10 @@
 .atlas-empty, .atlas-loading, .atlas-error { padding: 100px 24px 32px; margin: 0; text-align: center; color: var(--atlas-muted); font-size: 14px; line-height: 1.9; }
 .atlas-retry { display: block; margin: 0 auto 60px; padding: 11px 20px; border: 1px solid var(--atlas-rule); background: transparent; color: var(--atlas-champagne); font: inherit; font-size: 13px; cursor: pointer; }
 .atlas-stage a:focus-visible, .atlas-stage summary:focus-visible, .atlas-stage button:focus-visible { outline: 2px solid var(--atlas-champagne); outline-offset: 6px; }
+.atlas-section .filter-bar button { transition: color .3s, border-color .3s, background .3s, box-shadow .3s; }
+.atlas-section .filter-bar button[aria-pressed=true] { box-shadow: 0 0 24px #d6bccd16; }
+.atlas-page .atlas-plot { margin-block: 24px; }
+.atlas-page .atlas-svg { max-height: 74vh; min-height: 480px; }
 @media (max-width: 640px) {
   .atlas-plot { min-height: 300px; margin-inline: -12px; }
   .atlas-node-label { font-size: 16px; stroke-width: 3.5px; }
@@ -61,8 +77,10 @@
   .atlas-detail:not(.has-selection) { grid-template-columns: 30px minmax(0, 1fr); }
   .atlas-detail-invitation { font-size: 16px; }
   .atlas-list { grid-template-columns: 1fr; }
+  .atlas-plot::after { box-shadow: inset 0 0 28px 5px #17131f66; }
+  .atlas-page .atlas-svg { min-height: 0; max-height: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .atlas-node, .atlas-edge, .atlas-node-halo, .atlas-node-core, .atlas-node-label { transition: none; }
+  .atlas-node, .atlas-edge, .atlas-node-halo, .atlas-node-core, .atlas-node-label, .atlas-region, .atlas-region-field, .atlas-section .filter-bar button { transition: none; }
 }
 @media(max-width:640px){.atlas-node-label{opacity:0}.atlas-node.is-active .atlas-node-label,.atlas-node.is-selected .atlas-node-label{opacity:1}.atlas-node-core{r:4.5}}

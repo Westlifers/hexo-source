@@ -17,6 +17,15 @@ dialog{color:var(--ink);background:var(--surface);border:1px solid var(--rule);b
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}.feature:hover{transform:none}.feature:hover img{transform:none}}
 @media print{:root{--ink:#111;--bg:#fff;--muted:#555;--accent:#333;--rule:#ccc;color-scheme:light}.site-header,.site-footer,.article-sidebar,.reading-progress,.post-navigation,.comments-section,.post-end,.back-link,.resume-reading,dialog,.toast{display:none!important}.shell{width:100%}.reading-grid{display:block}.post-header{max-width:100%;margin-bottom:25px}.post-content{font-size:11pt}.post-content pre,.post-content table{break-inside:avoid}.post-content a{color:#111}.post-content .route-six{color:#111;background:#fff;box-shadow:none}.ai-disclosure{display:none}}
 
+.atlas-page{padding-top:62px;min-height:calc(100svh - 100px)}
+@media(max-width:760px){.art-caption{bottom:85px}}
+.atlas-heading h1{font:clamp(38px,4.8vw,68px)/1.35 var(--serif);letter-spacing:-.035em;margin:0}
+.atlas-heading-note{display:flex;flex-direction:column;align-items:flex-end;gap:15px}
+.atlas-heading-note .text-link{color:#e9bf97;font-size:11px}
+.atlas-page .atlas-heading{margin-bottom:32px}
+@media(max-width:760px){.atlas-page{padding-top:42px}.atlas-heading-note{gap:10px}.atlas-page .atlas-heading{align-items:flex-start}.atlas-page .atlas-description{max-width:120px}.atlas-heading h1{font-size:38px}}
+@media(max-width:360px){.atlas-page .atlas-heading{display:block}.atlas-page .atlas-heading-note{align-items:flex-start;margin-top:18px}.atlas-page .atlas-description br{display:none}.atlas-page .atlas-description{max-width:none}}
+
 /* Theme-side compatibility for authored article layouts. */
 .post-content .white-cat-essay img{margin:0}
 .post-content a.gallery-item img{cursor:zoom-in}

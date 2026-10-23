@@ -10,17 +10,18 @@
   <link rel="icon" href="<%= url_for('/nocturne/favicon.svg') %>" type="image/svg+xml">
   <link rel="stylesheet" href="<%= url_for('/nocturne/theme.css') %>">
   <script src="<%= url_for('/nocturne/appearance.js') %>"></script>
-  <% if (is_home() && page.current === 1) { %><link rel="stylesheet" href="<%= url_for('/nocturne/atlas.css') %>"><% } %>
+  <% if ((is_home() && page.current === 1) || page.nocturne_atlas) { %><link rel="stylesheet" href="<%= url_for('/nocturne/atlas.css') %>"><% } %>
+  <% if (page.source === 'about/index.md') { %><link rel="stylesheet" href="<%= url_for('/nocturne/about.css') %>"><% } %>
   <% if (page.content && (page.plugins?.mathjax || page.engine === 'statement' || page.tikzjax)) { %>
   <link rel="stylesheet" href="<%= url_for('/nocturne/math.css') %>">
   <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]},chtml:{matchFontHeight:false},startup:{typeset:false}};</script>
   <% } %>
 </head>
-<body class="nocturne <%= is_home() && page.current === 1 ? 'is-home' : 'is-inner' %>">
+<body class="nocturne <%= is_home() && page.current === 1 ? 'is-home' : 'is-inner' %> <%= page.nocturne_atlas ? 'is-atlas' : '' %> <%= page.source === 'about/index.md' ? 'is-about' : '' %>">
   <a class="skip-link" href="#main">跳到正文</a>
   <header class="site-header shell">
     <a class="brand" href="<%= url_for('/') %>" aria-label="Yougi 首页"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 35 12v16L20 37 5 28V12Z"/><path d="m5 12 15 9 15-9M20 21v16M12 8l16 24M28 8 12 32"/></svg><span>Yougi<span class="brand-dot">.</span></span></a>
-    <nav aria-label="主导航"><a href="<%= url_for('/') %>" <%- is_home() ? 'aria-current="page"' : '' %>>序章</a><a href="<%= url_for('/archives/') %>" <%- is_archive() ? 'aria-current="page"' : '' %>>所有文字</a><a href="<%= url_for('/#atlas') %>">星图</a><a href="<%= url_for('/about/') %>">关于</a></nav>
+    <nav aria-label="主导航"><a href="<%= url_for('/') %>" <%- is_home() ? 'aria-current="page"' : '' %>>序章</a><a href="<%= url_for('/archives/') %>" <%- is_archive() ? 'aria-current="page"' : '' %>>所有文字</a><a href="<%= url_for('/atlas/') %>" <%- page.nocturne_atlas ? 'aria-current="page"' : '' %>>星图</a><a href="<%= url_for('/about/') %>" <%- page.source === 'about/index.md' ? 'aria-current="page"' : '' %>>关于</a></nav>
     <div class="header-tools"><button class="search-trigger" data-search-open aria-label="搜索文章"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span>搜索</span><kbd>⌘ K</kbd></button><button class="icon-button" data-theme-toggle aria-label="切换到日间阅读">◐</button></div>
   </header>
   <main id="main"><%- body %></main>
@@ -29,7 +30,9 @@
   <dialog class="image-dialog" data-image-dialog aria-label="图片预览"><button data-dialog-close aria-label="关闭图片">关闭 ×</button><img alt=""><p></p></dialog>
   <div class="toast" role="status" data-toast></div>
   <script defer src="<%= url_for('/nocturne/app.js') %>"></script>
-  <% if (is_home() && page.current === 1) { %><script defer src="<%= url_for('/nocturne/observatory.js') %>"></script><script defer src="<%= url_for('/nocturne/atlas.js') %>"></script><% } %>
-  <% if (page.content) { %><script defer src="<%= url_for('/nocturne/reading.js') %>"></script><script defer src="<%= url_for('/nocturne/comments.js') %>"></script><% if (page.plugins?.mathjax || page.engine === 'statement' || page.tikzjax) { %><script defer src="<%= url_for('/nocturne/math.js') %>" data-math-src="<%= theme.math.src %>"></script><% } %><% } %>
+  <% if (page.source === 'about/index.md') { %><script defer src="<%= url_for('/nocturne/about.js') %>"></script><% } %>
+  <% if (is_home() && page.current === 1) { %><script defer src="<%= url_for('/nocturne/observatory.js') %>"></script><% } %>
+  <% if ((is_home() && page.current === 1) || page.nocturne_atlas) { %><script defer src="<%= url_for('/nocturne/atlas.js') %>"></script><% } %>
+  <% if (page.content) { %><% if (page.source !== 'about/index.md') { %><script defer src="<%= url_for('/nocturne/reading.js') %>"></script><% } %><script defer src="<%= url_for('/nocturne/comments.js') %>"></script><% if (page.plugins?.mathjax || page.engine === 'statement' || page.tikzjax) { %><script defer src="<%= url_for('/nocturne/math.js') %>" data-math-src="<%= theme.math.src %>"></script><% } %><% } %>
 </body>
 </html>

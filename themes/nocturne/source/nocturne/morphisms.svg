@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 760" fill="none">
+  <defs>
+    <linearGradient id="gold" x1="180" y1="170" x2="630" y2="590" gradientUnits="userSpaceOnUse"><stop stop-color="#775137"/><stop offset=".35" stop-color="#f7ddaa"/><stop offset=".62" stop-color="#b57c4f"/><stop offset="1" stop-color="#ffeac6"/></linearGradient>
+    <linearGradient id="silver" x1="180" y1="170" x2="630" y2="590" gradientUnits="userSpaceOnUse"><stop stop-color="#9bcbd9"/><stop offset=".4" stop-color="#496f8e"/><stop offset=".7" stop-color="#dcf4ff"/><stop offset="1" stop-color="#87a8c9"/></linearGradient>
+    <radialGradient id="node"><stop stop-color="#fff3d5"/><stop offset=".3" stop-color="#e6c6a0"/><stop offset=".65" stop-color="#987a68"/><stop offset="1" stop-color="#342635"/></radialGradient>
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="15"/></filter>
+    <path id="f" d="M190 185 Q400 90 610 230"/><path id="k" d="M610 230 Q710 420 650 585"/>
+    <path id="g" d="M190 185 Q105 370 230 540"/><path id="h" d="M230 540 Q440 675 650 585"/>
+  </defs>
+  <g opacity=".2" filter="url(#glow)" stroke-width="18"><use href="#f" stroke="#e8b681"/><use href="#k" stroke="#e8b681"/><use href="#g" stroke="#87b6dc"/><use href="#h" stroke="#87b6dc"/></g>
+  <g stroke="url(#gold)" stroke-width="1.2"><use href="#f"/><use href="#f" transform="translate(0 5)"/><use href="#f" transform="translate(0 10)"/><use href="#f" transform="translate(0 -5)"/><use href="#f" transform="translate(0 -10)"/><use href="#k"/><use href="#k" transform="translate(5 0)"/><use href="#k" transform="translate(10 0)"/><use href="#k" transform="translate(-5 0)"/><use href="#k" transform="translate(-10 0)"/></g>
+  <g stroke="url(#silver)" stroke-width="1.2"><use href="#g"/><use href="#g" transform="translate(5 0)"/><use href="#g" transform="translate(10 0)"/><use href="#g" transform="translate(-5 0)"/><use href="#g" transform="translate(-10 0)"/><use href="#h"/><use href="#h" transform="translate(0 5)"/><use href="#h" transform="translate(0 10)"/><use href="#h" transform="translate(0 -5)"/><use href="#h" transform="translate(0 -10)"/></g>
+  <g fill="#e9c79c"><path d="m574 197 28 28-38-9 12-4z"/><path d="m644 550 9 27 17-23-13 3z"/></g>
+  <g fill="#bbdae9"><path d="m206 506 18 26-29-15 11-1z"/><path d="m615 584 26 4-24 16 4-12z"/></g>
+  <g fill="url(#node)"><circle cx="190" cy="185" r="14"/><circle cx="610" cy="230" r="14"/><circle cx="230" cy="540" r="14"/><circle cx="650" cy="585" r="14"/></g>
+  <g fill="#f0dfcc" font-family="Georgia,serif" font-style="italic" font-size="33" text-anchor="middle"><text x="190" y="150">A</text><text x="610" y="195">B</text><text x="230" y="590">C</text><text x="650" y="635">D</text></g>
+  <g fill="#cfbec4" font-family="Georgia,serif" font-style="italic" font-size="28" text-anchor="middle"><text x="400" y="125">f</text><text x="710" y="420">k</text><text x="100" y="380">g</text><text x="440" y="665">h</text><text x="415" y="392" opacity=".7">k ∘ f = h ∘ g</text></g>
+</svg>

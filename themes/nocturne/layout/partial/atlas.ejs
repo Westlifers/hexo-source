@@ -1,0 +1,20 @@
+<section class="atlas-section <%= standalone ? 'atlas-page' : '' %>" id="atlas" data-atlas data-index="<%= url_for('/nocturne/search.json') %>">
+  <div class="shell">
+    <div class="section-heading atlas-heading">
+      <div><p class="small-note"><%= standalone ? '在念头之间，寻找另一条路径' : '每一个念头，都有自己的引力' %></p>
+        <% if (standalone) { %><h1>思想的星图</h1><% } else { %><h2>思想的星图</h2><% } %>
+      </div>
+      <div class="atlas-heading-note"><p class="atlas-description">靠近一个主题，<br>看见它与整个世界的联系。</p><% if (!standalone) { %><a class="text-link" href="<%= url_for('/atlas/') %>">展开完整星图 ↗</a><% } %></div>
+    </div>
+    <div class="filter-bar" role="group" aria-label="选择子宇宙">
+      <button data-atlas-filter="all" aria-pressed="true">整个宇宙</button>
+      <button data-atlas-filter="mathematics" aria-pressed="false">数学</button>
+      <button data-atlas-filter="essays" aria-pressed="false">随笔</button>
+      <button data-atlas-filter="poetry" aria-pressed="false">诗与声音</button>
+      <button data-atlas-filter="fieldnotes" aria-pressed="false">生活切片</button>
+    </div>
+    <div class="atlas-stage"></div>
+    <p data-atlas-status role="status">正在绘制星图…</p>
+    <noscript><a href="<%= url_for('/archives/') %>">按时间浏览全部文章</a></noscript>
+  </div>
+</section>

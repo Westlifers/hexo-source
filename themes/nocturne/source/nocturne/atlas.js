@@ -9,7 +9,7 @@
     mathematics: { label: '数学', color: '#c8b5f3' },
     essays: { label: '随笔', color: '#e9c8a0' },
     poetry: { label: '诗与声音', color: '#e4abbe' },
-    fieldnotes: { label: '漫游', color: '#a8c8c0' }
+    fieldnotes: { label: '生活切片', color: '#a8c8c0' }
   };
   const svgElement = (tag, attrs = {}, text) => {
     const element = document.createElementNS(NS, tag);
@@ -51,6 +51,7 @@
     status.setAttribute('role', 'status');
     status.setAttribute('aria-live', 'polite');
     const media = window.matchMedia('(max-width: 640px)');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const filters = [...root.querySelectorAll('[data-atlas-filter]')];
     const plot = element('div', 'atlas-plot');
     const detail = element('div', 'atlas-detail');
@@ -69,9 +70,19 @@
     let loading = false;
     let loaded = false;
     let graph = null;
+    let world = null;
     let nodeElements = new Map();
+    let nodeContents = [];
+    let groupElements = new Map();
+    let plotted = [];
+    let width = 1000;
+    let height = 600;
+    let camera = { x: 0, y: 0, scale: 1 };
+    let cameraTarget = camera;
+    let cameraFrame = 0;
+    let inViewport = true;
 
-    const baseStatus = () => `连线表示共同标签或主题 · ${visible.length} 篇文章${visible.length > 40 ? '，星图显示最近 40 篇' : ''} · 选择一颗星，展开阅读`;
+    const baseStatus = () => `${filter === 'all' ? '整个宇宙' : topics[filter]?.label || filter} · ${visible.length} 篇文章 · 连线表示共同标签或主题${entries.length > 40 ? '，星图显示最近 40 篇' : ''} · 选择一颗星，展开阅读`;
     const resetDetail = () => {
       detail.replaceChildren(element('span', 'atlas-detail-mark', '✦'),
         element('p', 'atlas-detail-invitation', '有些想法，在别处相遇。'),
@@ -113,10 +124,54 @@
       illuminate(selected);
     };
 
-    const render = () => {
+    // Only the camera moves on topic changes. Article positions and elements persist.
+    const paintCamera = state => {
+      camera = state;
+      if (!world) return;
+      world.setAttribute('transform', `translate(${state.x.toFixed(3)} ${state.y.toFixed(3)}) scale(${state.scale.toFixed(5)})`);
+      nodeContents.forEach(content => content.setAttribute('transform', `scale(${(1 / state.scale).toFixed(5)})`));
+      root.dataset.cameraScale = state.scale.toFixed(3);
+    };
+    const stopCamera = () => {
+      if (cameraFrame) cancelAnimationFrame(cameraFrame);
+      cameraFrame = 0;
+      root.dataset.cameraRunning = 'false';
+    };
+    const moveCamera = (target, animate = true) => {
+      stopCamera();
+      cameraTarget = target;
+      if (!animate || reducedMotion.matches || document.hidden || !inViewport) {
+        paintCamera(target);
+        return;
+      }
+      const from = { ...camera };
+      if (Math.abs(from.x - target.x) + Math.abs(from.y - target.y) + Math.abs(from.scale - target.scale) < .001) return;
+      const started = performance.now();
+      root.dataset.cameraRunning = 'true';
+      const frame = now => {
+        const elapsed = Math.min(1, (now - started) / 920);
+        // Quintic ease-in-out makes camera arrivals soft, without overshooting.
+        const t = elapsed < .5 ? 16 * elapsed ** 5 : 1 - (-2 * elapsed + 2) ** 5 / 2;
+        paintCamera({ x: from.x + (target.x - from.x) * t, y: from.y + (target.y - from.y) * t, scale: from.scale + (target.scale - from.scale) * t });
+        if (elapsed < 1) cameraFrame = requestAnimationFrame(frame);
+        else stopCamera();
+      };
+      cameraFrame = requestAnimationFrame(frame);
+    };
+    const targetFor = () => {
+      if (filter === 'all') return { x: 0, y: 0, scale: 1 };
+      const group = plotted.filter(article => article.kind === filter);
+      if (!group.length) return { x: 0, y: 0, scale: 1 };
+      const xs = group.map(article => article.x);
+      const ys = group.map(article => article.y);
+      const left = Math.min(...xs), right = Math.max(...xs), top = Math.min(...ys), bottom = Math.max(...ys);
+      // Labels remain screen-sized. Reserve their room before fitting the subgraph.
+      const scale = Math.min(media.matches ? 2.05 : 2.45, (width - (media.matches ? 160 : 300)) / Math.max(110, right - left), (height - 150) / Math.max(110, bottom - top));
+      return { x: width / 2 - (left + right) / 2 * scale, y: height / 2 - (top + bottom) / 2 * scale, scale };
+    };
+    const applyFilter = (animate = true) => {
       if (!loaded) return;
       visible = entries.filter(entry => filter === 'all' || entry.kind === filter);
-      const plotted = visible.slice(0, 40);
       if (!visible.some(entry => entry.id === selected)) selected = null;
       if (!selected) resetDetail();
       list.replaceChildren();
@@ -128,9 +183,38 @@
         list.append(item);
       });
       summary.textContent = `以文章列表浏览（${visible.length}）`;
+      root.dataset.atlasView = filter;
+      graph?.classList.toggle('has-topic-focus', filter !== 'all');
+      plotted.forEach(article => {
+        const active = filter === 'all' || article.kind === filter;
+        const node = nodeElements.get(article.id);
+        node.classList.toggle('is-outside', !active);
+        node.setAttribute('tabindex', active ? '0' : '-1');
+      });
+      groupElements.forEach((group, kind) => {
+        group.classList.toggle('is-outside', filter !== 'all' && kind !== filter);
+        group.classList.toggle('is-current', kind === filter);
+      });
+      edges.forEach(edge => {
+        const both = edge.a.kind === filter && edge.b.kind === filter;
+        const either = edge.a.kind === filter || edge.b.kind === filter;
+        edge.element.classList.toggle('is-within', filter !== 'all' && both);
+        edge.element.classList.toggle('is-bridge', filter !== 'all' && either && !both);
+        edge.element.classList.toggle('is-outside', filter !== 'all' && !either);
+      });
+      illuminate(selected);
+      moveCamera(targetFor(), animate);
+    };
+
+    const render = () => {
+      if (!loaded) return;
+      stopCamera();
+      plotted = entries.slice(0, 40);
       plot.replaceChildren();
       edges = [];
       nodeElements = new Map();
+      nodeContents = [];
+      groupElements = new Map();
       if (!plotted.length) {
         graph = null;
         plot.append(element('p', 'atlas-empty', '这个主题暂时没有文章，试试其他主题。'));
@@ -138,35 +222,50 @@
         return;
       }
       const mobile = media.matches;
-      const width = mobile ? 600 : 1000;
-      const height = mobile ? 600 : 540;
+      width = mobile ? 600 : 1000;
+      height = mobile ? 650 : 600;
       const titleId = `atlas-title-${rootIndex}`;
       const descId = `atlas-desc-${rootIndex}`;
       graph = svgElement('svg', { class: 'atlas-svg', viewBox: `0 0 ${width} ${height}`, role: 'group', 'aria-labelledby': `${titleId} ${descId}` });
       graph.append(svgElement('title', { id: titleId }, '文章星图'),
         svgElement('desc', { id: descId }, '每颗星是一篇文章，连线表示共同标签或主题。按 Tab 在文章间移动，回车或空格展开介绍，方向键切换文章。也可使用下方文章列表。'));
+      const defs = svgElement('defs');
+      Object.entries(topics).forEach(([kind, topic]) => {
+        const gradient = svgElement('radialGradient', { id: `atlas-field-${rootIndex}-${kind}` });
+        gradient.append(svgElement('stop', { offset: '0%', 'stop-color': topic.color, 'stop-opacity': '.17' }), svgElement('stop', { offset: '60%', 'stop-color': topic.color, 'stop-opacity': '.05' }), svgElement('stop', { offset: '100%', 'stop-color': topic.color, 'stop-opacity': '0' }));
+        defs.append(gradient);
+      });
+      const field = svgElement('g', { class: 'atlas-deep-field', 'aria-hidden': 'true' });
+      for (let index = 0; index < 64; index++) {
+        field.append(svgElement('circle', { cx: (index * 157.37 + 29) % width, cy: (index * 91.19 + 53) % height, r: index % 7 === 0 ? 1.2 : .65, opacity: .13 + (index % 5) * .045 }));
+      }
+      world = svgElement('g', { class: 'atlas-world' });
       const orbitLayer = svgElement('g', { class: 'atlas-orbits', 'aria-hidden': 'true' });
       const edgeLayer = svgElement('g', { class: 'atlas-edges', 'aria-hidden': 'true' });
       const nodeLayer = svgElement('g', { class: 'atlas-nodes' });
-      graph.append(orbitLayer, edgeLayer, nodeLayer);
+      world.append(orbitLayer, edgeLayer, nodeLayer);
+      graph.append(defs, field, world);
       const groupKeys = [...new Set(plotted.map(entry => entry.kind))];
       const layouts = mobile
-        ? [[172, 200, 97, 125], [434, 212, 90, 118], [174, 463, 94, 64], [425, 458, 90, 66]]
-        : [[267, 250, 142, 156], [725, 240, 137, 150], [485, 414, 112, 68], [795, 428, 108, 64]];
+        ? [[176, 220, 111, 142], [425, 218, 100, 126], [180, 505, 96, 70], [428, 505, 96, 76]]
+        : [[275, 245, 147, 148], [728, 222, 137, 135], [470, 470, 108, 62], [800, 464, 100, 68]];
       const canonicalOrder = Object.keys(topics);
       groupKeys.forEach((kind, groupIndex) => {
         const group = plotted.filter(entry => entry.kind === kind);
         const slot = canonicalOrder.indexOf(kind);
         let [cx, cy, rx, ry] = layouts[slot < 0 ? groupIndex % layouts.length : slot];
-        if (filter !== 'all' || groupKeys.length === 1) {
+        if (groupKeys.length === 1) {
           cx = width / 2; cy = height / 2;
           rx = mobile ? 180 : 315; ry = mobile ? 180 : 175;
         }
-        const orbit = svgElement('ellipse', { cx, cy, rx, ry, class: 'atlas-orbit' });
-        orbitLayer.append(orbit);
-        orbitLayer.append(svgElement('ellipse', { cx, cy, rx: rx * .74, ry: ry * .69, class: 'atlas-orbit atlas-orbit-inner', transform: `rotate(-24 ${cx} ${cy})` }));
-        orbitLayer.append(svgElement('text', { x: cx, y: cy - 5, class: 'atlas-topic', 'text-anchor': 'middle' }, group[0].kindLabel));
-        orbitLayer.append(svgElement('text', { x: cx, y: cy + 17, class: 'atlas-topic-count', 'text-anchor': 'middle' }, `${group.length} 篇`));
+        const region = svgElement('g', { class: 'atlas-region', style: `--atlas-region-color: ${(topics[kind] || topics.essays).color}` });
+        region.append(svgElement('ellipse', { cx, cy, rx: rx * 1.8, ry: ry * 1.8, fill: `url(#atlas-field-${rootIndex}-${topics[kind] ? kind : 'essays'})`, class: 'atlas-region-field' }));
+        region.append(svgElement('ellipse', { cx, cy, rx, ry, class: 'atlas-orbit', 'vector-effect': 'non-scaling-stroke' }));
+        region.append(svgElement('ellipse', { cx, cy, rx: rx * 1.1, ry: ry * .77, class: 'atlas-orbit atlas-orbit-inner', transform: `rotate(-24 ${cx} ${cy})`, 'vector-effect': 'non-scaling-stroke' }));
+        region.append(svgElement('text', { x: cx, y: cy - 5, class: 'atlas-topic', 'text-anchor': 'middle' }, group[0].kindLabel));
+        region.append(svgElement('text', { x: cx, y: cy + 17, class: 'atlas-topic-count', 'text-anchor': 'middle' }, `${group.length} 篇`));
+        orbitLayer.append(region);
+        groupElements.set(kind, region);
         group.forEach((article, index) => {
           const angle = -Math.PI / 2 + index / group.length * Math.PI * 2 + (groupIndex % 2 ? .15 : -.12);
           const breathing = 1 + .07 * Math.sin(index * 2.4 + groupIndex);
@@ -186,7 +285,7 @@
           if (!reasons.length) return;
           const bend = (a.x + b.x) / 2 + (b.y - a.y) * .09;
           const rise = (a.y + b.y) / 2 - (b.x - a.x) * .09;
-          const path = svgElement('path', { d: `M ${a.x} ${a.y} Q ${bend} ${rise} ${b.x} ${b.y}`, class: `atlas-edge${sharedTags.length ? ' atlas-edge-tag' : ''}` });
+          const path = svgElement('path', { d: `M ${a.x} ${a.y} Q ${bend} ${rise} ${b.x} ${b.y}`, class: `atlas-edge${sharedTags.length ? ' atlas-edge-tag' : ''}`, 'vector-effect': 'non-scaling-stroke', style: `--atlas-edge-color: ${a.kind === b.kind ? a.color : '#e9c8a0'}` });
           edgeLayer.append(path);
           edges.push({ a, b, reasons: [...new Set(reasons)], element: path });
         });
@@ -194,11 +293,16 @@
 
       plotted.forEach((article, index) => {
         const node = svgElement('g', { class: 'atlas-node', transform: `translate(${article.x} ${article.y})`, tabindex: '0', role: 'button', 'aria-label': `${article.title}，${article.kindLabel}。展开文章介绍`, 'aria-pressed': 'false', style: `--atlas-star: ${article.color}` });
+        node.dataset.articleId = article.id;
+        node.dataset.atlasKind = article.kind;
+        const content = svgElement('g', { class: 'atlas-node-content' });
+        nodeContents.push(content);
         node.append(svgElement('title', {}, article.title));
-        node.append(svgElement('circle', { r: mobile ? 23 : 20, class: 'atlas-node-hit' }));
-        node.append(svgElement('circle', { r: 14, class: 'atlas-node-halo' }));
-        node.append(svgElement('circle', { r: 4.1, class: 'atlas-node-core' }));
-        node.append(svgElement('path', { d: 'M -9 0 H 9 M 0 -9 V 9', class: 'atlas-node-rays' }));
+        content.append(svgElement('circle', { r: mobile ? 36 : 22, class: 'atlas-node-hit' }));
+        content.append(svgElement('circle', { r: 19, class: 'atlas-node-halo' }));
+        content.append(svgElement('circle', { r: 8, class: 'atlas-node-ring' }));
+        content.append(svgElement('circle', { r: 3.8, class: 'atlas-node-core' }));
+        content.append(svgElement('path', { d: 'M -12 0 H -7 M 7 0 H 12 M 0 -12 V -7 M 0 7 V 12', class: 'atlas-node-rays' }));
         const nearVertical = Math.abs(Math.cos(article.angle)) < .4;
         const toLeft = Math.cos(article.angle) < 0;
         const text = labelFor(article.title, mobile);
@@ -209,7 +313,8 @@
         if ((anchor === 'end' && article.x - estimatedWidth - 15 < 12) || (anchor === 'start' && article.x + estimatedWidth + 15 > width - 12)) {
           anchor = 'middle'; tx = 0; ty = 27;
         }
-        node.append(svgElement('text', { x: tx, y: ty, class: 'atlas-node-label', 'text-anchor': anchor, 'aria-hidden': 'true' }, text));
+        content.append(svgElement('text', { x: tx, y: ty, class: 'atlas-node-label', 'text-anchor': anchor, 'aria-hidden': 'true' }, text));
+        node.append(content);
         node.addEventListener('pointerenter', () => illuminate(article.id));
         node.addEventListener('pointerleave', () => illuminate(selected));
         node.addEventListener('focus', () => illuminate(article.id));
@@ -220,10 +325,12 @@
             event.preventDefault(); select(article);
           } else if (['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
             event.preventDefault();
-            let next = (index + (['ArrowLeft', 'ArrowUp'].includes(event.key) ? -1 : 1) + plotted.length) % plotted.length;
+            const navigable = plotted.filter(item => filter === 'all' || item.kind === filter);
+            const current = navigable.findIndex(item => item.id === article.id);
+            let next = (current + (['ArrowLeft', 'ArrowUp'].includes(event.key) ? -1 : 1) + navigable.length) % navigable.length;
             if (event.key === 'Home') next = 0;
-            if (event.key === 'End') next = plotted.length - 1;
-            nodeElements.get(plotted[next].id)?.focus();
+            if (event.key === 'End') next = navigable.length - 1;
+            nodeElements.get(navigable[next]?.id)?.focus();
           } else if (event.key === 'Escape') {
             selected = null; resetDetail(); illuminate(null);
           }
@@ -232,7 +339,8 @@
         nodeLayer.append(node);
       });
       plot.append(graph);
-      illuminate(selected);
+      paintCamera({ x: 0, y: 0, scale: 1 });
+      applyFilter(false);
     };
 
     const load = async () => {
@@ -279,17 +387,20 @@
       button.addEventListener('click', () => {
         filter = button.dataset.atlasFilter || 'all';
         filters.forEach(other => other.setAttribute('aria-pressed', String(other === button)));
-        render();
+        applyFilter();
       });
     });
     resetDetail();
     if (media.addEventListener) media.addEventListener('change', render);
     else media.addListener(render);
+    const settleCamera = () => { stopCamera(); paintCamera(cameraTarget); };
+    document.addEventListener('visibilitychange', () => { if (document.hidden) settleCamera(); });
+    if (reducedMotion.addEventListener) reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) settleCamera(); });
     if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver(observations => {
-        if (observations.some(observation => observation.isIntersecting)) {
-          observer.disconnect(); load();
-        }
+        inViewport = observations.some(observation => observation.isIntersecting);
+        if (inViewport) load();
+        else settleCamera();
       }, { rootMargin: '300px' });
       observer.observe(root);
     } else load();

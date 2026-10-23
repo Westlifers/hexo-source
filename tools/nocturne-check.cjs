@@ -52,6 +52,10 @@ for (const route of htmlRoutes) {
   const doc = parseDocument(html);
   const elements = DomUtils.findAll(() => true, doc.children);
   documents.set(route, { html, doc, elements });
+  const nav = elements.find(node => node.name === 'nav' && node.attribs?.['aria-label'] === '主导航');
+  assert(nav, `${route}: missing main navigation`);
+  const destinations = DomUtils.findAll(node => node.name === 'a', nav.children).map(node => node.attribs.href);
+  assert.deepEqual(destinations, ['', 'archives/', 'atlas/', 'about/'].map(value => build.root + value), `${route}: main navigation must consistently link to four pages`);
   assert(!/(?:src|href)=["'][^"'\n]*\/(?:js\/(?:reading-mode|math-statements)\.js|css\/(?:reading-mode|math-statements|ai-disclosure)\.css)["']/.test(html), `${route}: duplicate legacy theme injection`);
   assert(!/src=["']https:\/\/giscus\.app\/client\.js/.test(html), `${route}: local preview must not load comments`);
   const ai = elements.filter(node => (node.attribs?.class || '').split(/\s+/).includes('ai-disclosure'));
@@ -75,6 +79,10 @@ for (const route of htmlRoutes) {
   }
 }
 checks.push(`${htmlRoutes.length} generated HTML routes; ${checkedLinks} local links and media references resolve inside ${build.root}`);
+const atlas = documents.get('atlas/index.html');
+assert(atlas && atlas.elements.some(node => node.name === 'script' && node.attribs.src === build.root + 'nocturne/atlas.js'), 'Standalone atlas must load its interaction script');
+assert(atlas.elements.some(node => node.name === 'h1' && DomUtils.textContent(node) === '思想的星图'), 'Standalone atlas must have its own page heading');
+checks.push('Four consistent page destinations in every main navigation; standalone atlas route and interaction script present');
 
 let articleCount = 0;
 for (const article of [...build.posts, ...(build.pages || []).filter(page => page.layout !== false && page.layout !== 'false')]) {
