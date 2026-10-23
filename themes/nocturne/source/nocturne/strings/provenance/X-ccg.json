@@ -1,0 +1,149 @@
+{
+  "type": "s",
+  "rule": "RP",
+  "children": [
+    {
+      "type": "s",
+      "rule": "BA",
+      "children": [
+        {
+          "type": "np",
+          "rule": "L",
+          "text": "I"
+        },
+        {
+          "type": "s\\np",
+          "rule": "FA",
+          "children": [
+            {
+              "type": "(s\\np)/(s\\np)",
+              "rule": "FA",
+              "children": [
+                {
+                  "type": "((s\\np)/(s\\np))/np",
+                  "rule": "L",
+                  "text": "let"
+                },
+                {
+                  "type": "np",
+                  "rule": "FA",
+                  "children": [
+                    {
+                      "type": "np/n",
+                      "rule": "L",
+                      "text": "the"
+                    },
+                    {
+                      "type": "n",
+                      "rule": "L",
+                      "text": "bus"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "s\\np",
+              "rule": "BA",
+              "children": [
+                {
+                  "type": "s\\np",
+                  "rule": "FA",
+                  "children": [
+                    {
+                      "type": "(s\\np)/np",
+                      "rule": "L",
+                      "text": "carry"
+                    },
+                    {
+                      "type": "np",
+                      "rule": "L",
+                      "text": "me"
+                    }
+                  ]
+                },
+                {
+                  "type": "(s\\np)\\(s\\np)",
+                  "rule": "FA",
+                  "children": [
+                    {
+                      "type": "((s\\np)\\(s\\np))/np",
+                      "rule": "L",
+                      "text": "past"
+                    },
+                    {
+                      "type": "np",
+                      "rule": "BA",
+                      "children": [
+                        {
+                          "type": "np",
+                          "rule": "U",
+                          "children": [
+                            {
+                              "type": "n",
+                              "rule": "L",
+                              "text": "windows"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "np\\np",
+                          "rule": "U",
+                          "children": [
+                            {
+                              "type": "s\\np",
+                              "rule": "BA",
+                              "children": [
+                                {
+                                  "type": "s\\np",
+                                  "rule": "L",
+                                  "text": "lit"
+                                },
+                                {
+                                  "type": "(s\\np)\\(s\\np)",
+                                  "rule": "FA",
+                                  "children": [
+                                    {
+                                      "type": "((s\\np)\\(s\\np))/np",
+                                      "rule": "L",
+                                      "text": "for"
+                                    },
+                                    {
+                                      "type": "np",
+                                      "rule": "BA",
+                                      "children": [
+                                        {
+                                          "type": "np",
+                                          "rule": "L",
+                                          "text": "someone"
+                                        },
+                                        {
+                                          "type": "np\\np",
+                                          "rule": "L",
+                                          "text": "else"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "punc",
+      "rule": "L",
+      "text": "."
+    }
+  ]
+}

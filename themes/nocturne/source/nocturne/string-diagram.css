@@ -1,0 +1,29 @@
+.string-diagram{display:block;width:100%;max-width:none;overflow:visible;font-family:Georgia,'Palatino Linotype',serif}
+.string-strand{fill:none;stroke-linecap:round;stroke-linejoin:round;transition:opacity .35s}
+.string-halo{stroke-width:9;opacity:.15;filter:var(--string-glow)}
+.string-thread{stroke-width:2.2;opacity:.78}
+.string-specular{stroke:#fff4e2;stroke-width:.55;opacity:.5}
+.string-flow{stroke:#fff8e9;stroke-width:2.4;stroke-dasharray:24 976;stroke-dashoffset:1000;opacity:.6;animation:string-light var(--strand-time,22s) linear infinite;animation-delay:var(--strand-delay,0s)}
+.string-strand--sentence .string-thread{stroke-width:2.7;opacity:.95}
+.string-word{cursor:pointer;outline:none}
+.string-word-glass{fill:#2c2335;fill-opacity:.58;stroke:#d2b6c0;stroke-opacity:.28;stroke-width:.7;transition:fill .2s,stroke-opacity .2s}
+.string-word-rim{fill:none;stroke:#ead2bc;stroke-width:.8;opacity:.38}
+.string-word-label{fill:#eadfdc;font-size:21px;transition:fill .2s}
+.string-port{fill:#debaa1;stroke:#15121b;stroke-width:1}
+.string-type{fill:#d2c1d5;stroke:#15121b;stroke-width:4px;paint-order:stroke fill;font:13px 'Cambria Math',Georgia,serif;opacity:0;visibility:hidden;transition:opacity .2s;pointer-events:none}
+.string-output{fill:#edc99c;font:italic 27px Georgia,serif}
+.string-word:hover .string-word-glass,.string-word:focus-visible .string-word-glass,.string-word.is-active .string-word-glass{fill:#5d4350;stroke:#f4d4b0;stroke-opacity:.9;stroke-width:1.2}
+.string-word:focus-visible .string-word-glass{stroke-width:2}
+.string-word.is-related .string-word-label{fill:#fff4e2}
+.string-diagram.has-selection .string-strand:not(.is-active){opacity:.14}
+.string-diagram.has-selection .string-word:not(.is-active):not(.is-related) .string-word-label{fill:#9e92a6}
+.string-strand.is-active .string-thread{opacity:1;stroke-width:3}
+.string-strand.is-active .string-halo{opacity:.32;stroke-width:12}
+[data-string-hero].show-string-types .string-type{opacity:1;visibility:visible}
+[data-string-hero].string-paused .string-flow{animation-play-state:paused}
+[data-string-hero]:not(.string-ready) .string-flow{animation-play-state:paused}
+[data-string-hero]:not(.string-ready) .string-word{cursor:default}
+[data-string-hero]:not(.string-ready) .string-word:hover .string-word-glass{fill:#2c2335;stroke-opacity:.28}
+@keyframes string-light{to{stroke-dashoffset:0}}
+@media(max-width:760px){.string-stage>.string-diagram{width:max(100%,var(--diagram-width));height:auto}}
+@media(prefers-reduced-motion:reduce){.string-flow{animation:none;opacity:0}.string-strand,.string-word-glass,.string-word-label,.string-type{transition:none}}

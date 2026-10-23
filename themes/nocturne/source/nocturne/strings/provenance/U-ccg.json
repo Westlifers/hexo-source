@@ -1,0 +1,165 @@
+{
+  "type": "s",
+  "rule": "RP",
+  "children": [
+    {
+      "type": "s",
+      "rule": "BA",
+      "children": [
+        {
+          "type": "np",
+          "rule": "L",
+          "text": "I"
+        },
+        {
+          "type": "s\\np",
+          "rule": "BA",
+          "children": [
+            {
+              "type": "s\\np",
+              "rule": "BA",
+              "children": [
+                {
+                  "type": "s\\np",
+                  "rule": "L",
+                  "text": "sit"
+                },
+                {
+                  "type": "(s\\np)\\(s\\np)",
+                  "rule": "FA",
+                  "children": [
+                    {
+                      "type": "((s\\np)\\(s\\np))/np",
+                      "rule": "L",
+                      "text": "by"
+                    },
+                    {
+                      "type": "np",
+                      "rule": "FA",
+                      "children": [
+                        {
+                          "type": "np/n",
+                          "rule": "L",
+                          "text": "the"
+                        },
+                        {
+                          "type": "n",
+                          "rule": "L",
+                          "text": "river"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "(s\\np)\\(s\\np)",
+              "rule": "FA",
+              "children": [
+                {
+                  "type": "((s\\np)\\(s\\np))/s",
+                  "rule": "L",
+                  "text": "while"
+                },
+                {
+                  "type": "s",
+                  "rule": "BA",
+                  "children": [
+                    {
+                      "type": "np",
+                      "rule": "FA",
+                      "children": [
+                        {
+                          "type": "np/n",
+                          "rule": "L",
+                          "text": "the"
+                        },
+                        {
+                          "type": "n",
+                          "rule": "L",
+                          "text": "city"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "s\\np",
+                      "rule": "FA",
+                      "children": [
+                        {
+                          "type": "(s\\np)/p",
+                          "rule": "L",
+                          "text": "fills"
+                        },
+                        {
+                          "type": "p",
+                          "rule": "FA",
+                          "children": [
+                            {
+                              "type": "p/np",
+                              "rule": "L",
+                              "text": "with"
+                            },
+                            {
+                              "type": "np",
+                              "rule": "FA",
+                              "children": [
+                                {
+                                  "type": "np/n",
+                                  "rule": "BA",
+                                  "children": [
+                                    {
+                                      "type": "np",
+                                      "rule": "U",
+                                      "children": [
+                                        {
+                                          "type": "n",
+                                          "rule": "FA",
+                                          "children": [
+                                            {
+                                              "type": "n/n",
+                                              "rule": "L",
+                                              "text": "other"
+                                            },
+                                            {
+                                              "type": "n",
+                                              "rule": "L",
+                                              "text": "people"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "(np/n)\\np",
+                                      "rule": "L",
+                                      "text": "'s"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "n",
+                                  "rule": "L",
+                                  "text": "evenings"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "punc",
+      "rule": "L",
+      "text": "."
+    }
+  ]
+}

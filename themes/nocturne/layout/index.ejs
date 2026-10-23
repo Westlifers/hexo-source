@@ -1,14 +1,7 @@
 <% if (page.current > 1) { %>
 <div class="shell collection"><header class="collection-heading"><p class="small-note">沿着时间，继续向前</p><h1>所有文字</h1></header><%- partial('partial/post-list', { entries: page.posts }) %><%- partial('partial/pagination') %></div>
 <% } else { const stats = n_stats(); %>
-<section class="hero" aria-labelledby="hero-title">
-  <div class="hero-atmosphere" aria-hidden="true"></div>
-  <div class="sculpture" aria-hidden="true"><img class="sculpture-fallback" src="<%= url_for('/nocturne/morphisms.svg') %>" alt=""><canvas data-observatory></canvas></div>
-  <div class="hero-orbit" aria-hidden="true"></div>
-  <div class="hero-content shell"><div class="hero-intro"><span class="live-dot"></span><span>杨荻的私人宇宙</span><span class="hero-year">始于 <%= stats.firstYear %></span></div><h1 id="hero-title"><% theme.home.title_lines.forEach((line,i)=>{ %><% if(i) { %><br><% } %><%= line %><% }); %></h1><p class="hero-description"><%= theme.home.introduction %></p><a class="hero-link" href="#journal"><span>进入我的世界</span><span class="round-arrow" aria-hidden="true">↘</span></a></div>
-  <div class="art-caption"><span class="caption-line"></span><div>The poetry of composition<small>k ∘ f = h ∘ g · 不同路径，同一复合。</small></div></div>
-  <div class="hero-bottom shell"><span class="hero-edition">Nocturne <i> / </i> 夜曲</span><button data-motion-toggle aria-pressed="false">暂停流动</button><a href="#journal" class="scroll-cue">向下探索 <span aria-hidden="true">↓</span></a></div>
-</section>
+<%- partial('partial/string-hero') %>
 <section class="manifesto shell" id="journal"><div class="section-intro"><span class="section-dot"></span><span>理性与浪漫，在这里相遇</span></div><div><h2>有些世界用公理建造。<br>有些世界，靠一盏灯照亮。</h2><p>“像夜晚摩天大楼里，某一层亮着的一盏灯。”</p><a href="<%= url_for(n_post('做一首世俗的诗.md')?.path || '/about/') %>" class="text-link">从《做一首世俗的诗》认识我 <span aria-hidden="true">↗</span></a></div></section>
 <section class="selected shell" aria-labelledby="selected-title"><div class="section-heading"><h2 id="selected-title">几种抵达世界的方式</h2><span>选自我的文字</span></div><div class="feature-grid">
 <% const poem = n_post('Route-Six.md'); const cat = n_post('日光之下，有一只白猫.md'); const math = n_post('integral-quantaloids-weak-tabularity-topos.md'); %>

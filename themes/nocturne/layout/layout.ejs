@@ -10,6 +10,7 @@
   <link rel="icon" href="<%= url_for('/nocturne/favicon.svg') %>" type="image/svg+xml">
   <link rel="stylesheet" href="<%= url_for('/nocturne/theme.css') %>">
   <script src="<%= url_for('/nocturne/appearance.js') %>"></script>
+  <% if (is_home() && page.current === 1) { %><link rel="stylesheet" href="<%= url_for('/nocturne/string-hero.css') %>"><link rel="stylesheet" href="<%= url_for('/nocturne/string-diagram.css') %>"><% } %>
   <% if ((is_home() && page.current === 1) || page.nocturne_atlas) { %><link rel="stylesheet" href="<%= url_for('/nocturne/atlas.css') %>"><% } %>
   <% if (page.source === 'about/index.md') { %><link rel="stylesheet" href="<%= url_for('/nocturne/about.css') %>"><% } %>
   <% if (page.content && (page.plugins?.mathjax || page.engine === 'statement' || page.tikzjax)) { %>
@@ -31,7 +32,7 @@
   <div class="toast" role="status" data-toast></div>
   <script defer src="<%= url_for('/nocturne/app.js') %>"></script>
   <% if (page.source === 'about/index.md') { %><script defer src="<%= url_for('/nocturne/about.js') %>"></script><% } %>
-  <% if (is_home() && page.current === 1) { %><script defer src="<%= url_for('/nocturne/observatory.js') %>"></script><% } %>
+  <% if (is_home() && page.current === 1) { %><script defer src="<%= url_for('/nocturne/string-diagram.js') %>"></script><script defer src="<%= url_for('/nocturne/string-hero.js') %>"></script><% } %>
   <% if ((is_home() && page.current === 1) || page.nocturne_atlas) { %><script defer src="<%= url_for('/nocturne/atlas.js') %>"></script><% } %>
   <% if (page.content) { %><% if (page.source !== 'about/index.md') { %><script defer src="<%= url_for('/nocturne/reading.js') %>"></script><% } %><script defer src="<%= url_for('/nocturne/comments.js') %>"></script><% if (page.plugins?.mathjax || page.engine === 'statement' || page.tikzjax) { %><script defer src="<%= url_for('/nocturne/math.js') %>" data-math-src="<%= theme.math.src %>"></script><% } %><% } %>
 </body>
