@@ -1,7 +1,7 @@
 const { disclosureFor } = require('../lib/ai-disclosure.cjs');
 
 hexo.extend.filter.register('after_post_render', function (data) {
-  if (hexo.config.theme === 'afterlight') return data;
+  if (['afterlight', 'nocturne'].includes(hexo.config.theme)) return data;
   const info = disclosureFor(data.ai);
   if (!info) return data;
   const { level, note } = info;
@@ -27,7 +27,7 @@ hexo.extend.filter.register('after_post_render', function (data) {
 hexo.extend.injector.register(
   'head_end',
   () => {
-    if (hexo.config.theme === 'afterlight') return '';
+    if (['afterlight', 'nocturne'].includes(hexo.config.theme)) return '';
     const css = hexo.extend.helper.get('css').bind(hexo);
     return css('/css/ai-disclosure.css');
   }

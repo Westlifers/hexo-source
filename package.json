@@ -9,7 +9,10 @@
     "server": "hexo server",
     "build:afterlight": "node tools/afterlight-preview.cjs --build-only",
     "preview:afterlight": "node tools/afterlight-preview.cjs",
-    "check:afterlight": "node tools/afterlight-check.cjs"
+    "check:afterlight": "node tools/afterlight-check.cjs",
+    "build:nocturne": "node tools/nocturne-preview.cjs --build-only",
+    "preview:nocturne": "node tools/nocturne-preview.cjs",
+    "check:nocturne": "node tools/nocturne-check.cjs"
   },
   "hexo": {
     "version": "7.3.0"

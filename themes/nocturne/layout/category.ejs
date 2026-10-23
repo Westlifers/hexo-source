@@ -1,0 +1,1 @@
+<div class="shell collection"><header class="collection-heading"><a class="text-link" href="<%= url_for('/archives/') %>">所有文字</a><h1><%= page.category %></h1><p>沿着同一个主题，继续探索。</p></header><%- partial('partial/post-list', { entries: page.posts }) %><%- partial('partial/pagination') %></div>

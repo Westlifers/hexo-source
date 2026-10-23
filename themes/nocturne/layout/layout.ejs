@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title><%= page.title ? n_plain(page.title) + ' · ' : '' %><%= theme.brand.name %> — Nocturne</title>
+  <meta name="description" content="<%= page.content ? n_summary(page, 150) : theme.home.introduction %>">
+  <link rel="canonical" href="<%= full_url_for(page.path || '') %>">
+  <link rel="icon" href="<%= url_for('/nocturne/favicon.svg') %>" type="image/svg+xml">
+  <link rel="stylesheet" href="<%= url_for('/nocturne/theme.css') %>">
+  <script src="<%= url_for('/nocturne/appearance.js') %>"></script>
+  <% if (is_home() && page.current === 1) { %><link rel="stylesheet" href="<%= url_for('/nocturne/atlas.css') %>"><% } %>
+  <% if (page.content && (page.plugins?.mathjax || page.engine === 'statement' || page.tikzjax)) { %>
+  <link rel="stylesheet" href="<%= url_for('/nocturne/math.css') %>">
+  <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]},chtml:{matchFontHeight:false},startup:{typeset:false}};</script>
+  <% } %>
+</head>
+<body class="nocturne <%= is_home() && page.current === 1 ? 'is-home' : 'is-inner' %>">
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-header shell">
+    <a class="brand" href="<%= url_for('/') %>" aria-label="Yougi 首页"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 35 12v16L20 37 5 28V12Z"/><path d="m5 12 15 9 15-9M20 21v16M12 8l16 24M28 8 12 32"/></svg><span>Yougi<span class="brand-dot">.</span></span></a>
+    <nav aria-label="主导航"><a href="<%= url_for('/') %>" <%- is_home() ? 'aria-current="page"' : '' %>>序章</a><a href="<%= url_for('/archives/') %>" <%- is_archive() ? 'aria-current="page"' : '' %>>所有文字</a><a href="<%= url_for('/#atlas') %>">星图</a><a href="<%= url_for('/about/') %>">关于</a></nav>
+    <div class="header-tools"><button class="search-trigger" data-search-open aria-label="搜索文章"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span>搜索</span><kbd>⌘ K</kbd></button><button class="icon-button" data-theme-toggle aria-label="切换到日间阅读">◐</button></div>
+  </header>
+  <main id="main"><%- body %></main>
+  <footer class="site-footer shell"><a class="footer-brand" href="<%= url_for('/') %>">Nocturne<span>夜曲</span></a><p>世界很大，留一点自己的回声。</p><div><span>© <%= new Date().getFullYear() %> <%= theme.brand.author %></span><a href="<%= url_for('/archives/') %>">继续漫游</a><span>以 Hexo 书写</span></div></footer>
+  <dialog class="search-dialog" data-search-dialog aria-labelledby="search-title" data-index="<%= url_for('/nocturne/search.json') %>"><div class="dialog-top"><h2 id="search-title">在文字之间寻找</h2><button data-dialog-close aria-label="关闭搜索">Esc</button></div><label class="search-field"><span class="sr-only">搜索标题、正文或标签</span><input type="search" data-search-input placeholder="一个词，一段记忆，一个定理…" autocomplete="off"></label><p class="search-status" data-search-status role="status">输入关键词，搜索全部文章。</p><div data-search-results></div><div class="search-hint">↑ ↓ 选择 <span>Enter 打开</span><span>Esc 关闭</span></div></dialog>
+  <dialog class="image-dialog" data-image-dialog aria-label="图片预览"><button data-dialog-close aria-label="关闭图片">关闭 ×</button><img alt=""><p></p></dialog>
+  <div class="toast" role="status" data-toast></div>
+  <script defer src="<%= url_for('/nocturne/app.js') %>"></script>
+  <% if (is_home() && page.current === 1) { %><script defer src="<%= url_for('/nocturne/observatory.js') %>"></script><script defer src="<%= url_for('/nocturne/atlas.js') %>"></script><% } %>
+  <% if (page.content) { %><script defer src="<%= url_for('/nocturne/reading.js') %>"></script><script defer src="<%= url_for('/nocturne/comments.js') %>"></script><% if (page.plugins?.mathjax || page.engine === 'statement' || page.tikzjax) { %><script defer src="<%= url_for('/nocturne/math.js') %>" data-math-src="<%= theme.math.src %>"></script><% } %><% } %>
+</body>
+</html>
