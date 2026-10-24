@@ -46,11 +46,16 @@
       word.classList.toggle('is-active', word.dataset.word === id);
       word.classList.toggle('is-related', related.has(word.dataset.word));
       word.setAttribute('aria-pressed', String(word.dataset.word === pinned));
+      if (word.dataset.word === id) {
+        const bounds = word.getBoundingClientRect(), area = hero.getBoundingClientRect();
+        hero.style.setProperty('--string-light-x', `${((bounds.left + bounds.width / 2 - area.left) / area.width * 100).toFixed(2)}%`);
+      }
     });
+    hero.classList.toggle('string-listening', Boolean(id));
     if (announce) {
       const word = current.words.find(item => item.id === id);
       const others = current.words.filter(item => related.has(item.id) && item.id !== id).map(item => item.text);
-      selectionStatus.textContent = word ? `${word.text} 的连线已突出${others.length ? '，相接词框：' + others.join('、') : ''}。再次选择可取消。` : '已显示全部连线。';
+      selectionStatus.textContent = word ? `${word.text} 的连线已突出${others.length ? '，相接词语：' + others.join('、') : ''}。再次选择可取消。` : '已显示全部连线。';
     }
   }
   function draw(sentence) {
@@ -61,6 +66,20 @@
     const scroller = stage.closest('[data-string-scroll]') || stage.parentElement;
     if (scroller) scroller.scrollLeft = 0;
     selectionStatus.textContent = '';
+    // One entrance after enhancement. Pause/reduced-motion and hidden-tab
+    // behavior use the same state as the continuing light on the strands.
+    if (!reduced.matches) {
+      hero.classList.add('string-arriving');
+      const finishEntrance = event => {
+        if (event.animationName !== 'string-inscribe' || event.target.closest('[data-strand]')?.dataset.strand !== 'strand-11') return;
+        hero.classList.remove('string-arriving');
+        stage.removeEventListener('animationend', finishEntrance);
+      };
+      stage.addEventListener('animationend', finishEntrance);
+      reduced.addEventListener('change', () => {
+        if (reduced.matches) { hero.classList.remove('string-arriving'); stage.removeEventListener('animationend', finishEntrance); }
+      }, { once:true });
+    }
   }
   stage.addEventListener('pointerover', event => {
     const word = event.target.closest('[data-word]');

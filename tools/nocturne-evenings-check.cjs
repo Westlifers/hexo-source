@@ -24,7 +24,8 @@ function points(commands) {
     const [a, b, end] = command.points;
     for (let i = 1; i <= 64; i++) {
       const t = i/64, u = 1-t;
-      result.push([0,1].map(axis => u*u*u*start[axis]+3*u*u*t*a[axis]+3*u*t*t*b[axis]+t*t*t*end[axis]));
+      const point=[0,1].map(axis => u*u*u*start[axis]+3*u*u*t*a[axis]+3*u*t*t*b[axis]+t*t*t*end[axis]);
+      if(Math.hypot(point[0]-result.at(-1)[0],point[1]-result.at(-1)[1])>1e-8)result.push(point);
     }
     start = end;
   }
@@ -34,21 +35,39 @@ function cross(a,b,c,d) {
   const det=(u,v)=>u[0]*v[1]-u[1]*v[0];
   const ab=[b[0]-a[0],b[1]-a[1]], cd=[d[0]-c[0],d[1]-c[1]], ac=[c[0]-a[0],c[1]-a[1]];
   const divisor=det(ab,cd);
-  if(Math.abs(divisor)<1e-12)return null;
+  if(Math.abs(divisor)<1e-12) {
+    if(Math.abs(det(ac,ab))>1e-9)return null;
+    const length=ab[0]*ab[0]+ab[1]*ab[1];
+    if(length<1e-16)return null;
+    const start=(ac[0]*ab[0]+ac[1]*ab[1])/length;
+    const end=start+(cd[0]*ab[0]+cd[1]*ab[1])/length;
+    const low=Math.max(0,Math.min(start,end)), high=Math.min(1,Math.max(start,end));
+    return high>=low-1e-9 ? [a[0]+(low+high)/2*ab[0],a[1]+(low+high)/2*ab[1]] : null;
+  }
   const t=det(ac,cd)/divisor, u=det(ac,ab)/divisor;
   return t>=-1e-9&&t<=1+1e-9&&u>=-1e-9&&u<=1+1e-9 ? [a[0]+t*ab[0],a[1]+t*ab[1]] : null;
 }
 function crossings(paths) {
-  let count = 0;
+  const foundPairs = [];
   for (let i=0;i<paths.length;i++) for (let j=i+1;j<paths.length;j++) {
     const a=paths[i], b=paths[j], found=[];
     for (let k=1;k<a.length;k++) for (let l=1;l<b.length;l++) {
       const hit=cross(a[k-1],a[k],b[l-1],b[l]);
       if(hit&&!found.some(p=>Math.hypot(p[0]-hit[0],p[1]-hit[1])<1e-5))found.push(hit);
     }
-    count+=found.length;
+    if(found.length)foundPairs.push({strands:[diagram.strands[i].id,diagram.strands[j].id],count:found.length});
   }
-  return count;
+  return foundPairs;
+}
+function selfCrossings(points) {
+  const found=[];
+  for(let i=1;i<points.length;i++)for(let j=i+2;j<points.length;j++) {
+    // Adjacent segments share an endpoint by construction; all other contacts,
+    // including collinear overlap and a repeated distant endpoint, are unwanted.
+    const hit=cross(points[i-1],points[i],points[j-1],points[j]);
+    if(hit&&!found.some(p=>Math.hypot(p[0]-hit[0],p[1]-hit[1])<1e-5))found.push(hit);
+  }
+  return found;
 }
 assert.equal(diagram.outputs.length, 1);
 assert.equal(diagram.outputs[0].type, 's');
@@ -61,10 +80,15 @@ for (const strand of diagram.strands) {
     assert(Math.abs(actual[0]-project.x(expected.x))<.01 && Math.abs(actual[1]-project.y(expected.y))<.01, 'Disconnected path endpoint');
   }
 }
-const before=crossings(diagram.strands.map(strand=>points(strand.commands)));
-const after=crossings(diagram.strands.map(strand=>points(project.commands(strand))));
-assert.equal(after,before,'Presentation changed crossings');
-assert.equal(after,1,'The sole crossing must belong to the original swap');
+const originalPaths=diagram.strands.map(strand=>points(strand.commands));
+const drawnPaths=diagram.strands.map(strand=>points(project.commands(strand)));
+const before=crossings(originalPaths), after=crossings(drawnPaths);
+assert.deepEqual(after,before,'Presentation changed the identity or number of crossings');
+assert.deepEqual(after,[{strands:['strand-0','strand-3'],count:1}],'Only the original swap strands may cross');
+for(const [index,strand] of diagram.strands.entries()) {
+  assert.equal(selfCrossings(originalPaths[index]).length,0,strand.id+': source unexpectedly self-intersects');
+  assert.equal(selfCrossings(drawnPaths[index]).length,0,strand.id+': presentation introduced a self-intersection');
+}
 assert.equal(diagram.stats.graphEdges,diagram.stats.tracedEdges);
 for(const file of [diagram.rawSvg,diagram.provenance.ccg,diagram.provenance.diagram]) assert(fs.existsSync(path.join(base,file)),file);
 const ccg=fs.readFileSync(path.join(base,diagram.provenance.ccg));
@@ -80,4 +104,4 @@ for(const helper of diagram.helpers) {
 const svg=renderer.render(diagram);
 assert(!/NaN|Infinity|undefined/.test(svg));
 assert.equal((svg.match(/class="string-word"/g)||[]).length,diagram.words.length);
-console.log(JSON.stringify({id:diagram.id,ports:ports.length,paths:diagram.strands.length,caps:diagram.stats.caps,swaps:diagram.stats.swaps,crossings:after,note:'64 subdivisions per cubic; original port incidence, helper provenance, and single s output retained.'},null,2));
+console.log(JSON.stringify({id:diagram.id,ports:ports.length,paths:diagram.strands.length,caps:diagram.stats.caps,swaps:diagram.stats.swaps,crossings:after,selfCrossings:0,note:'64 subdivisions per cubic; original port incidence, crossing identity, helper provenance, and single s output retained.'},null,2));
