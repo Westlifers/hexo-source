@@ -4,8 +4,7 @@ brand:
   subtitle: 数学、文字与世俗生活
 home:
   title_lines:
-    - 在无穷中，
-    - 留一盏灯。
+    - 世俗的形状。
   introduction: 研究抽象的结构，也记录具体的生活。在数学、城市与诗之间，寻找世界的另一种读法。
 math:
   src: https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js

@@ -36,14 +36,27 @@
     const boxBottom = Math.max(...sentence.words.map(word => word.y + word.height));
     const bottom = sentence.bounds.y + sentence.bounds.height;
     const y = value => number(value <= boxBottom ? top + value / boxBottom * wordHeight : top + wordHeight + (value - boxBottom) / Math.max(.1, bottom - boxBottom) * (lower - top - wordHeight));
+    const floor = y(5.25), shoulder = y(4.5), k = .55228475;
+    const leftLow = (x(.5) + x(8)) / 2, rightLow = (x(10.5) + x(18)) / 2;
+    // The swap lives at the natural intersection of two uninterrupted sweeps.
+    // Internal helper coordinates are presentation anchors, not word endpoints.
+    const sweeps = {
+      rising: [[leftLow,floor], [leftLow+110,floor], [x(15.5),y(3.75)], [x(15.5),y(2.1)]],
+      falling: [[x(3),y(2.85)], [x(3),y(4.55)], [rightLow-88,floor], [rightLow,floor]]
+    };
+    const onCurve = (points, t) => [0,1].map(axis => {
+      const u = 1-t;
+      return u*u*u*points[0][axis] + 3*u*u*t*points[1][axis] + 3*u*t*t*points[2][axis] + t*t*t*points[3][axis];
+    });
+    const helperPosition = (kind, port) => kind === 'Swap'
+      ? port.type === 'n.r' ? onCurve(sweeps.rising,.22) : onCurve(sweeps.falling,.85)
+      : [x(port.x),y(port.y)];
     const commands = strand => {
       const original = strand.commands.map(command => ({ op: command.op, points: command.points.map(point => [x(point[0]), y(point[1])]) }));
       if (strand.id === 'strand-4') return original;
       if (strand.id === 'strand-0' || strand.id === 'strand-3') {
         const start = original[0].points[0], end = original.at(-1).points.at(-1);
-        const k = .55228475;
-        const upper = y(3.25), swapTop = y(4), swapBottom = y(4.5), floor = y(5.25);
-        const crossing = [x(9.25), y(4.25)];
+        const upper = y(3.25);
         const result = [{ op:'M', points:[start] }];
         let cursor = start;
         const curve = (a, b, point) => {
@@ -58,15 +71,13 @@
           curve([from[0],from[1]+k*(level-from[1])], [middle-k*half,level], [middle,level]);
           curve([middle+k*half,level], [point[0],point[1]+k*(level-point[1])], point);
         };
-        // Broad elliptical folds stay in the same horizontal channels. Their
-        // vertical tangents meet the stems; only the compact swap changes lanes.
+        // Keep the small cap and the cup minima. Each arm now turns only once,
+        // so the crossing needs no separate horizontal or vertical neck.
         if (strand.id === 'strand-0') {
-          const left = start[0], low = x(8), right = end[0];
-          line([left,swapBottom]);
-          dip([low,swapBottom],floor);
-          curve([low,swapBottom-9], [crossing[0]-8,crossing[1]+4], crossing);
-          curve([crossing[0]+8,crossing[1]-4], [x(10.5)-9,swapTop], [x(10.5),swapTop]);
-          curve([x(10.5)+k*(right-x(10.5)),swapTop], [right,upper+k*(swapTop-upper)], [right,upper]);
+          const left = start[0];
+          line([left,shoulder]);
+          curve([left,shoulder+k*(floor-shoulder)], [leftLow-k*(leftLow-left),floor], sweeps.rising[0]);
+          curve(...sweeps.rising.slice(1));
           line(end);
         } else {
           const right = start[0], capRight = x(5.5), capLeft = x(3), capFoot = y(2.5), capTop = y(2.25);
@@ -75,11 +86,9 @@
           dip([capRight,capFoot],upper);
           curve([capRight,capFoot-k*rise], [capMiddle+k*half,capTop], [capMiddle,capTop]);
           curve([capMiddle-k*half,capTop], [capLeft,capFoot-k*rise], [capLeft,capFoot]);
-          line([capLeft,upper]);
-          curve([capLeft,upper+k*(swapTop-upper)], [x(8)-k*(x(8)-capLeft),swapTop], [x(8),swapTop]);
-          curve([x(8)+9,swapTop], [crossing[0]-8,crossing[1]-4], crossing);
-          curve([crossing[0]+8,crossing[1]+4], [x(10.5),swapBottom-9], [x(10.5),swapBottom]);
-          dip([end[0],swapBottom],floor);
+          line(sweeps.falling[0]);
+          curve(...sweeps.falling.slice(1));
+          curve([rightLow+k*(end[0]-rightLow),floor], [end[0],shoulder+k*(floor-shoulder)], [end[0],shoulder]);
           line(end);
         }
         return result;
@@ -94,7 +103,7 @@
         { op:'C', points:[[middle[0] + span * .32, low], [end[0], end[1] + depth * .86], end] }];
     };
     const path = strand => commands(strand).map(command => command.op + command.points.map(point => number(point[0]) + ',' + number(point[1])).join(' ')).join(' ');
-    return { width, height: 456, x, y, path, commands };
+    return { width, height: 456, x, y, path, commands, helperPosition };
   }
 
   function render(sentence, { interactive = false } = {}) {
@@ -115,7 +124,10 @@
       const ports = word.ports.map(port => `<circle class="string-port" cx="${x(port.x)}" cy="${y(port.y)}" r="1.7"/><text class="string-type" x="${x(port.x)}" y="${y(port.y) + 20}" text-anchor="middle">${escape(port.type.replace(/\.r/g,'ʳ').replace(/\.l/g,'ˡ'))}</text>`).join('');
       return `<g class="string-word" data-word="${escape(word.id)}"${interactive ? ` role="button" tabindex="0" aria-label="查看 ${escape(word.text)} 的连线" aria-pressed="false"` : ''}><rect class="string-word-hit" x="${left - 5}" y="${top - 7}" width="${number(right-left+10)}" height="${number(bottom-top+14)}"/><ellipse class="string-word-aura" cx="${center}" cy="${bottom - 13}" rx="${number((right-left)*.7)}" ry="30" fill="url(#${prefix}-wordlight)"/><path class="string-word-anchor" d="M${left + 3} ${bottom}H${right - 3}"/><path class="string-word-focus" d="M${left + 5} ${top - 4}h12 M${right - 5} ${top - 4}h-12 M${left + 5} ${bottom + 7}h12 M${right - 5} ${bottom + 7}h-12"/><text class="string-word-label" x="${center}" y="${bottom - 21}" text-anchor="middle" lang="en">${escape(word.text)}</text>${ports}</g>`;
     }).join('');
-    const helperTypes = sentence.helpers.filter(helper => helper.kind === 'Cap' || helper.kind === 'Swap').flatMap(helper => helper.ports.filter(port => port.kind === 'cod')).map(port => `<text class="string-type" x="${x(port.x)+5}" y="${y(port.y)+15}">${escape(port.type.replace(/\.r/g,'ʳ').replace(/\.l/g,'ˡ'))}</text>`).join('');
+    const helperTypes = sentence.helpers.filter(helper => helper.kind === 'Cap' || helper.kind === 'Swap').flatMap(helper => helper.ports.filter(port => port.kind === 'cod').map(port => {
+      const position = project.helperPosition(helper.kind, port);
+      return `<text class="string-type" x="${number(position[0]+5)}" y="${number(position[1]+15)}">${escape(port.type.replace(/\.r/g,'ʳ').replace(/\.l/g,'ˡ'))}</text>`;
+    })).join('');
     const outputs = sentence.outputs.map(port => `<g class="string-output"><circle class="string-output-light" cx="${x(port.x)}" cy="${y(port.y)}" r="25" fill="url(#${prefix}-wordlight)"/><circle cx="${x(port.x)}" cy="${y(port.y)}" r="2.6"/><text x="${x(port.x)}" y="${y(port.y) + 31}" text-anchor="middle">${escape(port.type)}</text></g>`).join('');
     return `<svg class="string-diagram" viewBox="0 0 ${width} ${height}" style="--diagram-width:${width}px" xmlns="http://www.w3.org/2000/svg" role="${interactive ? 'group' : 'img'}" aria-labelledby="${prefix}-title ${prefix}-desc" data-scene="${escape(sentence.id)}"><title id="${prefix}-title">${escape(sentence.sentence)}</title><desc id="${prefix}-desc">这句话的一种 DisCoCat 分析。词语之间的线保留原始类型连接；末端 s 为句子类型。</desc><defs>${defs}<radialGradient id="${prefix}-wordlight"><stop stop-color="#e6bd91" stop-opacity=".6"/><stop offset=".35" stop-color="#aa7c87" stop-opacity=".18"/><stop offset="1" stop-color="#aa7c87" stop-opacity="0"/></radialGradient><filter id="${prefix}-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter></defs><g class="string-paths" style="--string-glow:url(#${prefix}-glow)">${paths}</g><g class="string-words">${words}</g>${helperTypes}${outputs}</svg>`;
   }
