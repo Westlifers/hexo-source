@@ -40,33 +40,55 @@
       const original = strand.commands.map(command => ({ op: command.op, points: command.points.map(point => [x(point[0]), y(point[1])]) }));
       if (strand.id === 'strand-4') return original;
       if (strand.id === 'strand-0' || strand.id === 'strand-3') {
-        const at = (u, v) => [x(u), y(v)];
         const start = original[0].points[0], end = original.at(-1).points.at(-1);
-        const crossing = at(9.25, 4.25);
-        let knots, tangents;
+        const radius = 22, k = .55228475;
+        const upper = y(3.25), swapTop = y(4), swapBottom = y(4.5), floor = y(5.25);
+        const crossing = [x(9.25), y(4.25)];
+        const result = [{ op:'M', points:[start] }];
+        let cursor = start;
+        const curve = (a, b, point) => {
+          result.push({ op:'C', points:[a,b,point] });
+          cursor = point;
+        };
+        const line = point => curve(
+          cursor.map((value, axis) => value + (point[axis] - value) / 3),
+          cursor.map((value, axis) => value + (point[axis] - value) * 2 / 3), point);
+        // Shared horizontal levels and equal turn radii keep the folds legible.
+        // The swap alone changes lanes, in a compact region below the cap.
         if (strand.id === 'strand-0') {
-          const turn = at(4.25, 5.25), swapPort = at(8, 4.5);
-          const dx = crossing[0] - swapPort[0], dy = crossing[1] - swapPort[1];
-          knots = [start, turn, swapPort, crossing, end];
-          tangents = [[0, (turn[1] - start[1]) * .47],
-            [(swapPort[0] - turn[0]) * .44, 0], [dx * .34, dy * .52],
-            [dx * .45, dy * .3], [0, -(crossing[1] - end[1]) * .4]];
+          const left = start[0], low = x(8), right = end[0];
+          line([left, floor - radius]);
+          curve([left, floor-radius+k*radius], [left+radius-k*radius,floor], [left+radius,floor]);
+          line([low-radius,floor]);
+          curve([low-radius+k*radius,floor], [low,floor-radius+k*radius], [low,floor-radius]);
+          line([low,swapBottom]);
+          curve([low,swapBottom-9], [crossing[0]-8,crossing[1]+4], crossing);
+          curve([crossing[0]+8,crossing[1]-4], [x(10.5)-9,swapTop], [x(10.5),swapTop]);
+          line([right-radius,swapTop]);
+          curve([right-radius+k*radius,swapTop], [right,swapTop-radius+k*radius], [right,swapTop-radius]);
+          line(end);
         } else {
-          const firstTurn = at(9.25, 3.25), capRight = at(5.5, 2.5), capLeft = at(3, 2.5);
-          const swapPort = at(10.5, 4.5), lastTurn = at(14.25, 5.25);
-          const crossingTangent = [(swapPort[0] - crossing[0]) * .44, (swapPort[1] - crossing[1]) * .44];
-          knots = [start, firstTurn, capRight, capLeft, crossing, swapPort, lastTurn, end];
-          tangents = [[0, (firstTurn[1] - start[1]) * .54],
-            [(capRight[0] - firstTurn[0]) * .44, 0], [0, -(firstTurn[1] - capRight[1]) * .44],
-            [0, (crossing[1] - capLeft[1]) * .32], crossingTangent, crossingTangent,
-            [(end[0] - lastTurn[0]) * .42, 0], [0, -(lastTurn[1] - end[1]) * .4]];
+          const right = start[0], capRight = x(5.5), capLeft = x(3), capFoot = y(2.5), capTop = y(2.25);
+          const capMiddle = (capLeft+capRight)/2, half = (capRight-capLeft)/2, rise = capFoot-capTop;
+          line([right,upper-radius]);
+          curve([right,upper-radius+k*radius], [right-radius+k*radius,upper], [right-radius,upper]);
+          line([capRight+radius,upper]);
+          curve([capRight+radius-k*radius,upper], [capRight,upper-radius+k*radius], [capRight,upper-radius]);
+          line([capRight,capFoot]);
+          curve([capRight,capFoot-k*rise], [capMiddle+k*half,capTop], [capMiddle,capTop]);
+          curve([capMiddle-k*half,capTop], [capLeft,capFoot-k*rise], [capLeft,capFoot]);
+          line([capLeft,swapTop-radius]);
+          curve([capLeft,swapTop-radius+k*radius], [capLeft+radius-k*radius,swapTop], [capLeft+radius,swapTop]);
+          line([x(8),swapTop]);
+          curve([x(8)+9,swapTop], [crossing[0]-8,crossing[1]-4], crossing);
+          curve([crossing[0]+8,crossing[1]+4], [x(10.5),swapBottom-9], [x(10.5),swapBottom]);
+          line([x(10.5),floor-radius]);
+          curve([x(10.5),floor-radius+k*radius], [x(10.5)+radius-k*radius,floor], [x(10.5)+radius,floor]);
+          line([end[0]-radius,floor]);
+          curve([end[0]-radius+k*radius,floor], [end[0],floor-radius+k*radius], [end[0],floor-radius]);
+          line(end);
         }
-        // Shared tangents join the bends smoothly. Keep both cap ports, both
-        // swap output ports and the common crossing on their original positions.
-        return [{ op:'M', points:[knots[0]] }, ...knots.slice(1).map((knot, index) => ({
-          op:'C', points:[knots[index].map((value, axis) => value + tangents[index][axis]),
-            knot.map((value, axis) => value - tangents[index + 1][axis]), knot]
-        }))];
+        return result;
       }
       // The nine simple cups form continuous hanging curves.
       const start = original[0].points[0], end = original.at(-1).points.at(-1);
