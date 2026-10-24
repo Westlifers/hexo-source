@@ -1,4 +1,4 @@
-<% const scene = n_string_home(); const stringIntro = theme.home && theme.home.introduction; %>
+<% const scene = n_string_home(); %>
 <section class="string-hero" aria-labelledby="string-hero-title" data-string-hero data-source="<%= url_for('/nocturne/strings/evenings-runtime.json') %>">
   <div class="string-hero-atmosphere" aria-hidden="true"></div>
   <div class="string-hero-intro shell">
@@ -6,24 +6,27 @@
       <p class="string-owner"><span aria-hidden="true"></span>杨荻的私人宇宙</p>
       <h1 id="string-hero-title"><% (theme.home.title_lines || ['在无穷中，', '留一盏灯。']).forEach((line,index)=>{ %><% if (index) { %><br><% } %><%= line %><% }); %></h1>
     </div>
-    <p class="string-invitation">轻触一个词<span>看它与整句话的联系</span></p>
   </div>
 
   <figure class="string-score shell" aria-label="这句话的一种 DisCoCat 分析">
-    <div class="string-score-window" data-string-scroll tabindex="0" role="region" aria-label="句子的弦图，小屏幕可左右滚动查看">
-      <div class="string-stage" data-string-stage><%- scene.svg %></div>
+    <div class="string-score-scene">
+      <div class="string-score-window" data-string-scroll tabindex="0" role="region" aria-label="句子的弦图，小屏幕可左右滚动查看">
+        <div class="string-stage" data-string-stage><%- scene.svg %></div>
+      </div>
+      <div class="string-verse">
+        <p class="string-sentence" lang="en" data-string-sentence><%= scene.sentence.sentence %></p>
+        <p class="string-translation" data-string-translation><% scene.sentence.translation.split('，').forEach((line,index,lines)=>{ %><span class="string-translation-line"><%= line %><%= index < lines.length - 1 ? '，' : '' %></span><% }); %></p>
+      </div>
     </div>
-    <div class="string-verse">
-      <p class="string-sentence" lang="en" data-string-sentence><%= scene.sentence.sentence %></p>
-      <p class="string-translation" data-string-translation><%= scene.sentence.translation %></p>
-    </div>
-    <div class="string-view-tools"><p class="string-scroll-note"><span aria-hidden="true">↔</span> 左右滑动，沿着线条读下去</p><button class="string-scale" type="button" data-string-scale aria-pressed="false" disabled>放大读图</button></div>
+    <div class="string-view-tools"><button class="string-scale" type="button" data-string-scale aria-pressed="false" disabled>放大读图</button></div>
     <figcaption class="string-score-footer">
       <details class="string-colophon">
         <summary><span class="string-edition" lang="en">Nocturne <i>/</i> <span lang="zh-CN">夜曲</span></span><span class="string-colophon-prompt">关于这幅图 <span class="string-disclosure-mark" aria-hidden="true">+</span></span></summary>
-        <div class="string-colophon-content">
-          <p>这句话的一种 DisCoCat 分析。词语在这里有了形状，连接呈现它们组合成句子的关系。</p>
-          <a href="<%= url_for('/' + scene.sentence.rawSvg) %>" data-string-original target="_blank" rel="noopener">查看原始弦图 <span aria-hidden="true">↗</span></a>
+        <div class="string-colophon-content" data-string-disclosure-body>
+          <div class="string-colophon-inner" data-string-disclosure-inner>
+            <p>这句话的一种 DisCoCat 分析。词语在这里有了形状，连接呈现它们组合成句子的关系。</p>
+            <a href="<%= url_for('/' + scene.sentence.rawSvg) %>" data-string-original target="_blank" rel="noopener">查看原始弦图 <span aria-hidden="true">↗</span></a>
+          </div>
         </div>
       </details>
       <div class="string-controls" role="group" aria-label="弦图显示选项">
@@ -34,7 +37,6 @@
   </figure>
 
   <div class="string-hero-bottom shell">
-    <% if (stringIntro) { %><p><%= stringIntro %></p><% } %>
     <a href="#journal" class="string-enter">走进我的文字 <span aria-hidden="true">↓</span></a>
   </div>
   <noscript><style>.string-hero .string-controls{display:none}</style><p class="string-nojs shell">你正在看静态弦图。句子与原始图纸仍可完整阅读。</p></noscript>

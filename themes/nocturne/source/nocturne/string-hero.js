@@ -25,6 +25,50 @@
       motion.title = reduced.matches ? '已遵循系统减少动态效果设置' : '';
     }
   }
+  // Keep native details as the no-script fallback. During a closing animation
+  // it remains open until the body has collapsed; rapid clicks start from the
+  // current painted height instead of jumping to an endpoint.
+  const disclosure = hero.querySelector('.string-colophon');
+  const disclosureBody = disclosure?.querySelector('[data-string-disclosure-body]');
+  const disclosureInner = disclosure?.querySelector('[data-string-disclosure-inner]');
+  if (disclosureBody?.animate && disclosureInner) {
+    let expanded = disclosure.open, revision = 0, heightAnimation, textAnimation;
+    const settle = () => {
+      heightAnimation?.cancel(); textAnimation?.cancel();
+      heightAnimation = textAnimation = null;
+      disclosure.open = expanded;
+      disclosure.classList.remove('is-closing');
+      disclosureBody.style.removeProperty('height');
+      disclosureInner.style.removeProperty('opacity');
+    };
+    disclosure.querySelector('summary').addEventListener('click', event => {
+      event.preventDefault();
+      const currentHeight = disclosure.open ? disclosureBody.getBoundingClientRect().height : 0;
+      const currentOpacity = disclosure.open ? Number(getComputedStyle(disclosureInner).opacity) : 0;
+      const thisRevision = ++revision;
+      expanded = !expanded;
+      heightAnimation?.cancel(); textAnimation?.cancel();
+      disclosure.open = true;
+      disclosure.classList.toggle('is-closing', !expanded);
+      const endHeight = expanded ? disclosureInner.getBoundingClientRect().height : 0;
+      if (reduced.matches || Math.abs(currentHeight - endHeight) < .5) { settle(); return; }
+      disclosureBody.style.height = `${currentHeight}px`;
+      disclosureInner.style.opacity = String(currentOpacity);
+      heightAnimation = disclosureBody.animate([
+        { height:`${currentHeight}px` }, { height:`${endHeight}px` }
+      ], { duration:expanded ? 380 : 280, easing:'cubic-bezier(.22,1,.36,1)', fill:'forwards' });
+      textAnimation = disclosureInner.animate([
+        { opacity:currentOpacity }, { opacity:expanded ? 1 : 0 }
+      ], { duration:expanded ? 300 : 160, delay:expanded && currentHeight === 0 ? 45 : 0, easing:'ease-out', fill:'forwards' });
+      heightAnimation.finished.then(() => {
+        if (thisRevision === revision) settle();
+      }, () => {});
+    });
+    disclosure.addEventListener('toggle', () => { if (!heightAnimation) expanded = disclosure.open; });
+    reduced.addEventListener('change', () => {
+      if (reduced.matches) { revision++; settle(); }
+    });
+  }
   function setReadingMode(reading) {
     hero.classList.toggle('string-reading', reading);
     scale?.setAttribute('aria-pressed', String(reading));

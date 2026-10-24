@@ -41,7 +41,7 @@
       if (strand.id === 'strand-4') return original;
       if (strand.id === 'strand-0' || strand.id === 'strand-3') {
         const start = original[0].points[0], end = original.at(-1).points.at(-1);
-        const radius = 22, k = .55228475;
+        const k = .55228475;
         const upper = y(3.25), swapTop = y(4), swapBottom = y(4.5), floor = y(5.25);
         const crossing = [x(9.25), y(4.25)];
         const result = [{ op:'M', points:[start] }];
@@ -53,39 +53,33 @@
         const line = point => curve(
           cursor.map((value, axis) => value + (point[axis] - value) / 3),
           cursor.map((value, axis) => value + (point[axis] - value) * 2 / 3), point);
-        // Shared horizontal levels and equal turn radii keep the folds legible.
-        // The swap alone changes lanes, in a compact region below the cap.
+        const dip = (point, level) => {
+          const from = cursor, half = (point[0] - from[0]) / 2, middle = from[0] + half;
+          curve([from[0],from[1]+k*(level-from[1])], [middle-k*half,level], [middle,level]);
+          curve([middle+k*half,level], [point[0],point[1]+k*(level-point[1])], point);
+        };
+        // Broad elliptical folds stay in the same horizontal channels. Their
+        // vertical tangents meet the stems; only the compact swap changes lanes.
         if (strand.id === 'strand-0') {
           const left = start[0], low = x(8), right = end[0];
-          line([left, floor - radius]);
-          curve([left, floor-radius+k*radius], [left+radius-k*radius,floor], [left+radius,floor]);
-          line([low-radius,floor]);
-          curve([low-radius+k*radius,floor], [low,floor-radius+k*radius], [low,floor-radius]);
-          line([low,swapBottom]);
+          line([left,swapBottom]);
+          dip([low,swapBottom],floor);
           curve([low,swapBottom-9], [crossing[0]-8,crossing[1]+4], crossing);
           curve([crossing[0]+8,crossing[1]-4], [x(10.5)-9,swapTop], [x(10.5),swapTop]);
-          line([right-radius,swapTop]);
-          curve([right-radius+k*radius,swapTop], [right,swapTop-radius+k*radius], [right,swapTop-radius]);
+          curve([x(10.5)+k*(right-x(10.5)),swapTop], [right,upper+k*(swapTop-upper)], [right,upper]);
           line(end);
         } else {
           const right = start[0], capRight = x(5.5), capLeft = x(3), capFoot = y(2.5), capTop = y(2.25);
           const capMiddle = (capLeft+capRight)/2, half = (capRight-capLeft)/2, rise = capFoot-capTop;
-          line([right,upper-radius]);
-          curve([right,upper-radius+k*radius], [right-radius+k*radius,upper], [right-radius,upper]);
-          line([capRight+radius,upper]);
-          curve([capRight+radius-k*radius,upper], [capRight,upper-radius+k*radius], [capRight,upper-radius]);
-          line([capRight,capFoot]);
+          line([right,capFoot]);
+          dip([capRight,capFoot],upper);
           curve([capRight,capFoot-k*rise], [capMiddle+k*half,capTop], [capMiddle,capTop]);
           curve([capMiddle-k*half,capTop], [capLeft,capFoot-k*rise], [capLeft,capFoot]);
-          line([capLeft,swapTop-radius]);
-          curve([capLeft,swapTop-radius+k*radius], [capLeft+radius-k*radius,swapTop], [capLeft+radius,swapTop]);
-          line([x(8),swapTop]);
+          line([capLeft,upper]);
+          curve([capLeft,upper+k*(swapTop-upper)], [x(8)-k*(x(8)-capLeft),swapTop], [x(8),swapTop]);
           curve([x(8)+9,swapTop], [crossing[0]-8,crossing[1]-4], crossing);
           curve([crossing[0]+8,crossing[1]+4], [x(10.5),swapBottom-9], [x(10.5),swapBottom]);
-          line([x(10.5),floor-radius]);
-          curve([x(10.5),floor-radius+k*radius], [x(10.5)+radius-k*radius,floor], [x(10.5)+radius,floor]);
-          line([end[0]-radius,floor]);
-          curve([end[0]-radius+k*radius,floor], [end[0],floor-radius+k*radius], [end[0],floor-radius]);
+          dip([end[0],swapBottom],floor);
           line(end);
         }
         return result;
