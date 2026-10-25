@@ -1,10 +1,10 @@
 <% if (page.current > 1) { %>
 <div class="shell collection"><header class="collection-heading"><p class="small-note">沿着时间，继续向前</p><h1>所有文字</h1></header><%- partial('partial/post-list', { entries: page.posts }) %><%- partial('partial/pagination') %></div>
-<% } else { const stats = n_stats(); const poem=n_post('Route-Six.md'), cat=n_post('日光之下，有一只白猫.md'), math=n_post('integral-quantaloids-weak-tabularity-topos.md'), song=n_post('route-six-song.md'); %>
+<% } else { const stats = n_stats(); const poem=n_post('Route-Six.md'), cat=n_post('日光之下，有一只白猫.md'), math=n_post('integral-quantaloids-weak-tabularity-topos.md'); %>
 <%- partial('partial/string-hero') %>
-<section class="home-interlude shell" id="journal" aria-label="从一首世俗的诗开始">
-  <p class="home-interlude-note">这里有数学的手稿，也有散步时留下的念头。<a href="<%= url_for('/about/') %>">认识杨荻 <span aria-hidden="true">↗</span></a></p>
-  <blockquote>我喜欢独处，但喜欢的是置身于人群与车海之中的孤独。<cite><a href="<%= url_for(n_post('做一首世俗的诗.md')?.path || '/about/') %>">节选自《做一首世俗的诗》</a></cite></blockquote>
+<section class="home-interlude shell" id="journal" aria-label="我的文字">
+  <p class="home-interlude-note">有时埋首纸间，有时流连街头。</p>
+  <a class="home-interlude-link" href="<%= url_for('/about/') %>">关于我 <span aria-hidden="true">↗</span></a>
 </section>
 <section class="home-works shell" aria-labelledby="selected-title">
   <header class="home-works-heading"><h2 id="selected-title">几种抵达世界的方式</h2><p>一首诗，一次停留，一个问题。</p></header>
@@ -42,15 +42,4 @@
 </section>
 <section class="journal shell" aria-labelledby="journal-title"><div class="section-heading"><h2 id="journal-title">最近写下的</h2><a class="text-link" href="<%= url_for('/archives/') %>">全部 <%= stats.posts %> 篇 <span aria-hidden="true">↗</span></a></div><%- partial('partial/post-list', { entries: page.posts.limit(6) }) %><a class="journal-more" href="<%= url_for('/archives/') %>">打开完整档案 <span aria-hidden="true">↗</span></a></section>
 <%- partial('partial/atlas', { standalone: false }) %>
-<section class="home-listening shell" aria-labelledby="listening-title">
-  <div class="record" aria-hidden="true"><div><span>Route<br>Six</span></div></div>
-  <div><h2 id="listening-title" lang="en">Route Six</h2><p class="home-listening-description">再坐几站吧。<br>一首诗，一次 AI 辅助音乐实验。</p>
-    <% if(song) { %><a class="text-link" href="<%= url_for(song.path) %>">歌词与创作说明 <span aria-hidden="true">↗</span></a><% } %>
-    <div class="home-audio-player" data-audio-player hidden>
-      <button class="play-button" data-audio-toggle aria-label="播放 Route Six" aria-pressed="false"><span data-play-icon aria-hidden="true">▶</span></button>
-      <div class="audio-timeline"><label class="sr-only" for="audio-position">Route Six 播放进度</label><input class="audio-seek" id="audio-position" data-audio-seek type="range" min="0" max="100" step=".1" value="0" disabled><div class="audio-time"><span data-audio-label>听听 Route Six</span><span><time data-audio-current>0:00</time> / <time data-audio-duration>—:—</time></span></div></div>
-    </div>
-    <audio class="home-audio-native" controls data-home-audio preload="none" src="<%= url_for('/audio/route-six-matikane-tannhauser-v2-softer.mp3') %>"></audio><p data-audio-status role="status"></p>
-  </div>
-</section>
 <% } %>

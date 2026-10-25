@@ -29,6 +29,100 @@
   const validYears = new Set(records.map(record => record.year));
   const allTags = new Set(records.flatMap(record => record.tags));
   let state, bookmarks = [], savedPaths = new Set(), inputTimer, composing = false;
+  const selectWidgets = [];
+  let openedSelect = null;
+
+  // Native selects remain the source of values and change events. The popup is
+  // enhanced only after the normal archive has initialized successfully.
+  function enhanceSelect(select) {
+    const wrapper = select.closest('[data-archive-select]');
+    const options = [...select.options].filter(option => !option.disabled);
+    if (!wrapper || !options.length) return;
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = 'archive-select-trigger';
+    button.id = `${select.id}-trigger`; button.setAttribute('role', 'combobox');
+    button.setAttribute('aria-haspopup', 'listbox'); button.setAttribute('aria-expanded', 'false');
+    const value = document.createElement('span'); value.id = `${select.id}-value`;
+    const chevron = document.createElement('span'); chevron.className = 'archive-select-chevron'; chevron.setAttribute('aria-hidden', 'true');
+    button.append(value, chevron);
+    button.setAttribute('aria-labelledby', `${select.id}-label`);
+    const list = document.createElement('div');
+    list.id = `${select.id}-listbox`; list.className = 'archive-select-menu'; list.hidden = true;
+    list.setAttribute('role', 'listbox'); list.setAttribute('aria-labelledby', `${select.id}-label`);
+    button.setAttribute('aria-controls', list.id);
+    const choices = options.map((option, index) => {
+      const element = document.createElement('div'); element.id = `${select.id}-option-${index}`;
+      element.className = 'archive-select-option'; element.setAttribute('role', 'option');
+      element.setAttribute('aria-selected', 'false'); element.textContent = option.textContent;
+      list.append(element); return element;
+    });
+    let activeIndex = 0, typed = '', typedAt = 0;
+    const selectedIndex = () => Math.max(0, options.findIndex(option => option.value === select.value));
+    function sync() {
+      const selected = selectedIndex(); value.textContent = options[selected].textContent;
+      choices.forEach((choice, index) => choice.setAttribute('aria-selected', String(index === selected)));
+      if (list.hidden) activeIndex = selected;
+    }
+    function activate(index) {
+      activeIndex = Math.max(0, Math.min(options.length - 1, index));
+      choices.forEach((choice, i) => choice.classList.toggle('is-active', i === activeIndex));
+      button.setAttribute('aria-activedescendant', choices[activeIndex].id);
+      const choice = choices[activeIndex];
+      if (choice.offsetTop < list.scrollTop) list.scrollTop = choice.offsetTop;
+      else if (choice.offsetTop + choice.offsetHeight > list.scrollTop + list.clientHeight) list.scrollTop = choice.offsetTop + choice.offsetHeight - list.clientHeight;
+    }
+    function close(restoreFocus = false) {
+      list.hidden = true; button.setAttribute('aria-expanded', 'false'); button.removeAttribute('aria-activedescendant');
+      wrapper.classList.remove('is-open', 'opens-up'); typed = '';
+      if (openedSelect === widget) openedSelect = null;
+      if (restoreFocus) button.focus({ preventScroll: true });
+    }
+    function open(index = selectedIndex()) {
+      if (openedSelect && openedSelect !== widget) openedSelect.close();
+      openedSelect = widget; sync(); list.hidden = false; wrapper.classList.add('is-open');
+      button.setAttribute('aria-expanded', 'true');
+      const box = button.getBoundingClientRect(), below = innerHeight - box.bottom, above = box.top;
+      const upwards = below < Math.min(280, options.length * 44 + 14) + 12 && above > below;
+      wrapper.classList.toggle('opens-up', upwards);
+      list.style.maxHeight = `${Math.max(88, Math.min(280, (upwards ? above : below) - 18))}px`;
+      button.focus({ preventScroll: true }); activate(index);
+    }
+    function choose(index, restoreFocus = true) {
+      const changed = select.value !== options[index].value;
+      select.value = options[index].value; close(restoreFocus); sync();
+      if (changed) select.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    const widget = { wrapper, close, sync };
+    button.addEventListener('click', () => { if (list.hidden) open(); else close(true); });
+    button.addEventListener('keydown', event => {
+      const key = event.key, expanded = !list.hidden;
+      if (event.ctrlKey || event.metaKey) return;
+      if (key === 'Escape' && expanded) { event.preventDefault(); event.stopPropagation(); close(true); return; }
+      if (key === 'Tab') { if (expanded) choose(activeIndex, false); return; }
+      if (key === 'Enter' || key === ' ') { event.preventDefault(); if (expanded) choose(activeIndex); else open(); return; }
+      if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(key)) {
+        event.preventDefault();
+        if (event.altKey && key === 'ArrowUp' && expanded) { choose(activeIndex); return; }
+        if (!expanded) open(key === 'Home' ? 0 : key === 'End' ? options.length - 1 : selectedIndex());
+        else activate(key === 'Home' ? 0 : key === 'End' ? options.length - 1 : activeIndex + (key === 'ArrowDown' ? 1 : -1));
+        return;
+      }
+      if (key.length === 1 && !event.altKey) {
+        event.preventDefault(); const now = Date.now(); typed = now - typedAt > 700 ? key : typed + key; typedAt = now;
+        const needle = normalize([...typed].every(character => character === typed[0]) ? typed[0] : typed);
+        const start = expanded ? activeIndex + 1 : selectedIndex();
+        const match = options.map((option, index) => (start + index) % options.length).find(index => normalize(options[index].textContent).startsWith(needle));
+        if (match !== undefined) { if (expanded) activate(match); else open(match); }
+      }
+    });
+    choices.forEach((choice, index) => {
+      choice.addEventListener('pointermove', event => { if (event.pointerType !== 'touch') activate(index); });
+      choice.addEventListener('pointerdown', event => { if (event.pointerType !== 'touch') event.preventDefault(); });
+      choice.addEventListener('click', () => choose(index));
+    });
+    select.addEventListener('change', sync);
+    wrapper.append(button, list); sync(); select.hidden = true; wrapper.classList.add('is-custom'); selectWidgets.push(widget);
+  }
   function readBookmarks() {
     const value = read(storageKey, []);
     bookmarks = Array.isArray(value) ? value.filter(item => item && typeof item.url === 'string' && typeof item.title === 'string') : [];
@@ -82,7 +176,7 @@
       ? a.minutes - b.minutes || b.time - a.time : state.sort === 'oldest' ? a.time - b.time : b.time - a.time);
     // Leave the focused search field intact, including spaces and caret position.
     if (query.value.trim() !== state.q) query.value = state.q;
-    year.value = state.year; sort.value = state.sort;
+    year.value = state.year; sort.value = state.sort; selectWidgets.forEach(widget => widget.sync());
     clear.hidden = !state.q; savedButton.setAttribute('aria-pressed', String(state.saved));
     kindButtons.forEach(button => {
       const key = button.dataset.archiveKind, selected = key === state.kind;
@@ -116,7 +210,7 @@
     if (state.saved) filters.push('我的收藏');
     if (state.q) filters.push(`“${state.q}”`);
     active.textContent = filters.filter(Boolean).join(' / '); active.hidden = filters.length === 0;
-    empty.hidden = shown.length > 0; find('[data-archive-end]').hidden = shown.length === 0;
+    empty.hidden = shown.length > 0;
     const hasSaved = records.some(record => savedPaths.has(record.path));
     find('[data-archive-empty-title]').textContent = state.saved && !hasSaved ? '把想再读的文字留在这里' : '没有找到这样的文字';
     find('[data-archive-empty-copy]').textContent = state.saved && !hasSaved
@@ -159,4 +253,8 @@
   addEventListener('popstate', () => { readState(); readBookmarks(); render(false); });
   addEventListener('pageshow', () => { readBookmarks(); render(false); });
   readState(); readBookmarks(); render(false);
+  [year, sort].forEach(enhanceSelect);
+  document.addEventListener('pointerdown', event => { if (openedSelect && !openedSelect.wrapper.contains(event.target)) openedSelect.close(); });
+  document.addEventListener('focusin', event => { if (openedSelect && !openedSelect.wrapper.contains(event.target)) openedSelect.close(); });
+  addEventListener('resize', () => openedSelect?.close());
 })();

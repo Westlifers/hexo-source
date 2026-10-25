@@ -123,9 +123,7 @@
     const baseStatus = () => `${filter === 'all' ? '整个宇宙' : topics[filter]?.label || filter} · ${visible.length} 篇文章${entries.length > 40 ? ' · 图中显示 40 篇' : ''}`;
     const resetDetail = () => {
       delete root.dataset.atlasSelected;
-      detail.replaceChildren(element('span', 'atlas-detail-mark', '✦'),
-        element('p', 'atlas-detail-invitation', '有些想法，在别处相遇。'),
-        element('p', 'atlas-detail-help', '选中一颗星，展开文章与关联。'));
+      detail.replaceChildren();
       detail.classList.remove('has-selection');
     };
     const connectionsFor = id => edges.filter(edge => (!explicitOnly || edge.explicit) && (edge.a.id === id || edge.b.id === id));

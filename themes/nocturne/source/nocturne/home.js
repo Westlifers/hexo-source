@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const section=document.querySelector('.home-listening');
+  const section=document.querySelector('[data-footer-player]');
   const audio=section?.querySelector('[data-home-audio]');
   const play=section?.querySelector('[data-audio-toggle]');
   if(!audio || !play)return;
@@ -14,6 +14,7 @@
   function syncPosition(){
     current.textContent=time(audio.currentTime);duration.textContent=time(audio.duration);
     seek.disabled=!ready();
+    seek.style.setProperty('--audio-progress',ready() ? `${Math.max(0,Math.min(100,audio.currentTime/audio.duration*100))}%` : '0%');
     if(ready()){
       seek.max=String(audio.duration);seek.value=String(audio.currentTime);
       seek.setAttribute('aria-valuetext',time(audio.currentTime)+'，共 '+time(audio.duration));

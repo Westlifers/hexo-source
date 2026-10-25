@@ -18,6 +18,7 @@
   <link rel="icon" href="<%= url_for('/nocturne/favicon.svg') %>" type="image/svg+xml">
   <link rel="stylesheet" href="<%= url_for('/nocturne/theme.css') %>">
   <link rel="stylesheet" href="<%= url_for('/nocturne/experience.css') %>">
+  <link rel="stylesheet" href="<%= url_for('/nocturne/footer.css') %>">
   <script src="<%= url_for('/nocturne/appearance.js') %>"></script>
   <% if (is_home() && page.current === 1) { %><link rel="stylesheet" href="<%= url_for('/nocturne/string-hero.css') %>"><link rel="stylesheet" href="<%= url_for('/nocturne/string-diagram.css') %>"><link rel="stylesheet" href="<%= url_for('/nocturne/home.css') %>"><% } %>
   <% if ((is_home() && page.current === 1) || page.nocturne_atlas) { %><link rel="stylesheet" href="<%= url_for('/nocturne/atlas.css') %>"><% } %>
@@ -37,7 +38,7 @@
     <div class="header-tools"><button class="search-trigger" data-search-open aria-label="搜索文章"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span>搜索</span><kbd>⌘ K</kbd></button><button class="icon-button" data-theme-toggle aria-label="切换到日间阅读">◐</button></div>
   </header>
   <main id="main"><%- body %></main>
-  <footer class="site-footer shell"><a class="footer-brand" href="<%= url_for('/') %>">Nocturne<span>夜曲</span></a><p>世界很大，留一点自己的回声。</p><div><span>© <%= new Date().getFullYear() %> <%= theme.brand.author %></span><a href="<%= url_for('/archives/') %>">继续漫游</a><a href="<%= url_for('/archives/?saved=1') %>">我的收藏</a><a class="footer-subscribe" href="<%= url_for('/atom.xml') %>"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3" cy="13" r="1"/><path d="M2 7a7 7 0 0 1 7 7M2 2a12 12 0 0 1 12 12"/></svg>订阅新文章</a><span>以 Hexo 书写</span></div></footer>
+  <%- partial('partial/footer') %>
   <dialog class="search-dialog" data-search-dialog aria-labelledby="search-title" data-index="<%= url_for('/nocturne/search.json') %>"><div class="dialog-top"><h2 id="search-title">在文字之间寻找</h2><button data-dialog-close aria-label="关闭搜索">Esc</button></div><label class="search-field"><span class="sr-only">搜索标题、正文或标签</span><input type="search" data-search-input placeholder="一个词，一段记忆，一个定理…" autocomplete="off"></label><p class="search-status" data-search-status role="status">输入关键词，搜索全部文章。</p><div data-search-results></div><div class="search-hint">↑ ↓ 选择 <span>Enter 打开</span><span>Esc 关闭</span></div></dialog>
   <dialog class="image-dialog" data-image-dialog aria-label="图片预览"><button data-dialog-close aria-label="关闭图片">关闭 ×</button><img alt=""><p></p></dialog>
   <div class="toast" role="status" data-toast></div>

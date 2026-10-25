@@ -1,0 +1,25 @@
+<% const footerHasPlayer = is_home() && page.current === 1; const footerSong = footerHasPlayer ? n_post(theme.home.song || 'route-six-song.md') : null; %>
+<footer class="site-footer nocturne-footer shell">
+  <div class="footer-main">
+    <a class="footer-wordmark" href="<%= url_for('/') %>">Nocturne<span>夜曲</span></a>
+    <% if (footerHasPlayer) { %>
+    <section class="footer-player" data-footer-player aria-label="Route Six 播放器">
+      <div class="footer-disc" aria-hidden="true"><div class="footer-disc-label"><span>Route<br>Six</span></div></div>
+      <div class="footer-player-copy">
+        <% if (footerSong) { %><a class="footer-track-title" href="<%= url_for(footerSong.path) %>" aria-label="Route Six，歌词与创作说明" lang="en">Route Six</a><% } else { %><span class="footer-track-title" lang="en">Route Six</span><% } %>
+        <div class="footer-audio-controls" data-audio-player hidden>
+          <button class="footer-play" data-audio-toggle aria-label="播放 Route Six" aria-pressed="false"><span data-play-icon aria-hidden="true">▶</span></button>
+          <div class="footer-timeline">
+            <label class="sr-only" for="footer-audio-position">Route Six 播放进度</label>
+            <input class="footer-seek" id="footer-audio-position" data-audio-seek type="range" min="0" max="100" step=".1" value="0" disabled>
+            <div class="footer-audio-time"><span class="sr-only" data-audio-label>听听 Route Six</span><span><time data-audio-current>0:00</time> / <time data-audio-duration>—:—</time></span></div>
+          </div>
+        </div>
+        <audio class="footer-audio-native" controls data-home-audio preload="none" src="<%= url_for('/audio/route-six-matikane-tannhauser-v2-softer.mp3') %>"></audio>
+        <p class="footer-audio-status" data-audio-status role="status"></p>
+      </div>
+    </section>
+    <% } %>
+  </div>
+  <div class="footer-meta"><span>© <%= new Date().getFullYear() %> <%= theme.brand.author %></span><nav aria-label="页脚链接"><a href="<%= url_for('/archives/?saved=1') %>">收藏</a><a href="<%= url_for('/atom.xml') %>" aria-label="通过 RSS 订阅新文章">RSS</a></nav></div>
+</footer>
