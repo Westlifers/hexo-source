@@ -8,6 +8,7 @@ tags:
   - AI音乐
 ai:
   level: substantial
+  label: AI 辅助音乐
   note: 本曲为 AI 辅助音乐实验。基础歌声由 <a href="https://github.com/spicytigermeat/tiger_diffsinger">OpenUtau／TIGER DS（tigermeat／neutrogic）</a>合成，再使用 <a href="https://huggingface.co/TLME/RVC-Umamusume">TLME 发布的待兼诗歌剧 RVC 模型</a>转换音色。非官方作品，不代表角色版权方或声优参与、认可。
 ---
 

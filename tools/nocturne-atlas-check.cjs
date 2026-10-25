@@ -26,6 +26,8 @@ function setup({ url = 'https://example.test/blog/atlas/', data = fixture, fail 
     <div data-atlas-toolbar hidden><button data-atlas-relations>Relations</button><button data-atlas-copy>Copy</button><input data-atlas-share-url readonly hidden></div>
     <div class="atlas-stage"></div><p data-atlas-status></p></section>`, { url, runScripts: 'outside-only', pretendToBeVisual: true });
   const window = dom.window, document = window.document, media = new Map(), frames = new Map();
+  const scrolls = [];
+  window.HTMLElement.prototype.scrollIntoView = function (options) { scrolls.push({ element: this, options }); };
   let time = 0, nextFrame = 0, requests = 0;
   window.matchMedia = query => {
     if (!media.has(query)) media.set(query, { matches: query.includes('reduced-motion') && reduced, addEventListener(type, listener) { this.change = listener; } });
@@ -37,7 +39,7 @@ function setup({ url = 'https://example.test/blog/atlas/', data = fixture, fail 
   window.cancelAnimationFrame = id => frames.delete(id);
   window.eval(script);
   return {
-    window, document, frames, media,
+    window, document, frames, media, scrolls,
     root: document.querySelector('[data-atlas]'),
     click(selector) { const target = document.querySelector(selector); assert(target, selector); target.click(); },
     filter(kind) { document.querySelector(`[data-atlas-filter="${kind}"]`).click(); },
@@ -60,6 +62,11 @@ function setup({ url = 'https://example.test/blog/atlas/', data = fixture, fail 
     assert.equal(root.dataset.atlasSelected, '/blog/paper-b/');
     assert.equal(root.dataset.atlasRelations, 'explicit');
     assert.equal(document.querySelector('.atlas-detail-title').textContent, 'Paper B');
+    assert.equal(document.querySelector('.atlas-selection').hidden, false, 'Restored selection has a visible compact prompt');
+    assert.equal(document.querySelector('.atlas-selection-title').textContent, 'Paper B');
+    page.click('.atlas-selection-open');
+    assert.equal(document.activeElement.className, 'atlas-detail-title', 'View introduction moves keyboard focus into the actual detail');
+    assert.equal(page.scrolls.at(-1).options.behavior, 'smooth');
     assert.equal(document.querySelectorAll('.atlas-related-choice').length, 2);
     assert(document.querySelector('.atlas-related-reason').textContent.includes('共同标签：Topos'));
     assert.equal(document.querySelectorAll('.atlas-edge-explicit').length, 4, 'Only real shared tags/categories make explicit edges');
@@ -74,6 +81,7 @@ function setup({ url = 'https://example.test/blog/atlas/', data = fixture, fail 
     assert.equal(window.history.length, 2);
     assert.equal(new URL(window.location.href).searchParams.get('keep'), '1', 'Other URL parameters survive');
     assert(!document.querySelector('.atlas-detail-link'), 'Changing topic clears an unrelated selected article');
+    assert.equal(document.querySelector('.atlas-selection').hidden, true, 'An unrelated topic clears the compact prompt');
     assert([...document.querySelectorAll('.atlas-node[tabindex="0"]')].every(node => node.dataset.atlasKind === 'essays'));
     page.step(350);
     const interrupted = world.getAttribute('transform');
@@ -97,6 +105,7 @@ function setup({ url = 'https://example.test/blog/atlas/', data = fixture, fail 
     const selectedNode = document.activeElement;
     selectedNode.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     assert(!document.querySelector('.atlas-detail-link'));
+    assert.equal(document.querySelector('.atlas-selection').hidden, true, 'Escape also clears the compact prompt');
     assert(!new URL(window.location.href).searchParams.has('star'));
 
     // Restore URL state as the browser does on Back/Forward.
@@ -126,8 +135,29 @@ function setup({ url = 'https://example.test/blog/atlas/', data = fixture, fail 
     assert.equal(document.querySelector('.atlas-svg').getAttribute('viewBox'), '0 0 600 650');
     assert.equal(root.dataset.atlasView, 'fieldnotes');
     document.querySelector('.atlas-node[data-atlas-kind="fieldnotes"]').dispatchEvent(new window.Event('click'));
-    assert(document.querySelector('.atlas-related-reason').textContent.includes('共同分类：旅行'));
+    assert(document.querySelector('.atlas-related-reason').textContent.includes('同属原文分类：旅行'));
+    page.click('.atlas-selection-open');
+    assert.equal(page.scrolls.at(-1).options.behavior, 'auto', 'Reduced motion does not animate the detail jump');
+    const selectedId = document.querySelector('.atlas-node.is-selected').dataset.articleId;
+    page.click('.atlas-selection-clear');
+    assert.equal(document.querySelector('.atlas-selection').hidden, true);
+    assert(!document.querySelector('.atlas-detail-link'));
+    assert(!new URL(window.location.href).searchParams.has('star'));
+    assert.equal(document.activeElement.dataset.articleId, selectedId, 'Clearing from the compact prompt returns focus to the originating star');
   } finally { page.close(); }
+
+  const pages = setup({ data: [...fixture, { title: '关于我', url: '/blog/about/', kind: 'essays', entryType: 'page', date: '2026-01-01' }] });
+  try {
+    await flush();
+    assert.equal(pages.document.querySelector('.atlas-selection').hidden, true, 'No prompt appears before a selection');
+    assert(pages.document.querySelector('[data-atlas-status]').textContent.includes('8 篇文章 + 关于页'));
+    pages.filter('essays');
+    assert(pages.document.querySelector('.atlas-alternative summary').textContent.includes('2 篇文章 + 关于页'));
+    const about = [...pages.document.querySelectorAll('.atlas-node')].find(node => node.getAttribute('aria-label').startsWith('关于我'));
+    about.dispatchEvent(new pages.window.Event('click'));
+    assert.equal(pages.document.querySelector('.atlas-detail-link').textContent, '打开页面');
+    assert(pages.document.querySelector('.atlas-detail-meta').textContent.startsWith('页面'));
+  } finally { pages.close(); }
 
   const retry = setup({ fail: true });
   try { await flush(); assert(retry.document.querySelector('.atlas-retry')); retry.click('.atlas-retry'); await flush(); assert.equal(retry.document.querySelectorAll('.atlas-node').length, 8); } finally { retry.close(); }
@@ -170,5 +200,5 @@ function setup({ url = 'https://example.test/blog/atlas/', data = fixture, fail 
     assert.deepEqual([...document.querySelectorAll('.atlas-edge')], edges, 'Focus never replaces edge elements');
     assert.equal(root.dataset.atlasDrawnEdges, '11');
   } finally { dense.close(); }
-  console.log('Atlas checks passed: sparse evidence-preserving overview, full article neighborhoods, persistent graph, interrupted camera, spatial keyboard navigation, URL restoration, sharing fallback, mobile/reduced motion, retry and empty states.');
+  console.log('Atlas checks passed: compact selection and detail navigation, post/page counts, sparse evidence-preserving overview, full article neighborhoods, persistent graph, interrupted camera, spatial keyboard navigation, URL restoration, sharing fallback, mobile/reduced motion, retry and empty states.');
 })().catch(error => { console.error(error); process.exitCode = 1; });

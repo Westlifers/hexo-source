@@ -1,4 +1,5 @@
 const { disclosureFor } = require('../lib/ai-disclosure.cjs');
+const { escapeHTML } = require('hexo-util');
 
 hexo.extend.filter.register('after_post_render', function (data) {
   if (['afterlight', 'nocturne'].includes(hexo.config.theme)) return data;
@@ -10,7 +11,7 @@ hexo.extend.filter.register('after_post_render', function (data) {
 <div class="ai-disclosure ai-disclosure--${level}">
   <div class="ai-disclosure__header">
     <span class="ai-disclosure__icon">${info.icon}</span>
-    <span class="ai-disclosure__label">${info.label}</span>
+    <span class="ai-disclosure__label">${escapeHTML(info.label)}</span>
   </div>
 
   <div class="ai-disclosure__text">

@@ -5,13 +5,16 @@ hexo.extend.generator.register('nocturne-search', function (locals) {
   const helper = name => this.extend.helper.get(name);
   const plain = helper('n_plain'), summary = helper('n_summary'), kind = helper('n_kind');
   const url = helper('url_for').bind(this);
-  const entries = [...locals.posts.toArray(), ...(this.theme.config.search?.include_pages === false ? [] : locals.pages.toArray())]
+  const posts = locals.posts.toArray(), postEntries = new Set(posts);
+  const entries = [...posts, ...(this.theme.config.search?.include_pages === false ? [] : locals.pages.toArray())]
     .filter(entry => entry.published !== false && entry.search !== false && entry.layout !== false && entry.layout !== 'false' && entry.title && !entry.source?.startsWith('_drafts/'))
     .sort((a, b) => b.date.valueOf() - a.date.valueOf())
     .map(entry => ({
       title: plain(entry.title), url: url(entry.path), summary: summary(entry, 160),
-      // Keep formulas searchable, but use prose without math/code for displayed context.
+      // Retain readable formula text in snippets so mathematical sentences do
+      // not lose their subjects; keep the original text searchable as well.
       text: plain(entry.content), snippet: plain(entry.content, true),
+      entryType: postEntries.has(entry) ? 'post' : 'page',
       tags: entry.tags?.toArray().map(tag => tag.name) || [],
       categories: entry.categories?.toArray().map(category => category.name) || [],
       kind: kind(entry).key, date: entry.date.format('YYYY-MM-DD')

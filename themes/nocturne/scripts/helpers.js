@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('node:path');
-const { parseDocument } = require('htmlparser2');
+const { parseDocument, DomUtils } = require('htmlparser2');
 const { disclosureFor } = require(path.join(hexo.base_dir, 'lib/ai-disclosure.cjs'));
 
 const kinds = Object.freeze({
@@ -12,20 +12,77 @@ const kinds = Object.freeze({
 });
 const blockTags = new Set(['p', 'div', 'section', 'article', 'li', 'br', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'tr', 'td', 'pre']);
 
-function plain(value, omitMath = false) {
+// Text previews retain the mathematical nouns and relations that make a
+// sentence meaningful. This is a conservative text transcription, not a TeX
+// renderer: unfamiliar commands stay intact rather than silently disappearing.
+const mathSymbols = Object.freeze({
+  alpha:'α', beta:'β', gamma:'γ', delta:'δ', epsilon:'ε', varepsilon:'ε', theta:'θ', lambda:'λ', mu:'μ', pi:'π', sigma:'σ', tau:'τ', phi:'φ', psi:'ψ', omega:'ω',
+  Gamma:'Γ', Delta:'Δ', Theta:'Θ', Lambda:'Λ', Sigma:'Σ', Phi:'Φ', Psi:'Ψ', Omega:'Ω',
+  in:'∈', notin:'∉', ni:'∋', subset:'⊂', subseteq:'⊆', supset:'⊃', supseteq:'⊇', cup:'∪', bigcup:'⋃', cap:'∩', bigcap:'⋂', setminus:'∖', emptyset:'∅', varnothing:'∅',
+  le:'≤', leq:'≤', ge:'≥', geq:'≥', ne:'≠', neq:'≠', equiv:'≡', cong:'≅', approx:'≈', sim:'∼',
+  to:'→', rightarrow:'→', longrightarrow:'⟶', leftarrow:'←', mapsto:'↦', nrightarrow:'↛', Rightarrow:'⇒', Longrightarrow:'⇒', Leftarrow:'⇐', Longleftarrow:'⇐', Leftrightarrow:'⇔', Longleftrightarrow:'⇔', iff:'⇔', implies:'⇒',
+  forall:'∀', exists:'∃', nexists:'∄', top:'⊤', bot:'⊥', land:'∧', wedge:'∧', bigwedge:'⋀', lor:'∨', vee:'∨', bigvee:'⋁', neg:'¬',
+  times:'×', otimes:'⊗', oplus:'⊕', circ:'∘', cdot:'·', star:'⋆', ast:'*', dashv:'⊣', vdash:'⊢', perp:'⊥', infty:'∞', int:'∫', sum:'∑', prod:'∏',
+  lbrace:'{', rbrace:'}', langle:'⟨', rangle:'⟩', lvert:'|', rvert:'|', vert:'|', mid:'|', ldots:'…', cdots:'⋯', dots:'…',
+  lim:'lim', limsup:'lim sup', liminf:'lim inf', sup:'sup', inf:'inf', max:'max', min:'min', sin:'sin', cos:'cos', log:'log', exp:'exp', det:'det', dim:'dim', diam:'diam'
+});
+const scriptLetters = Array.from('𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏');
+const doubleLetters = Array.from('𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫');
+function mathStyle(style, text) {
+  const alphabet = /^(?:mathcal|mathscr)$/.test(style) ? scriptLetters : /^(?:mathbb|Bbb)$/.test(style) ? doubleLetters : null;
+  return alphabet ? text.replace(/[A-Za-z]/g, letter => alphabet['ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.indexOf(letter)]) : text;
+}
+
+function mathText(value) {
+  return String(value)
+    .replace(/\\(?:newcommand|renewcommand)\s*(?:\\[A-Za-z]+|\{\\[A-Za-z]+\})\s*(?:\[\d+\])?\s*\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}/g, '')
+    .replace(/\\(?:begin|end)\{[^}]+\}/g, ' ')
+    .replace(/\\(?:displaystyle|textstyle|scriptstyle|scriptscriptstyle|left|right|[bB]ig[glrm]?|[bB]igg[lr]?)\b/g, '')
+    .replace(/\\(?:quad|qquad|enspace|thinspace)\b|\\[,;:! ]/g, ' ')
+    .replace(/\\([A-Za-z]+)/g, (command, name) => mathSymbols[name] ?? command)
+    .replace(/\\(mathcal|mathscr|mathbb|Bbb|mathrm|mathbf|mathit|mathsf|mathtt|operatorname|text)\s*(?:\{([^{}]*)\}|([A-Za-z]))/g, (_, style, grouped, single) => mathStyle(style, grouped ?? single))
+    .replace(/\\(overline|bar)\s*(?:\{([^{}]*)\}|([A-Za-z]))/g, (_, mark, grouped, single) => `${mark}(${grouped ?? single})`)
+    .replace(/\\(?:frac|dfrac|tfrac)\s*\{([^{}]*)\}\s*\{([^{}]*)\}/g, '($1)/($2)')
+    .replace(/\\sqrt\s*\{([^{}]*)\}/g, '√($1)')
+    .replace(/\\([{}_%&#$])/g, '$1')
+    .replace(/\\\\/g, '; ')
+    .replace(/\s+/g, ' ').trim();
+}
+
+function mathMLText(node) {
+  if (node.type === 'text') return node.data;
+  if (['annotation', 'annotation-xml'].includes(node.name)) return '';
+  const children = (node.children || []).filter(child => child.type !== 'text' || child.data.trim());
+  const parts = children.map(mathMLText);
+  if (node.name === 'mfrac') return `(${parts[0]})/(${parts[1]})`;
+  if (node.name === 'msup') return `${parts[0]}^(${parts[1]})`;
+  if (node.name === 'msub') return `${parts[0]}_(${parts[1]})`;
+  if (node.name === 'msubsup') return `${parts[0]}_(${parts[1]})^(${parts[2]})`;
+  if (node.name === 'msqrt') return `√(${parts.join('')})`;
+  return parts.join('');
+}
+
+function plain(value, readableMath = false) {
   const document = parseDocument(String(value || ''), { decodeEntities: true });
   function read(node) {
     if (node.type === 'text') return node.data;
     const classes = (node.attribs?.class || '').split(/\s+/);
+    if (readableMath && node.name === 'script' && /^math\/tex/.test(node.attribs?.type || '')) return mathText(DomUtils.textContent(node));
     if (['style', 'script', 'svg', 'template'].includes(node.name) || classes.includes('ai-disclosure')) return ' ';
-    if (omitMath && (['math', 'mjx-container', 'pre', 'code'].includes(node.name) || classes.includes('math'))) return ' ';
+    if (readableMath && ['pre', 'code'].includes(node.name)) return ' ';
+    if (readableMath && ['math', 'mjx-container'].includes(node.name)) {
+      const annotation = DomUtils.findOne(child => child.name === 'annotation' && /tex/i.test(child.attribs?.encoding || ''), node.children || []);
+      const tex = node.attribs?.alttext || (annotation && DomUtils.textContent(annotation));
+      const math = node.name === 'math' ? node : DomUtils.findOne(child => child.name === 'math', node.children || []);
+      return tex ? mathText(tex) : mathMLText(math || node);
+    }
     const text = (node.children || []).map(read).join('');
     return blockTags.has(node.name) ? ' ' + text + ' ' : text;
   }
   let text = document.children.map(read).join('');
-  if (omitMath) text = text
-    .replace(/\$\$[\s\S]*?\$\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)/g, ' ')
-    .replace(/(?<!\\)\$[^$\n]+?(?<!\\)\$/g, ' ');
+  if (readableMath) text = text
+    .replace(/\$\$([\s\S]*?)\$\$|\\\[([\s\S]*?)\\\]|\\\(([\s\S]*?)\\\)/g, (_, dollars, brackets, parens) => mathText(dollars ?? brackets ?? parens))
+    .replace(/(?<!\\)\$(?!\s)([^$\n]*?\S)(?<!\\)\$/g, (_, formula) => mathText(formula));
   return text.replace(/\s+/g, ' ').trim();
 }
 

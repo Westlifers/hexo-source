@@ -32,10 +32,11 @@
     label.textContent=(typeof item.kind==='object'?item.kind.label:kinds[item.kind])||item.date||'文字';
     const title=document.createElement('strong');highlight(title,item.title,terms);
     const summary=document.createElement('p');let excerpt=String(item.summary||'');
-    // Search still uses item.text; only clean prose may become a result excerpt.
-    // Older indexes or formula-only matches retain the already-clean summary.
-    if(terms.length&&!terms.some(term=>excerpt.toLocaleLowerCase().includes(term))){const text=String(item.snippet||'');const positions=terms.map(term=>text.toLocaleLowerCase().indexOf(term)).filter(index=>index>=0);if(positions.length){const at=Math.min(...positions),start=Math.max(0,at-35);excerpt=(start?'…':'')+text.slice(start,start+135)+(start+135<text.length?'…':'');}}
-    highlight(summary,excerpt.slice(0,160),terms);a.append(label,title,summary);return a;
+    // Search still uses item.text; excerpts use readable prose and formula text.
+    // Older indexes or missing snippet matches retain the prepared summary.
+    if(terms.length&&!terms.some(term=>excerpt.toLocaleLowerCase().includes(term))){const text=String(item.snippet||'');const positions=terms.map(term=>text.toLocaleLowerCase().indexOf(term)).filter(index=>index>=0);if(positions.length){const at=Math.min(...positions),characters=Array.from(text),start=Math.max(0,Array.from(text.slice(0,at)).length-35);excerpt=(start?'…':'')+characters.slice(start,start+135).join('')+(start+135<characters.length?'…':'');}}
+    const characters=Array.from(excerpt);
+    highlight(summary,characters.length>160?characters.slice(0,159).join('')+'…':excerpt,terms);a.append(label,title,summary);return a;
   }
   async function runSearch(){const data=await loadIndex();if(!data)return;const query=input.value.trim().toLocaleLowerCase();results.replaceChildren();selected=-1;
     if(!query){const stored=storage.get('nocturne-bookmarks',[]);const bookmarks=Array.isArray(stored)?stored:[];const saved=data.filter(item=>bookmarks.some(bookmark=>bookmark?.url===new URL(item.url,location.href).pathname));const shown=saved.length?saved:data.slice(0,5);status.textContent=saved.length?`你收藏的 ${saved.length} 篇文字`:'从最近的文字开始，或输入关键词。';shown.forEach(item=>results.append(makeResult(item)));return;}

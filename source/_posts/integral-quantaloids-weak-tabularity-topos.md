@@ -10,6 +10,7 @@ plugins:
   mathjax: true
 ai:
   level: generated
+  label: AI 协助整理
   note: 本文由 Noema 根据我的手稿协助整理。
 ---
 

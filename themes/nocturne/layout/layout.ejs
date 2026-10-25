@@ -40,7 +40,7 @@
   </header>
   <main id="main"><%- body %></main>
   <%- partial('partial/footer') %>
-  <dialog class="search-dialog" data-search-dialog aria-labelledby="search-title" data-index="<%= url_for('/nocturne/search.json') %>"><div class="dialog-top"><h2 id="search-title">在文字之间寻找</h2><button data-dialog-close aria-label="关闭搜索">Esc</button></div><label class="search-field"><span class="sr-only">搜索标题、正文或标签</span><input type="search" data-search-input placeholder="一个词，一段记忆，一个定理…" autocomplete="off"></label><p class="search-status" data-search-status role="status">输入关键词，搜索全部文章。</p><div data-search-results></div><div class="search-hint">↑ ↓ 选择 <span>Enter 打开</span><span>Esc 关闭</span></div></dialog>
+  <dialog class="search-dialog" data-search-dialog aria-labelledby="search-title" data-index="<%= url_for('/nocturne/search.json') %>"><div class="dialog-top"><h2 id="search-title">在文字之间寻找</h2><button type="button" class="search-close" data-dialog-close aria-label="关闭搜索"><span>关闭</span><kbd aria-hidden="true">Esc</kbd></button></div><label class="search-field"><span class="sr-only">搜索标题、正文或标签</span><input type="search" data-search-input placeholder="一个词，一段记忆，一个定理…" autocomplete="off"></label><p class="search-status" data-search-status role="status">输入关键词，搜索全部文章。</p><div data-search-results></div><div class="search-hint">↑ ↓ 选择 <span>Enter 打开</span><span>Esc 关闭</span></div></dialog>
   <dialog class="image-dialog" data-image-dialog aria-label="图片预览"><button data-dialog-close aria-label="关闭图片">关闭 ×</button><img alt=""><p></p></dialog>
   <div class="toast" role="status" data-toast></div>
   <script defer src="<%= url_for('/nocturne/app.js') %>"></script>

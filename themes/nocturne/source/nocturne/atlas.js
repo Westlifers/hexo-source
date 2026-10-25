@@ -61,12 +61,24 @@
     const detail = element('div', 'atlas-detail');
     detail.id = `atlas-detail-${rootIndex}`;
     detail.setAttribute('role', 'region');
-    detail.setAttribute('aria-label', '选中文章与关联');
+    detail.setAttribute('aria-label', '选中内容与关联');
+    const selection = element('div', 'atlas-selection');
+    selection.hidden = true;
+    selection.setAttribute('role', 'group');
+    selection.setAttribute('aria-label', '已选内容');
+    const selectionTitle = element('span', 'atlas-selection-title');
+    const selectionOpen = element('button', 'atlas-selection-open', '查看介绍');
+    selectionOpen.type = 'button';
+    selectionOpen.setAttribute('aria-controls', detail.id);
+    const selectionClear = element('button', 'atlas-selection-clear', '×');
+    selectionClear.type = 'button';
+    selectionClear.setAttribute('aria-label', '清除星图选择');
+    selection.append(selectionTitle, selectionOpen, selectionClear);
     const alternative = element('details', 'atlas-alternative');
     const summary = element('summary', '', '以文章列表浏览');
     const list = element('ul', 'atlas-list');
     alternative.append(summary, list);
-    stage.append(plot, detail, alternative);
+    stage.append(selection, plot, detail, alternative);
     let entries = [];
     let visible = [];
     let edges = [];
@@ -120,12 +132,36 @@
       selected = requested?.id || null;
       if (requested && filter !== 'all' && requested.kind !== filter) filter = requested.kind;
     };
-    const baseStatus = () => `${filter === 'all' ? '整个宇宙' : topics[filter]?.label || filter} · ${visible.length} 篇文章${entries.length > 40 ? ' · 图中显示 40 篇' : ''}`;
+    const countEntries = (items, compact = false) => {
+      const pages = items.filter(item => item.entryType === 'page');
+      const posts = items.length - pages.length;
+      const pageLabel = !compact && pages.length === 1 && /\/about(?:\/index\.html|\/)?$/.test(new URL(pages[0].url).pathname)
+        ? '关于页' : `${pages.length} ${compact ? '页' : '个页面'}`;
+      return [posts || !pages.length ? `${posts} ${compact ? '篇' : '篇文章'}` : '', pages.length ? pageLabel : ''].filter(Boolean).join(' + ');
+    };
+    const baseStatus = () => `${filter === 'all' ? '整个宇宙' : topics[filter]?.label || filter} · ${countEntries(visible)}${entries.length > 40 ? ' · 图中显示 40 项' : ''}`;
     const resetDetail = () => {
       delete root.dataset.atlasSelected;
+      selection.hidden = true;
+      selectionTitle.textContent = '';
+      selectionTitle.removeAttribute('title');
       detail.replaceChildren();
       detail.classList.remove('has-selection');
     };
+    selectionOpen.addEventListener('click', () => {
+      const title = detail.querySelector('.atlas-detail-title');
+      if (!title) return;
+      title.focus({ preventScroll: true });
+      title.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'start' });
+    });
+    selectionClear.addEventListener('click', () => {
+      const node = nodeElements.get(selected);
+      selected = null;
+      resetDetail();
+      illuminate(null);
+      writeView();
+      node?.focus({ preventScroll: true });
+    });
     const connectionsFor = id => edges.filter(edge => (!explicitOnly || edge.explicit) && (edge.a.id === id || edge.b.id === id));
     const chooseBackbone = () => {
       // Keep the full evidence graph for exploration. The overview is only a
@@ -180,7 +216,7 @@
       root.dataset.atlasDrawnEdges = String(drawn);
       if (id) {
         const article = entries.find(entry => entry.id === id);
-        status.textContent = `${article.title} · ${connections.length} 篇关联`;
+        status.textContent = `${article.title} · ${connections.length} 项关联`;
       } else status.textContent = baseStatus();
     };
     const select = (article, options = {}) => {
@@ -190,18 +226,22 @@
         filter = article.kind;
         applyFilter();
       }
-      const meta = element('p', 'atlas-detail-meta', `${article.kindLabel}${article.date ? ` / ${article.date}` : ''}`);
+      selectionTitle.textContent = article.title;
+      selectionTitle.title = article.title;
+      selectionOpen.setAttribute('aria-label', `查看介绍：${article.title}`);
+      selection.hidden = false;
+      const meta = element('p', 'atlas-detail-meta', `${article.entryType === 'page' ? '页面' : article.kindLabel}${article.date ? ` / ${article.date}` : ''}`);
       const title = element('h3', 'atlas-detail-title', article.title);
       title.tabIndex = -1;
       const excerpt = element('p', 'atlas-detail-excerpt', shortened(article.summary || article.text || '从这里继续阅读这篇文章。', 130));
-      const link = element('a', 'atlas-detail-link', '阅读全文');
+      const link = element('a', 'atlas-detail-link', article.entryType === 'page' ? '打开页面' : '阅读全文');
       link.href = article.url;
-      link.setAttribute('aria-label', `阅读全文：${article.title}`);
+      link.setAttribute('aria-label', `${article.entryType === 'page' ? '打开页面' : '阅读全文'}：${article.title}`);
       detail.replaceChildren(meta, title, excerpt, link);
       const connections = connectionsFor(article.id).sort((a, b) => Number(b.explicit) - Number(a.explicit) || b.tags.length - a.tags.length);
       const relationArea = element('div', 'atlas-relations');
       relationArea.append(element('h4', 'atlas-relations-title', connections.length ? `沿着关联继续读 · ${connections.length}` : '这颗星暂时独自发光'));
-      if (!connections.length) relationArea.append(element('p', 'atlas-relations-empty', explicitOnly ? '图中还没有与它共享标签或分类的文章。关闭“只看共同标签与分类”，可以探索同主题的文字。' : '图中还没有与它共享标签、分类或主题的文章。试试其他子宇宙，或浏览下方文章列表。'));
+      if (!connections.length) relationArea.append(element('p', 'atlas-relations-empty', explicitOnly ? '暂无共同标签或原文分类，可关闭筛选查看同主题的文字。' : '暂无关联，可选择其他星点。'));
       const makeRelations = values => {
         const relatedList = element('ul', 'atlas-related-list');
         values.forEach(edge => {
@@ -222,7 +262,7 @@
       relationArea.append(makeRelations(connections.slice(0, 4)));
       if (connections.length > 4) {
         const more = element('details', 'atlas-more-relations');
-        more.append(element('summary', '', `展开另外 ${connections.length - 4} 篇`), makeRelations(connections.slice(4)));
+        more.append(element('summary', '', `展开另外 ${connections.length - 4} 项`), makeRelations(connections.slice(4)));
         relationArea.append(more);
       }
       detail.append(relationArea);
@@ -287,10 +327,10 @@
         const item = element('li');
         const link = element('a', '', article.title);
         link.href = article.url;
-        item.append(link, element('span', '', article.kindLabel));
+        item.append(link, element('span', '', article.entryType === 'page' ? '页面' : article.kindLabel));
         list.append(item);
       });
-      summary.textContent = `以文章列表浏览（${visible.length}）`;
+      summary.textContent = `以列表浏览（${countEntries(visible)}）`;
       root.dataset.atlasView = filter;
       root.dataset.atlasRelations = explicitOnly ? 'explicit' : 'all';
       filters.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.atlasFilter === filter)));
@@ -343,7 +383,7 @@
       const descId = `atlas-desc-${rootIndex}`;
       graph = svgElement('svg', { class: 'atlas-svg', viewBox: `0 0 ${width} ${height}`, role: 'group', 'aria-labelledby': `${titleId} ${descId}` });
       graph.append(svgElement('title', { id: titleId }, '文章星图'),
-        svgElement('desc', { id: descId }, '每颗星是一篇文章。实线表示共同标签或分类，虚线仅表示同主题。按 Tab 在文章间移动，回车或空格展开介绍，方向键寻找对应方向的文章。Escape 清除选择，也可使用下方文章列表。'));
+        svgElement('desc', { id: descId }, '每颗星对应一篇文章或一个页面。实线表示共同标签或原文分类，虚线仅表示同主题。按 Tab 在星点间移动，回车或空格选择，再按“查看介绍”阅读摘要，方向键寻找对应方向的星点。Escape 清除选择，也可使用下方列表。'));
       const defs = svgElement('defs');
       Object.entries(topics).forEach(([kind, topic]) => {
         const gradient = svgElement('radialGradient', { id: `atlas-field-${rootIndex}-${kind}` });
@@ -377,7 +417,7 @@
         region.append(svgElement('ellipse', { cx, cy, rx: rx * 1.8, ry: ry * 1.8, fill: `url(#atlas-field-${rootIndex}-${topics[kind] ? kind : 'essays'})`, class: 'atlas-region-field' }));
         region.append(svgElement('ellipse', { cx, cy, rx, ry, class: 'atlas-orbit', 'vector-effect': 'non-scaling-stroke' }));
         region.append(svgElement('text', { x: cx, y: cy - 5, class: 'atlas-topic', 'text-anchor': 'middle' }, group[0].kindLabel));
-        region.append(svgElement('text', { x: cx, y: cy + 17, class: 'atlas-topic-count', 'text-anchor': 'middle' }, `${group.length} 篇`));
+        region.append(svgElement('text', { x: cx, y: cy + 17, class: 'atlas-topic-count', 'text-anchor': 'middle' }, countEntries(group, true)));
         orbitLayer.append(region);
         groupElements.set(kind, region);
         group.forEach((article, index) => {
@@ -398,7 +438,7 @@
           const explicit = Boolean(sharedTags.length || sharedCategories.length);
           const reasons = [];
           if (sharedTags.length) reasons.push(`共同标签：${sharedTags.join('、')}`);
-          if (sharedCategories.length) reasons.push(`共同分类：${sharedCategories.join('、')}`);
+          if (sharedCategories.length) reasons.push(`同属原文分类：${sharedCategories.join('、')}`);
           if (!explicit && a.kind === b.kind) reasons.push(`同属主题：${a.kindLabel}`);
           if (!reasons.length) return;
           const bend = (a.x + b.x) / 2 + (b.y - a.y) * .09;
@@ -494,6 +534,7 @@
           return {
             id: `article-${index}`, title: plain(item.title), url: safeURL(item.url || item.path),
             summary: plain(item.summary), text: plain(item.text), tags: names(item.tags), categories: names(item.categories),
+            entryType: item.entryType === 'page' ? 'page' : 'post',
             kind, kindLabel: plain(typeof item.kind === 'object' && item.kind ? item.kind.label : '') || topics[kind]?.label || kind,
             date: plain(item.date).slice(0, 10)
           };

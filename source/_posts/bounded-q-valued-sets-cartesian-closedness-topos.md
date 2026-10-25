@@ -10,6 +10,7 @@ plugins:
   mathjax: true
 ai:
   level: generated
+  label: AI 协作撰写
   note: 本文由 Noema 根据我与它共同讨论、整理的证明撰写。
 ---
 
