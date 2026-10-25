@@ -25,10 +25,11 @@
 .about-experience .about-tags span:before{content:'';position:absolute;width:5px;height:5px;left:0;top:7px;border:1px solid var(--accent);transform:rotate(45deg)}
 .about-experience .about-lead{grid-column:1/-1;grid-row:4;font-size:16px;line-height:2.1;color:var(--ink);max-width:620px;margin:0}
 .about-experience .about-lead em{font-style:italic;color:var(--accent)}
-.about-experience .about-avatar-wrap{grid-column:2;grid-row:1;position:relative;width:104px;justify-self:start;align-self:center;margin:0;transform:none;padding:0;border:0;background:none;box-shadow:none}
-.about-experience .about-avatar-wrap:before,.about-experience .about-avatar-wrap:after{content:none}
-.about-experience .about-avatar{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:50% 45%;margin:0;border-radius:2px;box-shadow:none;filter:saturate(.65);transition:none}
-.about-experience .about-avatar:hover{transform:none;box-shadow:none;filter:saturate(.65)}
+.about-experience .about-avatar-wrap{grid-column:2;grid-row:1;position:relative;width:104px;justify-self:start;align-self:center;margin:0;transform:none;padding:3px;border:1px solid color-mix(in srgb,var(--cool) 20%,transparent);border-radius:5px;background:color-mix(in srgb,var(--bg) 94%,var(--cool));box-shadow:none}
+.about-experience .about-avatar-wrap:before{content:none}
+.about-experience .about-avatar-wrap:after{content:'';position:absolute;inset:4px;border-radius:2px;background:linear-gradient(135deg,#c8b5f30a,transparent 42%,#15121b40);box-shadow:inset 0 0 12px #15121b38;pointer-events:none}
+.about-experience .about-avatar{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:50% 45%;margin:0;border-radius:2px;box-shadow:none;filter:saturate(.42) brightness(.92) contrast(.96);transition:none}
+.about-experience .about-avatar:hover{transform:none;box-shadow:none;filter:saturate(.42) brightness(.92) contrast(.96)}
 .about-experience .about-section{position:relative;min-width:0;margin:0;padding:45px 0 65px;border-top:1px solid var(--rule)}
 .about-experience .about-section-title{display:flex;gap:17px;align-items:baseline;margin:0 0 28px;border:0;color:var(--ink)}
 .about-experience .about-section-title h2{font:400 clamp(31px,3.7vw,52px)/1.25 var(--serif);margin:0;padding:0;letter-spacing:-.035em}
@@ -63,6 +64,9 @@
 .about-outro a:hover{text-decoration:underline;text-underline-offset:6px}
 [data-theme=light] .about-diagram-labels{opacity:.45}
 [data-theme=light] .about-diagram-arrows{opacity:.42}
+[data-theme=light] .about-experience .about-avatar-wrap{border-color:color-mix(in srgb,var(--muted) 25%,transparent)}
+[data-theme=light] .about-experience .about-avatar,[data-theme=light] .about-experience .about-avatar:hover{filter:saturate(.5) contrast(.96)}
+[data-theme=light] .about-experience .about-avatar-wrap:after{background:linear-gradient(135deg,#b6a7c712,transparent 50%,#e8e3ef28);box-shadow:inset 0 0 12px #eeeaf124}
 @media(max-width:1100px){
   .about-experience .about-hero{grid-template-columns:max-content 96px minmax(0,1fr);padding-top:40px;margin-bottom:45px}
   .about-experience .about-avatar-wrap{width:96px}
