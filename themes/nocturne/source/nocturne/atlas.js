@@ -63,9 +63,11 @@
     detail.setAttribute('role', 'region');
     detail.setAttribute('aria-label', '选中内容与关联');
     const selection = element('div', 'atlas-selection');
+    selection.id = `atlas-selection-${rootIndex}`;
     selection.hidden = true;
     selection.setAttribute('role', 'group');
     selection.setAttribute('aria-label', '已选内容');
+    const selectionCard = element('div', 'atlas-selection-card');
     const selectionTitle = element('span', 'atlas-selection-title');
     const selectionOpen = element('button', 'atlas-selection-open', '查看介绍');
     selectionOpen.type = 'button';
@@ -73,12 +75,13 @@
     const selectionClear = element('button', 'atlas-selection-clear', '×');
     selectionClear.type = 'button';
     selectionClear.setAttribute('aria-label', '清除星图选择');
-    selection.append(selectionTitle, selectionOpen, selectionClear);
+    selectionCard.append(selectionTitle, selectionOpen, selectionClear);
+    selection.append(selectionCard);
     const alternative = element('details', 'atlas-alternative');
     const summary = element('summary', '', '以文章列表浏览');
     const list = element('ul', 'atlas-list');
     alternative.append(summary, list);
-    stage.append(selection, plot, detail, alternative);
+    stage.append(plot, detail, alternative);
     let entries = [];
     let visible = [];
     let edges = [];
@@ -100,6 +103,7 @@
     let cameraTarget = camera;
     let cameraFrame = 0;
     let inViewport = true;
+    let selectionAnimation = null;
 
     const articleKey = article => {
       const url = new URL(article.url);
@@ -140,11 +144,72 @@
       return [posts || !pages.length ? `${posts} ${compact ? '篇' : '篇文章'}` : '', pages.length ? pageLabel : ''].filter(Boolean).join(' + ');
     };
     const baseStatus = () => `${filter === 'all' ? '整个宇宙' : topics[filter]?.label || filter} · ${countEntries(visible)}${entries.length > 40 ? ' · 图中显示 40 项' : ''}`;
+    const cancelSelectionAnimation = () => {
+      selectionAnimation?.cancel();
+      selectionAnimation = null;
+    };
+    const positionSelection = () => {
+      if (!selected || selection.hidden) return;
+      const core = nodeElements.get(selected)?.querySelector('.atlas-node-core');
+      if (!core) return;
+      // Screen-space centres include SVG letterboxing and the animated camera.
+      // The card stays outside that transform, so its text never scales.
+      const bounds = plot.getBoundingClientRect(), star = core.getBoundingClientRect();
+      const cardWidth = selection.offsetWidth, cardHeight = selection.offsetHeight;
+      if (!bounds.width || !bounds.height || !cardWidth || !cardHeight) return;
+      const x = star.left + star.width / 2 - bounds.left;
+      const y = star.top + star.height / 2 - bounds.top;
+      const padding = 12, gap = 18;
+      const clamp = (value, min, max) => Math.min(Math.max(value, min), Math.max(min, max));
+      const left = clamp(x - cardWidth / 2, padding, bounds.width - cardWidth - padding);
+      const fitsAbove = y - cardHeight - gap >= padding;
+      const fitsBelow = y + gap + cardHeight <= bounds.height - padding;
+      // Keep its side while the camera travels, unless that side runs out of room.
+      const above = selection.dataset.placement === 'below' ? !fitsBelow && fitsAbove : fitsAbove;
+      const top = clamp(above ? y - cardHeight - gap : y + gap, padding, bounds.height - cardHeight - padding);
+      selection.dataset.placement = above ? 'above' : 'below';
+      selection.style.transform = `translate3d(${left.toFixed(2)}px, ${top.toFixed(2)}px, 0)`;
+      selection.style.setProperty('--atlas-tip-x', `${clamp(x - left, 20, cardWidth - 20).toFixed(2)}px`);
+    };
+    const hideSelection = (immediate = false) => {
+      cancelSelectionAnimation();
+      selection.inert = true;
+      selection.setAttribute('aria-hidden', 'true');
+      const finish = () => {
+        selection.hidden = true;
+        selection.dataset.state = 'closed';
+      };
+      if (selection.hidden || immediate || reducedMotion.matches || document.hidden || !selectionCard.animate) { finish(); return; }
+      selection.dataset.state = 'closing';
+      const offset = selection.dataset.placement === 'below' ? -5 : 5;
+      const animation = selectionCard.animate([
+        { opacity: 1, transform: 'translateY(0) scale(1)' },
+        { opacity: 0, transform: `translateY(${offset}px) scale(.975)` }
+      ], { duration: 150, easing: 'ease-out', fill: 'both' });
+      selectionAnimation = animation;
+      animation.onfinish = () => { if (selectionAnimation === animation) { finish(); cancelSelectionAnimation(); } };
+    };
+    const showSelection = () => {
+      const switching = !selection.hidden && selection.dataset.state === 'open';
+      cancelSelectionAnimation();
+      selection.hidden = false;
+      selection.inert = false;
+      selection.removeAttribute('aria-hidden');
+      selection.dataset.state = 'open';
+      delete selection.dataset.placement;
+      positionSelection();
+      if (reducedMotion.matches || document.hidden || !selectionCard.animate) return;
+      const offset = selection.dataset.placement === 'below' ? -8 : 8;
+      const animation = selectionCard.animate([
+        { opacity: 0, transform: `translateY(${switching ? offset / 2 : offset}px) scale(${switching ? '.985' : '.96'})` },
+        { opacity: 1, transform: 'translateY(0) scale(1)' }
+      ], { duration: switching ? 220 : 300, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'both' });
+      selectionAnimation = animation;
+      animation.onfinish = () => { if (selectionAnimation === animation) cancelSelectionAnimation(); };
+    };
     const resetDetail = () => {
       delete root.dataset.atlasSelected;
-      selection.hidden = true;
-      selectionTitle.textContent = '';
-      selectionTitle.removeAttribute('title');
+      hideSelection();
       detail.replaceChildren();
       detail.classList.remove('has-selection');
     };
@@ -154,13 +219,20 @@
       title.focus({ preventScroll: true });
       title.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'start' });
     });
-    selectionClear.addEventListener('click', () => {
+    const clearSelection = () => {
       const node = nodeElements.get(selected);
       selected = null;
       resetDetail();
       illuminate(null);
       writeView();
       node?.focus({ preventScroll: true });
+    };
+    selectionClear.addEventListener('click', clearSelection);
+    selection.addEventListener('keydown', event => {
+      if (event.key === 'Escape') { event.preventDefault(); clearSelection(); }
+      else if (event.key === 'Tab' && event.shiftKey && event.target === selectionOpen) {
+        event.preventDefault(); nodeElements.get(selected)?.focus({ preventScroll: true });
+      }
     });
     const connectionsFor = id => edges.filter(edge => (!explicitOnly || edge.explicit) && (edge.a.id === id || edge.b.id === id));
     const chooseBackbone = () => {
@@ -229,7 +301,8 @@
       selectionTitle.textContent = article.title;
       selectionTitle.title = article.title;
       selectionOpen.setAttribute('aria-label', `查看介绍：${article.title}`);
-      selection.hidden = false;
+      selection.style.setProperty('--atlas-selection-accent', article.color || topics[article.kind]?.color || '#e9c8a0');
+      showSelection();
       const meta = element('p', 'atlas-detail-meta', `${article.entryType === 'page' ? '页面' : article.kindLabel}${article.date ? ` / ${article.date}` : ''}`);
       const title = element('h3', 'atlas-detail-title', article.title);
       title.tabIndex = -1;
@@ -279,6 +352,7 @@
       world.setAttribute('transform', `translate(${state.x.toFixed(3)} ${state.y.toFixed(3)}) scale(${state.scale.toFixed(5)})`);
       nodeContents.forEach(content => content.setAttribute('transform', `scale(${(1 / state.scale).toFixed(5)})`));
       root.dataset.cameraScale = state.scale.toFixed(3);
+      positionSelection();
     };
     const stopCamera = () => {
       if (cameraFrame) cancelAnimationFrame(cameraFrame);
@@ -362,6 +436,7 @@
     const render = () => {
       if (!loaded) return;
       stopCamera();
+      hideSelection(true);
       plotted = entries.slice(0, 40);
       const requested = entries.find(article => article.id === selected);
       if (requested && !plotted.includes(requested)) plotted = [...plotted.slice(0, 39), requested];
@@ -454,7 +529,7 @@
       chooseBackbone();
 
       plotted.forEach((article, index) => {
-        const node = svgElement('g', { class: 'atlas-node', transform: `translate(${article.x} ${article.y})`, tabindex: '0', role: 'button', 'aria-label': `${article.title}，${article.kindLabel}。展开文章介绍`, 'aria-controls': detail.id, 'aria-pressed': 'false', style: `--atlas-star: ${article.color}` });
+        const node = svgElement('g', { class: 'atlas-node', transform: `translate(${article.x} ${article.y})`, tabindex: '0', role: 'button', 'aria-label': `${article.title}，${article.kindLabel}。展开文章介绍`, 'aria-controls': `${selection.id} ${detail.id}`, 'aria-pressed': 'false', style: `--atlas-star: ${article.color}` });
         node.classList.toggle('is-landmark', article.landmark);
         node.dataset.articleId = article.id;
         node.dataset.atlasKind = article.kind;
@@ -486,6 +561,8 @@
         node.addEventListener('keydown', event => {
           if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault(); select(article);
+          } else if (event.key === 'Tab' && !event.shiftKey && selected === article.id && !selection.hidden) {
+            event.preventDefault(); selectionOpen.focus({ preventScroll: true });
           } else if (['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
             event.preventDefault();
             const navigable = plotted.filter(item => filter === 'all' || item.kind === filter);
@@ -509,7 +586,7 @@
         nodeElements.set(article.id, node);
         nodeLayer.append(node);
       });
-      plot.append(graph);
+      plot.append(graph, selection);
       paintCamera({ x: 0, y: 0, scale: 1 });
       applyFilter(false);
       if (selected) select(entries.find(article => article.id === selected), { write: false });
@@ -595,11 +672,20 @@
       }
     });
     resetDetail();
+    if ('ResizeObserver' in window) {
+      const resize = new ResizeObserver(positionSelection);
+      resize.observe(plot);
+      resize.observe(selectionCard);
+    } else window.addEventListener('resize', positionSelection);
     if (media.addEventListener) media.addEventListener('change', render);
     else media.addListener(render);
     const settleCamera = () => { stopCamera(); paintCamera(cameraTarget); };
-    document.addEventListener('visibilitychange', () => { if (document.hidden) settleCamera(); });
-    if (reducedMotion.addEventListener) reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) settleCamera(); });
+    const settleSelection = () => {
+      if (selection.dataset.state === 'closing') hideSelection(true);
+      else { cancelSelectionAnimation(); positionSelection(); }
+    };
+    document.addEventListener('visibilitychange', () => { if (document.hidden) { settleCamera(); settleSelection(); } });
+    if (reducedMotion.addEventListener) reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) { settleCamera(); settleSelection(); } });
     if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver(observations => {
         inViewport = observations.some(observation => observation.isIntersecting);
