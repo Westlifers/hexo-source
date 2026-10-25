@@ -41,11 +41,21 @@
 .about-experience .about-page>.about-section:nth-of-type(2){grid-column:1/-1;display:grid;grid-template-columns:.75fr 1.25fr;column-gap:65px;padding:60px 0 75px;margin-bottom:55px;border-bottom:1px solid var(--rule)}
 .about-experience .about-page>.about-section:nth-of-type(2) .about-section-title{grid-column:1;grid-row:1/3;align-self:start;margin-top:9px}
 .about-experience .about-page>.about-section:nth-of-type(2)>p{grid-column:2;max-width:650px}
-.about-experience .about-page>.about-section:nth-of-type(3){border-top:0;padding-top:20px}
-.about-experience .about-page>.about-section:nth-of-type(4){border-top:0;padding-top:135px}
+.about-experience .about-page>.about-cubing{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:65px;align-items:start;border-top:0;border-bottom:1px solid var(--rule);padding:20px 0 65px;margin-bottom:65px}
+.about-experience .about-cubing-copy,.about-experience .about-cubing-records{min-width:0}
+.about-experience .about-cubing-records h3{margin:0;font:400 25px/1.5 var(--serif);letter-spacing:.01em}
+.about-experience .about-cubing-records .about-cubing-meta{margin:8px 0 20px;font:12px/1.8 var(--sans);color:var(--muted)}
+.about-experience .about-cubing-table{width:100%;min-width:0;max-width:100%;table-layout:fixed;border-collapse:collapse;margin:0;font:14px/1.8 var(--sans);font-variant-numeric:tabular-nums}
+.about-experience .about-cubing-table caption{text-align:left;margin:0 0 12px;font:11px/1.7 var(--sans);color:var(--muted)}
+.about-experience .about-cubing-table th,.about-experience .about-cubing-table td{padding:11px 0;border:0;border-bottom:1px solid var(--rule);text-align:right;white-space:nowrap}
+.about-experience .about-cubing-table th{font-size:11px;font-weight:400;color:var(--muted);border-top:1px solid var(--rule)}
+.about-experience .about-cubing-table th:first-child,.about-experience .about-cubing-table td:first-child{width:44%;text-align:left;color:var(--muted)}
+.about-experience .about-cubing-table td:not(:first-child){color:var(--ink)}
+.about-experience .about-cubing-records .about-cubing-source{margin:16px 0 0;font:11px/1.9 var(--sans);color:var(--muted);overflow-wrap:anywhere}
+.about-experience .about-page>.about-elsewhere{grid-column:1;align-self:start;border-top:0;padding:0 0 60px}
 .about-experience .about-game-list{display:flex;gap:0;flex-wrap:wrap;margin-top:28px;border-top:1px solid var(--rule);padding-top:6px}
 .about-experience .about-game-list span{font:italic 17px/1.7 Georgia,serif;padding:12px 22px 6px 0;color:var(--cool);background:none;border:0;border-radius:0}
-.about-experience .about-photo{grid-column:1/-1;position:relative;display:grid;grid-template-columns:minmax(0,320px) minmax(0,160px);gap:24px;align-items:end;justify-self:center;width:min(100%,504px);max-width:none;margin:18px 0 64px;padding:0;text-align:left}
+.about-experience .about-photo{grid-column:2;position:relative;display:grid;grid-template-columns:minmax(0,320px) minmax(0,160px);gap:24px;align-items:end;align-self:start;justify-self:start;width:min(100%,504px);max-width:none;margin:0 0 64px;padding:0;text-align:left}
 .about-experience .about-photo:before,.about-experience .about-photo:after{content:none}
 .about-experience .about-photo img{width:100%;height:auto;object-fit:contain;border-radius:2px;margin:0;filter:saturate(.7);box-shadow:none}
 .about-experience .about-photo figcaption{margin:0 0 4px;font:italic 12px/1.8 Georgia,serif;color:var(--muted)}
@@ -75,6 +85,7 @@
   .about-experience .about-tags span{font-size:11px}
   .about-experience .about-lead{font-size:15px}
   .about-experience .about-page>.about-section:nth-of-type(2),.about-experience #noema-assistant{column-gap:40px;grid-template-columns:.8fr 1.2fr}
+  .about-experience .about-page>.about-cubing{gap:40px}
   .about-experience .about-assistant-profile{grid-template-columns:76px minmax(0,1fr);gap:20px}
   .about-experience .about-section p{font-size:16px}
 }
@@ -97,8 +108,14 @@
   .about-experience .about-section-title{gap:14px;margin-bottom:22px}
   .about-experience .about-section-title h2{font-size:38px}
   .about-experience .about-section p{font-size:16px;line-height:1.95}
-  .about-experience .about-page>.about-section:nth-of-type(3){padding:0 0 35px}
-  .about-experience .about-page>.about-section:nth-of-type(4){padding:0 0 25px}
+  .about-experience .about-page>.about-cubing{display:block;padding:0 0 40px;margin-bottom:40px}
+  .about-experience .about-cubing-records{margin-top:32px}
+  .about-experience .about-cubing-records h3{font-size:23px}
+  .about-experience .about-cubing-records .about-cubing-meta{font-size:11px;margin-bottom:18px}
+  .about-experience .about-cubing-table{min-width:0;font-size:14px}
+  .about-experience .about-cubing-table th,.about-experience .about-cubing-table td{padding-block:10px}
+  .about-experience .about-cubing-records .about-cubing-source{font-size:10px}
+  .about-experience .about-page>.about-elsewhere{padding:0 0 25px}
   .about-experience .about-game-list{margin-top:22px}
   .about-experience .about-game-list span{font-size:17px;padding-right:21px}
   .about-experience .about-photo{display:block;width:min(72%,220px);padding:0;margin:25px 0 48px auto}
@@ -134,7 +151,10 @@
   .about-experience .about-avatar-wrap:before,.about-experience .about-avatar-wrap:after,.about-experience .about-photo:before,.about-experience .about-photo:after{display:none}
   .about-experience .about-page{display:block}
   .about-experience .about-page>.about-section:nth-of-type(2),.about-experience #noema-assistant{display:block;padding:25px 0;margin:0}
-  .about-experience .about-page>.about-section:nth-of-type(3),.about-experience .about-page>.about-section:nth-of-type(4){padding:20px 0}
+  .about-experience .about-page>.about-cubing{display:block;padding:20px 0;margin-bottom:20px}
+  .about-experience .about-cubing-records{margin-top:20px;break-inside:avoid}
+  .about-experience .about-cubing-table{font-size:10pt}
+  .about-experience .about-page>.about-elsewhere{padding:20px 0}
   .about-experience .about-photo{display:block;max-width:220px;padding:0;margin:25px auto}
   .about-experience .about-photo img{height:auto}
 }

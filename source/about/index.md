@@ -344,7 +344,8 @@ plugins:
   </section>
 
 
-  <section class="about-section">
+  <section class="about-section about-cubing">
+    <div class="about-cubing-copy">
     <div class="about-section-title">
       <span class="about-section-mark">02</span>
       <h2>Cubing</h2>
@@ -365,10 +366,29 @@ plugins:
     <p>
       如果你也玩魔方，仍然很欢迎交流。
     </p>
+    </div>
+    <div class="about-cubing-records" id="cubing-records" data-cubing-verified="2026-10-25">
+      <h3 id="cubing-records-title">WCA 个人最佳</h3>
+      <p class="about-cubing-meta">3 场正式比赛 · 62 次成功复原</p>
+      <table class="about-cubing-table" aria-labelledby="cubing-records-title">
+        <caption>单位：秒</caption>
+        <thead><tr><th scope="col">项目</th><th scope="col">单次</th><th scope="col">平均</th></tr></thead>
+        <tbody>
+          <tr data-wca-event="333"><th scope="row">三阶</th><td>11.59</td><td>13.56</td></tr>
+          <tr data-wca-event="222"><th scope="row">二阶</th><td>3.35</td><td>4.13</td></tr>
+          <tr data-wca-event="444"><th scope="row">四阶</th><td>49.40</td><td>54.13</td></tr>
+          <tr data-wca-event="333oh"><th scope="row">三阶单手</th><td>22.17</td><td>29.96</td></tr>
+          <tr data-wca-event="clock"><th scope="row">魔表</th><td>11.65</td><td>15.25</td></tr>
+          <tr data-wca-event="pyram"><th scope="row">金字塔</th><td>9.30</td><td>10.90</td></tr>
+          <tr data-wca-event="skewb"><th scope="row">斜转</th><td>5.74</td><td>8.86</td></tr>
+        </tbody>
+      </table>
+      <p class="about-cubing-source">来源：<a href="https://www.worldcubeassociation.org/persons/2023YANG65" target="_blank" rel="noopener">WCA</a> / <a href="https://cubing.com/results/person/2023YANG65" target="_blank" rel="noopener">粗饼</a> · 核对于 <time datetime="2026-10-25">2026.10.25</time></p>
+    </div>
   </section>
 
 
-  <section class="about-section">
+  <section class="about-section about-elsewhere">
     <div class="about-section-title">
       <span class="about-section-mark">03</span>
       <h2>Elsewhere</h2>
