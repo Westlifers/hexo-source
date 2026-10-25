@@ -24,7 +24,7 @@ const archiveThreads = [...archiveTagCounts].filter(([name, count]) => count > 1
       </div>
       <button type="button" class="archive-saved" data-archive-saved aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 3.5h11v17L12 17l-5.5 3.5z"/></svg><span>我的收藏</span><small data-archive-saved-count>0</small></button>
       <p class="archive-local-note">收藏保存在当前浏览器。</p>
-      <% if (archiveThreads.length) { %><div class="archive-threads"><h2>沿着线索读</h2><% archiveThreads.forEach(([name, count]) => { %><button type="button" data-archive-tag="<%= name %>" aria-pressed="false"><span><%= name %></span><small><%= count %></small></button><% }); %></div><% } %>
+      <% if (archiveThreads.length) { %><div class="archive-threads"><h2>按主题阅读</h2><% archiveThreads.forEach(([name, count]) => { %><button type="button" data-archive-tag="<%= name %>" aria-pressed="false"><span><%= name %></span><small><%= count %></small></button><% }); %></div><% } %>
     </aside>
     <div class="archive-main">
       <form class="archive-controls" data-archive-controls hidden role="search" aria-label="筛选文章">

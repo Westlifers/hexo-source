@@ -36,11 +36,11 @@ node tools/nocturne-check.cjs --subpath
 
 ### 2026-10-25 整站升级
 
-首页保留已选定的句文、银弦与“世俗的形状。”，后半段以城市长幅、白猫横幅和数学排字组成不等尺度的作品展示。引言改用《做一首世俗的诗》里的真实节选，并加入三条由现有文章组成的阅读路线。夜紫、瓷白、冷银、香槟色继续共用；中文宋体与西文 Palatino 保留，无新增远程字体、动画框架或 WebGL 依赖。
+首页保留已选定的句文、银弦与“世俗的形状。”，后半段以城市长幅、白猫横幅和数学排字组成不等尺度的作品展示，随后接最近文章与星图。删去独立引言和重复阅读路线，作品区小标题采用“埋首之间，或流连街头”。页首签名沿用 Afterlight 的手写字形，微调笔画、尾线和留白，适配深浅配色。夜紫、瓷白、冷银、香槟色继续共用；中文宋体与西文 Palatino 保留，无新增远程字体、动画框架或 WebGL 依赖。
 
 | 研究来源 | 在本主题中的取舍与落地 |
 | --- | --- |
-| [Maggie Appleton 的 Garden](https://maggieappleton.com/garden) | 借鉴多入口内容发现。归档提供真实主题、年份、标签、阅读时长排序与收藏；首页阅读路线明确为编辑编排，星图关系由真实元数据解释。 |
+| [Maggie Appleton 的 Garden](https://maggieappleton.com/garden) | 借鉴多入口内容发现。归档提供真实主题、年份、标签、阅读时长排序与收藏；星图关系由真实元数据解释。 |
 | [Josh W. Comeau 的文章站](https://www.joshwcomeau.com/) | 参考把可交互解释与文章主体结合的方向。保留真实 DisCoCat 图作为首页独特交互，数学正文的主要空间仍留给证明。 |
 | [Gwern 的长文设计说明](https://gwern.net/design) | 长文工具按阅读需要出现：桌面章节轨迹、手机目录面板、选文后的摘录工具，避免常驻多排操作打断文章。 |
 | [WebKit 原生跨文档转场](https://webkit.org/blog/16967/two-lines-of-cross-document-view-transitions-code-you-can-use-on-every-website-today/) | 使用 CSS View Transitions 的短暂叠化和独立导航元素，不截获站内链接，不引入 PJAX。减少动态效果时不启用，浏览器不支持时正常导航。 |

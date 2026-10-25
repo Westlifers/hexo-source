@@ -112,7 +112,16 @@
     const palette = [['#8b9fbf','#e0e8f4','#a695af'],['#c9c7d5','#a2b5d8','#e9e2dc'],['#b7bfd2','#e7e7ec','#8899b7']];
     const defs = sentence.strands.map((strand, index) => {
       const colors = strand.role === 'sentence' ? ['#f4d6a9','#f5d7b4','#dca56c'] : palette[index % palette.length];
-      return `<linearGradient id="${prefix}-g${index}" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${colors[0]}"/><stop offset=".55" stop-color="${colors[1]}"/><stop offset="1" stop-color="${colors[2]}"/></linearGradient>`;
+      const points = project.commands(strand).flatMap(command => command.points);
+      const xs = points.map(point => point[0]), ys = points.map(point => point[1]);
+      const left = Math.min(...xs), right = Math.max(...xs), top = Math.min(...ys), bottom = Math.max(...ys);
+      // SVG ignores objectBoundingBox paint on a zero-width/height path. The
+      // vertical s output must paint during inscription, not first appear when
+      // its solid specular layer returns at the end of the entrance animation.
+      const coordinates = left === right || top === bottom
+        ? `gradientUnits="userSpaceOnUse" x1="${left}" y1="${top}" x2="${right}" y2="${bottom === top && left === right ? bottom + 1 : bottom}"`
+        : 'x1="0" y1="0" x2="1" y2="1"';
+      return `<linearGradient id="${prefix}-g${index}" ${coordinates}><stop stop-color="${colors[0]}"/><stop offset=".55" stop-color="${colors[1]}"/><stop offset="1" stop-color="${colors[2]}"/></linearGradient>`;
     }).join('');
     const paths = sentence.strands.map((strand, index) => {
       const d = project.path(strand);

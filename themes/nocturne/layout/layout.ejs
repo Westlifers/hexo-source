@@ -18,6 +18,7 @@
   <link rel="icon" href="<%= url_for('/nocturne/favicon.svg') %>" type="image/svg+xml">
   <link rel="stylesheet" href="<%= url_for('/nocturne/theme.css') %>">
   <link rel="stylesheet" href="<%= url_for('/nocturne/experience.css') %>">
+  <link rel="stylesheet" href="<%= url_for('/nocturne/brand.css') %>">
   <link rel="stylesheet" href="<%= url_for('/nocturne/footer.css') %>">
   <script src="<%= url_for('/nocturne/appearance.js') %>"></script>
   <% if (is_home() && page.current === 1) { %><link rel="stylesheet" href="<%= url_for('/nocturne/string-hero.css') %>"><link rel="stylesheet" href="<%= url_for('/nocturne/string-diagram.css') %>"><link rel="stylesheet" href="<%= url_for('/nocturne/home.css') %>"><% } %>
@@ -33,7 +34,7 @@
 <body class="nocturne <%= is_home() && page.current === 1 ? 'is-home' : 'is-inner' %> <%= page.nocturne_atlas ? 'is-atlas' : '' %> <%= page.source === 'about/index.md' ? 'is-about' : '' %>">
   <a class="skip-link" href="#main">跳到正文</a>
   <header class="site-header shell">
-    <a class="brand" href="<%= url_for('/') %>" aria-label="Yougi 首页"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 35 12v16L20 37 5 28V12Z"/><path d="m5 12 15 9 15-9M20 21v16M12 8l16 24M28 8 12 32"/></svg><span>Yougi<span class="brand-dot">.</span></span></a>
+    <a class="brand nocturne-brand" href="<%= url_for('/') %>" aria-label="Yougi 首页"><span class="nocturne-signature" style="--brand-signature:url('<%= url_for('/nocturne/signature.svg') %>')" aria-hidden="true"></span></a>
     <nav aria-label="主导航"><a href="<%= url_for('/') %>" <%- is_home() ? 'aria-current="page"' : '' %>>序章</a><a href="<%= url_for('/archives/') %>" <%- is_archive() ? 'aria-current="page"' : '' %>>所有文字</a><a href="<%= url_for('/atlas/') %>" <%- page.nocturne_atlas ? 'aria-current="page"' : '' %>>星图</a><a href="<%= url_for('/about/') %>" <%- page.source === 'about/index.md' ? 'aria-current="page"' : '' %>>关于</a></nav>
     <div class="header-tools"><button class="search-trigger" data-search-open aria-label="搜索文章"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span>搜索</span><kbd>⌘ K</kbd></button><button class="icon-button" data-theme-toggle aria-label="切换到日间阅读">◐</button></div>
   </header>

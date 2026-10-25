@@ -129,3 +129,11 @@
 - 页尾唱片移除中心文字，采用细刻纹、无字小中心标、固定轴孔和侧光。播放时整个盘面10秒旋转一周，暂停保留角度；减少动态偏好下保持静态。仅改样式/装饰结构，原音频操作和MediaSession不变。
 - Chromium验证播放时盘面transform随时间变化，暂停后两次采样transform完全相同；实测播放暂停正常。桌面及320px窄屏的七项图标、成绩与唱片均可辨认，无整页横向溢出；日间图标配色另经实查，结束恢复夜间并暂停播放。浏览器错误日志为空。
 - 根目录与/journal/构建检查均通过：19篇文章、151条路由、66个HTML，2280条本地引用正确；新增CSS图标资源路径检查通过。20份原文/页面内容、锚点与媒体保持不变。减少动态分支仅代码核查，未在系统界面切换偏好。
+
+## 2026-10-25 Homepage simplification, signature, and sentence-output entrance
+
+- Removed the hero owner line, standalone introduction/about link, and reading-route section. The requested Chinese caption now belongs to the selected-works heading; the Route Six cover uses the two supplied English lines. The existing #journal anchor now targets selected works. Archive tag heading renamed as requested.
+- Adapted the existing Afterlight handwritten signature, retaining letterforms while refining stroke weights, tail and whitespace. Checked desktop and 320px navigation plus dark/light archive contrast. Afterlight source is unchanged.
+- Fixed the zero-width sentence-output gradient with userSpaceOnUse coordinates. In Chromium, the s thread was visibly partly drawn while the rest of the entrance was still active; successive stroke-dashoffset samples were 547.159, 491.646, 441.366 and 391.483. Pausing froze the partial line and resuming completed it. No timing, geometry, ports or connectivity changed.
+- Existing E geometry validation passed: 24 ports, 12 strands, one cap, one designated crossing, zero sampled self-crossings. Static and interactive render checks confirm the other gradients and paths remain unchanged; reduced-motion logic was not modified.
+- Desktop cover text fits the intended two lines; 320px wraps naturally with over 126px clearance before the title and no document horizontal overflow. Root and /journal/ builds/checks pass: 19 posts, 153 routes, 66 HTML pages, 2336 local references; authored content, media and anchors preserved.
