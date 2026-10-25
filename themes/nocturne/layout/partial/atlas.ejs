@@ -21,7 +21,14 @@
     <div class="atlas-stage"></div>
     <div class="atlas-guide">
       <p class="atlas-legend"><span class="atlas-legend-explicit">共同标签或分类</span><span class="atlas-legend-topic">仅同一主题</span></p>
-      <details class="atlas-help"><summary>怎样探索这张图</summary><p>每颗星对应一篇文章。实线来自文章共有的标签或分类，虚线只表示被编入同一主题；连线不代表引用或推导关系。点击文章后，可以沿着下方注明原因的关联继续探索。</p><p>键盘：Tab 逐篇移动，方向键寻找画面相应方向的文章，Enter 或空格选中，Escape 清除选择。也可以使用下方文章列表。</p></details>
+      <details class="atlas-help" data-disclosure>
+        <summary>图上的线<span class="atlas-help-mark" aria-hidden="true"></span></summary>
+        <div data-disclosure-body><div class="atlas-help-copy" data-disclosure-inner>
+          <p>一颗星，一篇文字。实线连起共同标签或分类，虚线表示同一主题。</p>
+          <p>平时只留几条线索；选中一篇，再展开它的关联。连线表示内容归类，不代表引用或推导。</p>
+          <p class="atlas-help-keys"><kbd>Tab</kbd> 换一颗星 <span>方向键移动</span><span><kbd>Enter</kbd> 选中</span><span><kbd>Esc</kbd> 取消</span></p>
+        </div></div>
+      </details>
     </div>
     <p data-atlas-status role="status">正在绘制星图…</p>
     <noscript><a href="<%= url_for('/archives/') %>">按时间浏览全部文章</a></noscript>

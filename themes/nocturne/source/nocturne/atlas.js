@@ -120,15 +120,40 @@
       selected = requested?.id || null;
       if (requested && filter !== 'all' && requested.kind !== filter) filter = requested.kind;
     };
-    const baseStatus = () => `${filter === 'all' ? '整个宇宙' : topics[filter]?.label || filter} · ${visible.length} 篇文章 · ${explicitOnly ? '只显示共同标签或分类的连线' : '实线为共同标签或分类，虚线仅表示同主题'}${entries.length > 40 ? ' · 图中最多显示 40 篇，完整文章见列表' : ''}`;
+    const baseStatus = () => `${filter === 'all' ? '整个宇宙' : topics[filter]?.label || filter} · ${visible.length} 篇文章${entries.length > 40 ? ' · 图中显示 40 篇' : ''}`;
     const resetDetail = () => {
       delete root.dataset.atlasSelected;
       detail.replaceChildren(element('span', 'atlas-detail-mark', '✦'),
         element('p', 'atlas-detail-invitation', '有些想法，在别处相遇。'),
-        element('p', 'atlas-detail-help', '轻触一颗星，看看文章之间的联系。'));
+        element('p', 'atlas-detail-help', '选中一颗星，展开文章与关联。'));
       detail.classList.remove('has-selection');
     };
     const connectionsFor = id => edges.filter(edge => (!explicitOnly || edge.explicit) && (edge.a.id === id || edge.b.id === id));
+    const chooseBackbone = () => {
+      // Keep the full evidence graph for exploration. The overview is only a
+      // sparse forest of real edges: explicit evidence first, shorter lines
+      // within each tier, and topic-only edges only when they connect islands.
+      const parents = new Map(plotted.map(article => [article.id, article.id]));
+      const find = id => {
+        let rootId = id;
+        while (parents.get(rootId) !== rootId) rootId = parents.get(rootId);
+        while (parents.get(id) !== id) { const next = parents.get(id); parents.set(id, rootId); id = next; }
+        return rootId;
+      };
+      const ranked = edges.map((edge, order) => ({ edge, order,
+        tier: edge.tags.length ? 0 : edge.categories.length ? 1 : 2,
+        length: Math.hypot(edge.a.x - edge.b.x, edge.a.y - edge.b.y)
+      })).sort((a, b) => a.tier - b.tier || a.length - b.length || a.order - b.order);
+      let count = 0;
+      ranked.forEach(({ edge }) => {
+        const a = find(edge.a.id), b = find(edge.b.id);
+        edge.backbone = a !== b;
+        if (edge.backbone) { parents.set(a, b); count++; }
+        edge.element.classList.toggle('is-backbone', edge.backbone);
+      });
+      root.dataset.atlasBackboneEdges = String(count);
+      root.dataset.atlasRelationEdges = String(edges.length);
+    };
     const illuminate = id => {
       if (!graph) return;
       const connections = id ? connectionsFor(id) : [];
@@ -139,15 +164,25 @@
         node.classList.toggle('is-related', related.has(key));
         node.classList.toggle('is-active', key === id);
         node.classList.toggle('is-selected', key === selected);
+        const labeled = media.matches ? key === id || key === selected
+          : id ? related.has(key) || key === selected
+            : filter === 'all' ? node.classList.contains('is-landmark') : node.dataset.atlasKind === filter;
+        node.classList.toggle('is-labeled', labeled);
         node.setAttribute('aria-pressed', String(key === selected));
       });
-      edges.forEach(edge => edge.element.classList.toggle('is-related', (!explicitOnly || edge.explicit) && (edge.a.id === id || edge.b.id === id)));
+      let drawn = 0;
+      edges.forEach(edge => {
+        const enabled = !explicitOnly || edge.explicit;
+        const related = Boolean(id && (edge.a.id === id || edge.b.id === id));
+        const shown = enabled && (id ? related : edge.backbone);
+        edge.element.classList.toggle('is-related', enabled && related);
+        edge.element.classList.toggle('is-drawn', shown);
+        if (shown) drawn++;
+      });
+      root.dataset.atlasDrawnEdges = String(drawn);
       if (id) {
         const article = entries.find(entry => entry.id === id);
-        const reasons = [...new Set(connections.flatMap(edge => edge.reasons))];
-        status.textContent = connections.length
-          ? `《${article.title}》在图中连接 ${connections.length} 篇 · ${reasons.slice(0, 3).join('；')}`
-          : `《${article.title}》在当前连线模式下没有关联文章。`;
+        status.textContent = `${article.title} · ${connections.length} 篇关联`;
       } else status.textContent = baseStatus();
     };
     const select = (article, options = {}) => {
@@ -300,7 +335,7 @@
       if (!plotted.length) {
         graph = null;
         plot.append(element('p', 'atlas-empty', '这个主题暂时没有文章，试试其他主题。'));
-        status.textContent = '连线表示共同标签或主题 · 当前主题暂无文章';
+        status.textContent = '当前主题暂无文章';
         return;
       }
       const mobile = media.matches;
@@ -318,8 +353,8 @@
         defs.append(gradient);
       });
       const field = svgElement('g', { class: 'atlas-deep-field', 'aria-hidden': 'true' });
-      for (let index = 0; index < 64; index++) {
-        field.append(svgElement('circle', { cx: (index * 157.37 + 29) % width, cy: (index * 91.19 + 53) % height, r: index % 7 === 0 ? 1.2 : .65, opacity: .13 + (index % 5) * .045 }));
+      for (let index = 0; index < 28; index++) {
+        field.append(svgElement('circle', { cx: (index * 157.37 + 29) % width, cy: (index * 91.19 + 53) % height, r: index % 7 === 0 ? .9 : .55, opacity: .07 + (index % 5) * .02 }));
       }
       world = svgElement('g', { class: 'atlas-world' });
       const orbitLayer = svgElement('g', { class: 'atlas-orbits', 'aria-hidden': 'true' });
@@ -343,7 +378,6 @@
         const region = svgElement('g', { class: 'atlas-region', style: `--atlas-region-color: ${(topics[kind] || topics.essays).color}` });
         region.append(svgElement('ellipse', { cx, cy, rx: rx * 1.8, ry: ry * 1.8, fill: `url(#atlas-field-${rootIndex}-${topics[kind] ? kind : 'essays'})`, class: 'atlas-region-field' }));
         region.append(svgElement('ellipse', { cx, cy, rx, ry, class: 'atlas-orbit', 'vector-effect': 'non-scaling-stroke' }));
-        region.append(svgElement('ellipse', { cx, cy, rx: rx * 1.1, ry: ry * .77, class: 'atlas-orbit atlas-orbit-inner', transform: `rotate(-24 ${cx} ${cy})`, 'vector-effect': 'non-scaling-stroke' }));
         region.append(svgElement('text', { x: cx, y: cy - 5, class: 'atlas-topic', 'text-anchor': 'middle' }, group[0].kindLabel));
         region.append(svgElement('text', { x: cx, y: cy + 17, class: 'atlas-topic-count', 'text-anchor': 'middle' }, `${group.length} 篇`));
         orbitLayer.append(region);
@@ -354,6 +388,7 @@
           article.x = cx + Math.cos(angle) * rx * breathing;
           article.y = cy + Math.sin(angle) * ry * breathing;
           article.angle = angle;
+          article.landmark = index === 0 || (group.length > 3 && index === Math.floor(group.length / 2));
           article.color = (topics[kind] || topics.essays).color;
         });
       });
@@ -372,13 +407,17 @@
           const rise = (a.y + b.y) / 2 - (b.x - a.x) * .09;
           const path = svgElement('path', { d: `M ${a.x} ${a.y} Q ${bend} ${rise} ${b.x} ${b.y}`, class: `atlas-edge ${explicit ? 'atlas-edge-explicit' : 'atlas-edge-topic'}${sharedTags.length ? ' atlas-edge-tag' : ''}`, 'vector-effect': 'non-scaling-stroke', style: `--atlas-edge-color: ${a.kind === b.kind ? a.color : '#e9c8a0'}` });
           path.dataset.relation = explicit ? 'explicit' : 'topic';
+          path.dataset.atlasA = a.id;
+          path.dataset.atlasB = b.id;
           edgeLayer.append(path);
           edges.push({ a, b, reasons, tags: sharedTags, categories: sharedCategories, explicit, element: path });
         });
       });
+      chooseBackbone();
 
       plotted.forEach((article, index) => {
         const node = svgElement('g', { class: 'atlas-node', transform: `translate(${article.x} ${article.y})`, tabindex: '0', role: 'button', 'aria-label': `${article.title}，${article.kindLabel}。展开文章介绍`, 'aria-controls': detail.id, 'aria-pressed': 'false', style: `--atlas-star: ${article.color}` });
+        node.classList.toggle('is-landmark', article.landmark);
         node.dataset.articleId = article.id;
         node.dataset.atlasKind = article.kind;
         const content = svgElement('g', { class: 'atlas-node-content' });

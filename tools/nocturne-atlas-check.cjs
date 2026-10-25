@@ -65,6 +65,9 @@ function setup({ url = 'https://example.test/blog/atlas/', data = fixture, fail 
     assert.equal(document.querySelectorAll('.atlas-edge-explicit').length, 4, 'Only real shared tags/categories make explicit edges');
     assert.equal(document.querySelectorAll('.atlas-edge-topic').length, 3, 'Topic membership is separately identified');
     assert.equal(document.querySelectorAll('.atlas-edge.is-suppressed').length, 3);
+    assert.equal(root.dataset.atlasRelationEdges, '7', 'Every evidenced relation remains in the graph');
+    assert.equal(root.dataset.atlasBackboneEdges, '5', 'Overview uses a forest instead of a complete relation mesh');
+    assert.equal(document.querySelectorAll('.atlas-edge.is-drawn').length, 2, 'A selected article reveals its entire explicit neighborhood');
 
     page.filter('essays');
     assert.equal(root.dataset.cameraRunning, 'true');
@@ -132,5 +135,40 @@ function setup({ url = 'https://example.test/blog/atlas/', data = fixture, fail 
   try { await flush(); assert(empty.document.querySelector('.atlas-empty')); empty.filter('poetry'); assert.equal(empty.document.querySelectorAll('.atlas-list li').length, 0); } finally { empty.close(); }
   const early = setup();
   try { early.filter('poetry'); await flush(); assert.equal(early.root.dataset.atlasView, 'poetry', 'A filter clicked during loading is respected'); } finally { early.close(); }
-  console.log('Atlas checks passed: evidence-based links, persistent graph, interrupted camera, spatial keyboard navigation, URL restoration, sharing fallback, mobile/reduced motion, retry and empty states.');
+
+  // A shared category must not turn twelve articles into sixty-six overview
+  // lines. Sparsification affects the drawing, never the evidence or list.
+  const dense = setup({ data: Array.from({ length: 12 }, (_, index) => ({ title: `Study ${index + 1}`, url: `/blog/study-${index + 1}/`, kind: 'mathematics', categories: ['数学'], date: '2026-10-25' })) });
+  try {
+    await flush();
+    const { document, root, window } = dense;
+    const nodes = [...document.querySelectorAll('.atlas-node')];
+    const edges = [...document.querySelectorAll('.atlas-edge')];
+    const backbone = edges.filter(edge => edge.classList.contains('is-backbone'));
+    assert.equal(edges.length, 66);
+    assert.equal(backbone.length, 11);
+    assert.equal(document.querySelectorAll('.atlas-edge.is-drawn').length, 11);
+    assert.equal(document.querySelectorAll('.atlas-node.is-labeled').length, 2, 'Overview only labels a few landmarks');
+    assert.equal(document.querySelectorAll('.atlas-orbit').length, 1, 'A region has one quiet orbit');
+    const reached = new Set([nodes[0].dataset.articleId]);
+    for (let pass = 0; pass < nodes.length; pass++) backbone.forEach(edge => {
+      if (reached.has(edge.dataset.atlasA)) reached.add(edge.dataset.atlasB);
+      if (reached.has(edge.dataset.atlasB)) reached.add(edge.dataset.atlasA);
+    });
+    assert.equal(reached.size, nodes.length, 'Sparse drawing preserves reachability inside a connected group');
+    dense.filter('mathematics'); dense.step(920);
+    assert.equal(document.querySelectorAll('.atlas-node.is-labeled').length, 12, 'Entering a subgraph reveals its article titles');
+    const chosen = nodes[0]; chosen.dispatchEvent(new window.Event('click'));
+    const active = [...document.querySelectorAll('.atlas-edge.is-drawn')];
+    assert.equal(active.length, 11);
+    assert(active.every(edge => [edge.dataset.atlasA, edge.dataset.atlasB].includes(chosen.dataset.articleId)), 'Only the active article neighborhood is drawn');
+    assert(active.some(edge => !edge.classList.contains('is-backbone')), 'Previously hidden true edges reappear on selection');
+    assert.equal(document.querySelectorAll('.atlas-related-choice').length, 11, 'No relationships are lost from the article list');
+    assert(!document.querySelector('[data-atlas-status]').textContent.includes('共同分类'), 'Status stays short; reasons live in the relationship list');
+    chosen.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    assert.deepEqual([...document.querySelectorAll('.atlas-edge.is-drawn')], backbone, 'Escape restores the original sparse overview');
+    assert.deepEqual([...document.querySelectorAll('.atlas-edge')], edges, 'Focus never replaces edge elements');
+    assert.equal(root.dataset.atlasDrawnEdges, '11');
+  } finally { dense.close(); }
+  console.log('Atlas checks passed: sparse evidence-preserving overview, full article neighborhoods, persistent graph, interrupted camera, spatial keyboard navigation, URL restoration, sharing fallback, mobile/reduced motion, retry and empty states.');
 })().catch(error => { console.error(error); process.exitCode = 1; });

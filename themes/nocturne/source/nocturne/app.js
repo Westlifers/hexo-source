@@ -6,6 +6,46 @@
   let toastTimer;
   function toast(message) { const el=$('[data-toast]'); if(!el)return; el.textContent=message;el.classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('visible'),3500); }
   window.Nocturne={storage,toast};
+  // Keep native details as the fallback. A second click reverses from the
+  // currently painted height, rather than snapping to either endpoint.
+  const reducedDisclosure = matchMedia('(prefers-reduced-motion: reduce)');
+  $$('[data-disclosure]').forEach(disclosure => {
+    const summary = $('summary', disclosure);
+    const body = $('[data-disclosure-body]', disclosure);
+    const inner = $('[data-disclosure-inner]', disclosure);
+    if (!summary || !body?.animate || !inner) return;
+    let expanded = disclosure.open, revision = 0, heightAnimation, textAnimation;
+    function settle() {
+      heightAnimation?.cancel(); textAnimation?.cancel();
+      heightAnimation = textAnimation = null;
+      disclosure.open = expanded;
+      disclosure.classList.remove('is-closing');
+      body.style.removeProperty('height');
+      inner.style.removeProperty('opacity');
+    }
+    summary.addEventListener('click', event => {
+      event.preventDefault();
+      const from = disclosure.open ? body.getBoundingClientRect().height : 0;
+      const opacity = disclosure.open ? Number(getComputedStyle(inner).opacity) : 0;
+      const currentRevision = ++revision;
+      expanded = !expanded;
+      heightAnimation?.cancel(); textAnimation?.cancel();
+      disclosure.open = true;
+      disclosure.classList.toggle('is-closing', !expanded);
+      const to = expanded ? inner.getBoundingClientRect().height : 0;
+      if (reducedDisclosure.matches || Math.abs(to - from) < .5) { settle(); return; }
+      body.style.height = `${from}px`;
+      inner.style.opacity = String(opacity);
+      heightAnimation = body.animate([{ height: `${from}px` }, { height: `${to}px` }],
+        { duration: expanded ? 380 : 280, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' });
+      textAnimation = inner.animate([{ opacity }, { opacity: expanded ? 1 : 0 }],
+        { duration: expanded ? 280 : 180, easing: 'ease-out', fill: 'forwards' });
+      heightAnimation.finished.then(() => { if (revision === currentRevision) settle(); }, () => {});
+    });
+    disclosure.addEventListener('toggle', () => { if (!heightAnimation) expanded = disclosure.open; });
+    reducedDisclosure.addEventListener('change', () => { if (reducedDisclosure.matches) { revision++; settle(); } });
+    window.addEventListener('resize', () => { if (heightAnimation) { revision++; settle(); } });
+  });
   const themeButton=$('[data-theme-toggle]');
   function updateThemeButton(){themeButton?.setAttribute('aria-label',document.documentElement.dataset.theme==='dark'?'切换到日间阅读':'切换到夜间阅读');}
   updateThemeButton();
