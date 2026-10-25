@@ -1,0 +1,72 @@
+/* A night walk through three real works, followed by several reading routes. */
+.home-interlude{display:grid;grid-template-columns:1fr 1.65fr;gap:10%;padding-block:102px 90px;align-items:start}
+.home-interlude-note{max-width:225px;color:var(--muted);font:13px/2 var(--sans);padding-top:13px}
+.home-interlude-note a{display:block;color:var(--accent);margin-top:23px;font-size:12px}
+.home-interlude blockquote{margin:0;font:clamp(24px,2.4vw,37px)/1.85 var(--serif);letter-spacing:.025em;text-wrap:balance}
+.home-interlude cite{display:block;font:11px/1.8 var(--sans);font-style:normal;color:var(--muted);margin-top:25px}
+.home-works{padding-bottom:30px}
+.home-works-heading{display:flex;justify-content:space-between;align-items:baseline;gap:25px;margin-bottom:30px}
+.home-works-heading h2{font:32px/1.5 var(--serif);margin:0}
+.home-works-heading p{color:var(--muted);font:12px/1.6 var(--sans);margin:0}
+.home-works-grid{display:grid;grid-template-columns:1.08fr 1fr;grid-template-rows:340px 280px;gap:22px}
+.work{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;border-radius:3px;padding:30px;color:#f1e9e3;background:#231d2b}
+.work img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:transform 1s var(--ease-nocturne),filter 1s}
+.work:after{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none}
+.work-caption{display:flex;justify-content:space-between;align-items:center;gap:20px;font:11px/1.5 var(--sans)}
+.work-caption span:last-child{color:#d2bfcb}
+.work h3{font:31px/1.4 var(--serif);margin:0 0 9px}
+.work p{font:12px/1.9 var(--sans);margin:0;color:#c9bac7}
+.work-poem{grid-row:span 2;padding:36px}
+.work-poem img{filter:saturate(.55) brightness(.66);object-position:48% center}
+.work-poem:after{background:linear-gradient(180deg,#12121a25 0%,#17142212 30%,#171320d9 100%)}
+.work-poem .work-verse{font:italic clamp(29px,3vw,45px)/1.35 'Palatino Linotype',Georgia,serif;align-self:start;max-width:9.3em;position:absolute;top:26%;text-shadow:0 2px 25px #08041170}
+.work-poem h3{font:clamp(50px,6vw,78px)/1.15 'Palatino Linotype',Georgia,serif;letter-spacing:-.04em}
+.work-poem .work-arrow{position:absolute;bottom:39px;right:35px;font:30px Georgia;color:#e9bf97}
+.work-cat{padding:28px}
+.work-cat img{filter:brightness(.65) saturate(.68);object-position:52% 39%}
+.work-cat:after{background:linear-gradient(90deg,#17121d65,transparent),linear-gradient(0deg,#17121de0,transparent 80%)}
+.work-cat h3{font-size:28px}
+.work-math{background:radial-gradient(ellipse at 90% 10%,#57577744,transparent 75%),#201d2c;border:1px solid #a7a1c72b}
+.work-math:after{background:radial-gradient(ellipse at var(--work-x,70%) var(--work-y,10%),#e2c49a16,transparent 65%);opacity:0;transition:opacity .6s}
+.work-math:hover:after,.work-math:focus-visible:after{opacity:1}
+.work-math-symbol{position:absolute;right:24px;top:35px;font:italic clamp(75px,9vw,125px)/1 'Palatino Linotype',Georgia,serif;color:#b6bddd30;letter-spacing:-.07em;pointer-events:none}
+.work-math h3{font-size:30px;max-width:9em;text-wrap:balance}
+.work-math .work-caption{color:#d0c5df}
+.work:hover img{transform:scale(1.035);filter:saturate(.8) brightness(.8)}
+.home-paths{padding-block:90px 10px}
+.home-paths-heading{display:flex;justify-content:space-between;align-items:baseline;gap:30px;margin-bottom:30px}
+.home-paths h2{font:29px/1.5 var(--serif);margin:0}
+.home-paths-heading p{font:12px/1.8 var(--sans);margin:0;color:var(--muted)}
+.reading-paths{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px}
+.reading-path{min-width:0;padding-top:24px;border-top:1px solid var(--rule)}
+.reading-path h3{font:21px/1.5 var(--serif);margin:0 0 12px}
+.reading-path>p{font:12px/1.9 var(--sans);min-height:46px;color:var(--muted);max-width:28em;margin-bottom:25px}
+.reading-path ol{list-style:none;margin:0;padding:0 0 0 15px;border-left:1px solid var(--rule)}
+.reading-path li{position:relative;margin-bottom:18px;font:12px/1.8 var(--sans)}
+.reading-path li:before{content:'';position:absolute;width:5px;height:5px;border:1px solid var(--accent);border-radius:50%;left:-18px;top:.7em;background:var(--bg)}
+.reading-path li:last-child{margin-bottom:0}
+.reading-path a{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.reading-path a:hover{color:var(--accent)}
+.reading-path a span{overflow-wrap:anywhere}
+.reading-path small{font:10px var(--sans);white-space:nowrap;color:var(--muted)}
+.home-listening{margin-block:90px 35px;padding:48px;display:grid;grid-template-columns:190px 1fr;gap:48px;align-items:center;background:linear-gradient(120deg,#2b2237,#1b1825);border:1px solid #b6bddd25;border-radius:4px;color:#f0e9e4}
+.home-listening .record{width:180px;height:180px;box-shadow:0 24px 50px #0005}
+.home-listening .record>div{background:#c2a6b0}
+.home-listening h2{font:44px/1.2 'Palatino Linotype',Georgia,serif;margin:0 0 12px;letter-spacing:-.03em}
+.home-listening-description{font:13px/1.8 var(--sans);color:#c0b3c4;margin:0 0 19px}
+.home-listening .text-link{font-size:11px;color:#e9bf97}
+.home-audio-player{display:grid;grid-template-columns:46px minmax(0,1fr);gap:18px;align-items:center;margin-top:27px}
+.home-audio-player .play-button{width:44px;height:44px;font-size:14px;color:#e9bf97;border-color:#e9bf9760}
+.audio-timeline{min-width:0}
+.audio-seek{display:block;width:100%;height:18px;cursor:pointer;accent-color:#e9bf97;margin:0}
+.audio-seek:disabled{opacity:.35;cursor:default}
+.audio-time{display:flex;justify-content:space-between;color:#bdacbf;font:10px/1.5 var(--sans);font-variant-numeric:tabular-nums;margin-top:5px}
+.home-audio-native{width:100%;margin-top:12px}
+.audio-enhanced .home-audio-native{display:none}
+.home-audio-player[hidden]{display:none}
+.home-listening [data-audio-status]{font:11px/1.8 var(--sans);color:#e9bf97;margin:10px 0 0;min-height:0}
+.home-listening [data-audio-status]:empty{display:none}
+.home-listening.is-playing .record{animation:record-spin 24s linear infinite}
+@media(max-width:1100px){.home-works-grid{grid-template-rows:300px 270px}.home-interlude{gap:7%;grid-template-columns:.8fr 1.5fr}.work-poem{padding:28px}.work-poem .work-verse{font-size:32px}.reading-paths{gap:25px}.home-listening{padding:35px;gap:32px}}
+@media(max-width:760px){.home-interlude{padding-block:58px;display:flex;flex-direction:column-reverse;gap:25px}.home-interlude blockquote{font-size:25px}.home-interlude cite{margin-top:20px}.home-interlude-note{max-width:100%;padding:0;font-size:12px;margin:0}.home-interlude-note a{margin-top:12px}.home-works-heading{display:block;margin-bottom:24px}.home-works-heading h2{font-size:27px}.home-works-heading p{margin-top:9px;font-size:11px}.home-works-grid{display:flex;flex-direction:column;gap:15px}.work-poem{min-height:540px}.work-poem .work-verse{font-size:34px}.work-cat{min-height:315px}.work-math{min-height:250px}.work-math-symbol{font-size:110px}.work-math h3{font-size:28px}.home-paths{padding-top:50px}.home-paths-heading{display:block}.home-paths h2{font-size:26px}.home-paths-heading p{margin-top:10px}.reading-paths{grid-template-columns:1fr;gap:28px}.reading-path{padding-top:21px}.reading-path>p{min-height:0;margin-bottom:18px}.reading-path ol{margin-left:3px}.reading-path li{font-size:13px}.home-listening{padding:28px 23px;grid-template-columns:1fr;gap:28px;margin-block:55px 20px}.home-listening .record{width:130px;height:130px;margin:auto}.home-listening .record>div{width:61px;height:61px}.home-listening h2{font-size:42px}.home-listening-description{font-size:12px}.home-listening .text-link{font-size:11px}.home-audio-player{gap:15px}}
+@media(prefers-reduced-motion:reduce){.work img{transition:none}.work:hover img{transform:none}.home-listening.is-playing .record{animation:none}}

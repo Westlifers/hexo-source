@@ -2,6 +2,7 @@
 
 const { parseDocument, DomUtils } = require('htmlparser2');
 const { slugize, escapeHTML } = require('hexo-util');
+const { createHash } = require('node:crypto');
 
 hexo.extend.helper.register('n_reading_content', content => {
   const html = String(content || '');
@@ -17,6 +18,26 @@ hexo.extend.helper.register('n_reading_content', content => {
       while (used.has(id)) id = `${base}-${suffix++}`;
       used.add(id);
       edits.push({ at: node.startIndex + 3, length: 0, text: ` id="${escapeHTML(id)}"` });
+    }
+    // Stable, text-derived paragraph addresses survive insertions elsewhere in
+    // the article. Only ordinary prose and the math engine's root paragraphs
+    // are eligible; authored nested layouts remain entirely untouched.
+    const parentClasses = (node.parent?.attribs?.class || '').split(/\s+/);
+    if (node.name === 'p' && !Object.hasOwn(node.attribs, 'data-reader-paragraph') &&
+        (node.parent?.type === 'root' || parentClasses.includes('math-article')) &&
+        DomUtils.textContent(node).trim().length > 0 &&
+        !DomUtils.findOne(child => ['img', 'svg', 'iframe', 'video', 'audio'].includes(child.name), node.children)) {
+      let id = node.attribs.id;
+      if (!id) {
+        const text = DomUtils.textContent(node).replace(/\s+/g, ' ').trim();
+        const base = 'paragraph-' + createHash('sha256').update(text).digest('hex').slice(0, 12);
+        id = base;
+        let suffix = 2;
+        while (used.has(id)) id = `${base}-${suffix++}`;
+        used.add(id);
+      }
+      const attributes = `${node.attribs.id ? '' : ` id="${escapeHTML(id)}"`} data-reader-paragraph`;
+      edits.push({ at: node.startIndex + 2, length: 0, text: attributes });
     }
     if (root === '/' || !node.attribs) continue;
     // Change only URL attributes in the opening tag, leaving authored HTML,

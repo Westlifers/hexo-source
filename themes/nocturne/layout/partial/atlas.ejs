@@ -1,4 +1,4 @@
-<section class="atlas-section <%= standalone ? 'atlas-page' : '' %>" id="atlas" data-atlas data-index="<%= url_for('/nocturne/search.json') %>">
+<section class="atlas-section <%= standalone ? 'atlas-page' : '' %>" id="atlas" data-atlas data-index="<%= url_for('/nocturne/search.json') %>" data-atlas-url="<%= url_for('/atlas/') %>">
   <div class="shell">
     <div class="section-heading atlas-heading">
       <div><p class="small-note"><%= standalone ? '在念头之间，寻找另一条路径' : '每一个念头，都有自己的引力' %></p>
@@ -7,13 +7,22 @@
       <div class="atlas-heading-note"><p class="atlas-description">靠近一个主题，<br>看见它与整个世界的联系。</p><% if (!standalone) { %><a class="text-link" href="<%= url_for('/atlas/') %>">展开完整星图 ↗</a><% } %></div>
     </div>
     <div class="filter-bar" role="group" aria-label="选择子宇宙">
-      <button data-atlas-filter="all" aria-pressed="true">整个宇宙</button>
-      <button data-atlas-filter="mathematics" aria-pressed="false">数学</button>
-      <button data-atlas-filter="essays" aria-pressed="false">随笔</button>
-      <button data-atlas-filter="poetry" aria-pressed="false">诗与声音</button>
-      <button data-atlas-filter="fieldnotes" aria-pressed="false">生活切片</button>
+      <button type="button" data-atlas-filter="all" aria-pressed="true">整个宇宙</button>
+      <button type="button" data-atlas-filter="mathematics" aria-pressed="false">数学</button>
+      <button type="button" data-atlas-filter="essays" aria-pressed="false">随笔</button>
+      <button type="button" data-atlas-filter="poetry" aria-pressed="false">诗与声音</button>
+      <button type="button" data-atlas-filter="fieldnotes" aria-pressed="false">人间漫游</button>
+    </div>
+    <div class="atlas-toolbar" hidden data-atlas-toolbar>
+      <button type="button" class="atlas-relation-toggle" data-atlas-relations aria-pressed="false">只看共同标签与分类</button>
+      <button type="button" data-atlas-copy>复制星图链接</button>
+      <input class="atlas-share-url" data-atlas-share-url type="url" readonly hidden aria-label="当前星图链接，请复制">
     </div>
     <div class="atlas-stage"></div>
+    <div class="atlas-guide">
+      <p class="atlas-legend"><span class="atlas-legend-explicit">共同标签或分类</span><span class="atlas-legend-topic">仅同一主题</span></p>
+      <details class="atlas-help"><summary>怎样探索这张图</summary><p>每颗星对应一篇文章。实线来自文章共有的标签或分类，虚线只表示被编入同一主题；连线不代表引用或推导关系。点击文章后，可以沿着下方注明原因的关联继续探索。</p><p>键盘：Tab 逐篇移动，方向键寻找画面相应方向的文章，Enter 或空格选中，Escape 清除选择。也可以使用下方文章列表。</p></details>
+    </div>
     <p data-atlas-status role="status">正在绘制星图…</p>
     <noscript><a href="<%= url_for('/archives/') %>">按时间浏览全部文章</a></noscript>
   </div>

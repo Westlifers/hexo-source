@@ -34,6 +34,30 @@ node tools/nocturne-check.cjs --subpath
 
 ## 功能与操作
 
+### 2026-10-25 整站升级
+
+首页保留已选定的句文、银弦与“世俗的形状。”，后半段以城市长幅、白猫横幅和数学排字组成不等尺度的作品展示。引言改用《做一首世俗的诗》里的真实节选，并加入三条由现有文章组成的阅读路线。夜紫、瓷白、冷银、香槟色继续共用；中文宋体与西文 Palatino 保留，无新增远程字体、动画框架或 WebGL 依赖。
+
+| 研究来源 | 在本主题中的取舍与落地 |
+| --- | --- |
+| [Maggie Appleton 的 Garden](https://maggieappleton.com/garden) | 借鉴多入口内容发现。归档提供真实主题、年份、标签、阅读时长排序与收藏；首页阅读路线明确为编辑编排，星图关系由真实元数据解释。 |
+| [Josh W. Comeau 的文章站](https://www.joshwcomeau.com/) | 参考把可交互解释与文章主体结合的方向。保留真实 DisCoCat 图作为首页独特交互，数学正文的主要空间仍留给证明。 |
+| [Gwern 的长文设计说明](https://gwern.net/design) | 长文工具按阅读需要出现：桌面章节轨迹、手机目录面板、选文后的摘录工具，避免常驻多排操作打断文章。 |
+| [WebKit 原生跨文档转场](https://webkit.org/blog/16967/two-lines-of-cross-document-view-transitions-code-you-can-use-on-every-website-today/) | 使用 CSS View Transitions 的短暂叠化和独立导航元素，不截获站内链接，不引入 PJAX。减少动态效果时不启用，浏览器不支持时正常导航。 |
+| [MDN 原生 dialog 动画](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog) | 搜索和图片浮层使用 starting-style、display/overlay 的离散过渡；保留原生对话框行为。 |
+| [WAI 键盘界面实践](https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/)与[对话框规范](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/) | 区分星图焦点与选中态，按空间方向移动节点；阅读面板关闭后恢复操作位置。 |
+| [Media Session API](https://developer.mozilla.org/en-US/docs/Web/API/Media_Session_API) | 音乐支持真实播放进度、键盘拖动和可用浏览器的媒体控制集成。只在用户播放后加载音频，无 JavaScript 时保留原生控件。 |
+| [Atom 标准 RFC 4287](https://www.rfc-editor.org/rfc/rfc4287) | 构建 /atom.xml，覆盖已发布文章的标题、时间、摘要和原文链接；全站提供订阅发现链接，摘要不混入文章样式或脚本。 |
+
+这轮也研究了 [Codrops 的动态排字转场](https://tympanus.net/codrops/2021/09/29/kinetic-typography-page-transition/)与 [content-visibility](https://web.dev/articles/content-visibility)。最终没有加入全屏遮挡转场或对数学正文的跳过布局：前者会打断频繁跳转，后者需要额外验证公式重排、锚点与续读位置。现有 SVG 继续承担主要视觉，新增动效优先回应人的操作。
+
+- **归档**：完整文章列表、四主题、年份、标签、最新／最早／短篇排序；筛选可复制 URL。收藏沿用本地存储，并呈现已有阅读进度。归档搜索标题、摘要与标签；全站搜索负责全文，并显示匹配位置附近的摘句和高亮。
+- **阅读**：章节进度、上一节／下一节、手机目录；排版面板直接选择字号与行距。普通段落在构建时获得基于文本的稳定锚点，选择文字后可复制带出处的摘录或位置链接。原始正文不改写，原有锚点保留；包含公式的选区只提供位置链接。
+- **星图**：实线表示共同标签或分类，虚线仅表示同主题；可只看明确关联，点选后显示原因和相关文字。主题、关系模式和文章路径可保存到链接中，支持刷新与历史恢复。
+- **声音与订阅**：Route Six 新增进度拖动和时长显示；支持时接入系统媒体控制。/atom.xml 可用于订阅，分享页面附标题、摘要和站点图片元数据。全站仍在本地预览阶段。
+
+### 基础能力
+
 - DisCoCat 弦图：构建时直接生成完整 SVG，首帧与静态阅读不依赖 JavaScript 或 WebGL。无框词语保留透明点击区域与清晰的键盘焦点标记，可悬停、点选或键盘聚焦，突出直接相接的线；支持方向键、Home/End、Enter/空格与 Escape。类型标记按需展开，原始 SVG 可独立查看。光只是沿连接移动的视觉效果，不代表训练过的语义模型在计算。入场描线与流光在离屏、后台和用户暂停时停止，尊重系统减少动态效果设置。手机先呈现全图与可读整句，点击“放大读图”后可横向阅读。
 - 全文搜索：点击搜索、`Ctrl/⌘ K` 或 `/`；方向键选结果，Enter 打开，Esc 关闭。包括文章和关于页。索引只在使用时下载，内容以文本节点插入。
 - 星图：独立页面 `/atlas/` 与首页共用一张文章关系图；顶部四项导航统一跳转页面。选择子宇宙时镜头平滑聚焦到原图的对应区域，节点和连线位置保持不变，快速切换从当前镜头接续。连线代表真实共同标签或主题；点选文章显示摘要，再打开正文。提供键盘交互及普通链接列表，不需要 WebGL。

@@ -136,6 +136,23 @@ if (build.search.enabled) {
   checks.push(`${entries.length} searchable entries cover all eligible posts/pages with valid URLs, kinds and plain-text summaries`);
 }
 
+const { JSDOM } = require('jsdom');
+const feed = new JSDOM(fs.readFileSync(path.join(build.output, 'atom.xml'), 'utf8'), { contentType:'text/xml' }).window.document;
+assert.equal(feed.documentElement.namespaceURI,'http://www.w3.org/2005/Atom','Invalid Atom namespace');
+const feedEntries = [...feed.querySelectorAll('entry')];
+assert.equal(feedEntries.length,build.posts.length,'Feed must cover exactly the published posts');
+const feedIds = new Set();
+for (const entry of feedEntries) {
+  const id=entry.querySelector('id').textContent;
+  assert(!feedIds.has(id),'Duplicate feed entry');feedIds.add(id);
+  const destination=localFile(entry.querySelector('link').getAttribute('href'),'index.html');
+  assert(destination&&fs.existsSync(destination.file),'Invalid feed destination '+id);
+  assert(!Number.isNaN(Date.parse(entry.querySelector('updated').textContent)),'Invalid Atom update time');
+  assert(entry.querySelector('summary').textContent.trim(),'Empty feed summary');
+}
+for (const post of build.posts) assert([...feedIds].some(id=>decodeURI(new URL(id).pathname)===decodeURI(build.root+post.path.replace(/^\/+/,''))),'Post absent from Atom feed: '+post.title);
+checks.push(`${feedEntries.length} unique published posts in valid Atom XML, with timestamps and resolvable local destinations`);
+
 for (const route of build.routes.filter(route => route.endsWith('.css'))) {
   const css = fs.readFileSync(path.join(build.output, route), 'utf8');
   for (const match of css.matchAll(/url\(\s*(?:"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)'|([^)]*))\s*\)/g)) {

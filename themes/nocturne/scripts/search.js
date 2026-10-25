@@ -9,8 +9,11 @@ hexo.extend.generator.register('nocturne-search', function (locals) {
     .filter(entry => entry.published !== false && entry.search !== false && entry.layout !== false && entry.layout !== 'false' && entry.title && !entry.source?.startsWith('_drafts/'))
     .sort((a, b) => b.date.valueOf() - a.date.valueOf())
     .map(entry => ({
-      title: plain(entry.title), url: url(entry.path), summary: summary(entry, 160), text: plain(entry.content),
+      title: plain(entry.title), url: url(entry.path), summary: summary(entry, 160),
+      // Keep formulas searchable, but use prose without math/code for displayed context.
+      text: plain(entry.content), snippet: plain(entry.content, true),
       tags: entry.tags?.toArray().map(tag => tag.name) || [],
+      categories: entry.categories?.toArray().map(category => category.name) || [],
       kind: kind(entry).key, date: entry.date.format('YYYY-MM-DD')
     }));
   // JSON is fetched as data; these escapes also keep it safe if a downstream
