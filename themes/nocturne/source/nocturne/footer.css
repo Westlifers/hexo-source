@@ -7,14 +7,20 @@
 .nocturne-footer .footer-meta>span{margin:0}
 .footer-meta nav{display:flex;gap:22px}
 .footer-meta a:hover,.footer-track-title:hover{text-decoration:underline;text-underline-offset:4px}
-.footer-player{display:grid;grid-template-columns:56px minmax(0,1fr);align-items:center;gap:16px;width:360px;max-width:100%;margin:0}
+.footer-player{display:grid;grid-template-columns:60px minmax(0,1fr);align-items:center;gap:16px;width:360px;max-width:100%;margin:0}
 .footer-player-copy{min-width:0}
 .footer-track-title{display:inline-block;font:17px/1.3 Georgia,serif;letter-spacing:.015em;color:var(--ink)}
-.footer-disc{position:relative;display:grid;place-items:center;isolation:isolate;width:56px;height:56px;border-radius:50%;background:#19151f;border:1px solid #6d5b7044;overflow:hidden}
-.footer-disc:before{content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;background:conic-gradient(from 25deg,transparent,#b6bddd14 16%,transparent 28%,transparent 62%,#b6bddd12 75%,transparent 88%),repeating-radial-gradient(circle,#17131d 0 1px,#3c3043 1.5px 2px);animation:footer-disc-spin 18s linear infinite;animation-play-state:paused}
-.footer-player.is-playing .footer-disc:before{animation-play-state:running}
-.footer-disc-label{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#bea5b0;color:#302334}
-.nocturne-footer .footer-disc-label span{display:block;margin:0;padding:0;text-align:center;transform:none;font:italic 10px/.98 Georgia,serif;letter-spacing:0}
+/* Rotate the engraved face and its off-axis mark together, so motion remains
+   legible at this scale. The rim, lighting and spindle stay in place. */
+.footer-disc{position:relative;isolation:isolate;width:60px;height:60px;flex:none;padding:3px;border-radius:50%;background:linear-gradient(135deg,#8f879966,#1c1824 38%,#4e4557 75%,#92819a66);box-shadow:0 4px 12px #08060d66,inset 0 0 0 1px #c7bbd225;overflow:hidden}
+.footer-disc-rotor{position:relative;display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:repeating-radial-gradient(circle at center,#131018 0 1px,#80718d38 1.2px 1.6px,#18141e 1.9px 2.5px);box-shadow:inset 0 0 0 1px #0b0912,inset 0 0 0 3px #0e0b14;animation:footer-disc-spin 10s linear infinite;animation-play-state:paused}
+.footer-player.is-playing .footer-disc-rotor{animation-play-state:running}
+.footer-disc-rotor:before{content:'';position:absolute;inset:5px;border:1px solid transparent;border-top-color:#c8b1d15c;border-right-color:#c8b1d119;border-radius:50%;transform:rotate(-30deg)}
+.footer-disc-rotor:after{content:'';position:absolute;top:8px;left:calc(50% - 1px);width:2px;height:4px;border-radius:1px;background:#cfb39c;box-shadow:0 0 4px #e9bf9730}
+.footer-disc-label{position:relative;width:20px;height:20px;border:1px solid #dcc1ac80;border-radius:50%;background:conic-gradient(from 25deg,#9d7d74,#dcc4a9 23%,#a88880 48%,#6e5967 72%,#c6a995 91%,#9d7d74);box-shadow:0 0 0 2px #0c0a12,inset 0 0 0 3px #251d282b}
+.footer-disc-label:before{content:'';position:absolute;inset:3px;border:1px solid #36283865;border-left-color:#f0d8b96b;border-radius:50%}
+.footer-disc:before{content:'';position:absolute;inset:3px;z-index:1;border-radius:50%;background:conic-gradient(from -33deg,transparent 0deg,#d4cce929 22deg,transparent 58deg 178deg,#a6a6c821 201deg,transparent 232deg);pointer-events:none}
+.footer-disc:after{content:'';position:absolute;z-index:2;top:50%;left:50%;width:4px;height:4px;transform:translate(-50%,-50%);border-radius:50%;background:#16121b;box-shadow:0 0 0 1px #e7d4bb6b,inset 0 1px 1px #030206}
 .footer-audio-controls{display:grid;grid-template-columns:30px minmax(0,1fr);gap:9px;align-items:center;margin-top:4px}
 .footer-play{display:grid;place-items:center;width:30px;height:32px;padding:0;border:0;border-radius:3px;color:var(--accent);font:14px/1 var(--sans);background:none}
 .footer-play:hover{background:var(--soft)}
@@ -38,9 +44,9 @@
   .nocturne-footer>.footer-main{flex-wrap:wrap;gap:23px}
   .nocturne-footer .footer-wordmark{font-size:30px;gap:14px}
   .nocturne-footer .footer-wordmark span{font-size:10px}
-  .footer-player{width:340px;grid-template-columns:52px minmax(0,1fr);gap:14px}
-  .footer-disc{width:52px;height:52px}
+  .footer-player{width:340px;grid-template-columns:56px minmax(0,1fr);gap:14px}
+  .footer-disc{width:56px;height:56px}
   .nocturne-footer>.footer-meta{margin-top:20px;font-size:9px}
   .footer-meta nav{gap:20px}
 }
-@media(prefers-reduced-motion:reduce){.footer-disc:before{animation:none}}
+@media(prefers-reduced-motion:reduce){.footer-disc-rotor{animation:none}}

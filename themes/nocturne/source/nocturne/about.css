@@ -51,6 +51,18 @@
 .about-experience .about-cubing-table th{font-size:11px;font-weight:400;color:var(--muted);border-top:1px solid var(--rule)}
 .about-experience .about-cubing-table th:first-child,.about-experience .about-cubing-table td:first-child{width:44%;text-align:left;color:var(--muted)}
 .about-experience .about-cubing-table td:not(:first-child){color:var(--ink)}
+/* cubing/icons, MIT; source revision and license live beside the local SVGs. */
+.about-cubing-table tr[data-wca-event="333"]{--wca-event-icon:url("icons/wca-events/333.svg")}
+.about-cubing-table tr[data-wca-event="222"]{--wca-event-icon:url("icons/wca-events/222.svg")}
+.about-cubing-table tr[data-wca-event="444"]{--wca-event-icon:url("icons/wca-events/444.svg")}
+.about-cubing-table tr[data-wca-event="333oh"]{--wca-event-icon:url("icons/wca-events/333oh.svg")}
+.about-cubing-table tr[data-wca-event="clock"]{--wca-event-icon:url("icons/wca-events/clock.svg")}
+.about-cubing-table tr[data-wca-event="pyram"]{--wca-event-icon:url("icons/wca-events/pyram.svg")}
+.about-cubing-table tr[data-wca-event="skewb"]{--wca-event-icon:url("icons/wca-events/skewb.svg")}
+@supports (mask-image:url("")) or (-webkit-mask-image:url("")){
+  .about-experience .about-cubing-table tr[data-wca-event]>th{position:relative;padding-inline-start:34px;font-size:inherit;border-top:0}
+  .about-experience .about-cubing-table tr[data-wca-event]>th:before{content:'';position:absolute;left:0;top:50%;width:23px;height:23px;transform:translateY(-50%);background:color-mix(in srgb,var(--accent) 65%,var(--cool));-webkit-mask:var(--wca-event-icon) center/contain no-repeat;mask:var(--wca-event-icon) center/contain no-repeat;pointer-events:none}
+}
 .about-experience .about-cubing-records .about-cubing-source{margin:16px 0 0;font:11px/1.9 var(--sans);color:var(--muted);overflow-wrap:anywhere}
 .about-experience .about-page>.about-elsewhere{grid-column:1;align-self:start;border-top:0;padding:0 0 60px}
 .about-experience .about-game-list{display:flex;gap:0;flex-wrap:wrap;margin-top:28px;border-top:1px solid var(--rule);padding-top:6px}

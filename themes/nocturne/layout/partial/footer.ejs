@@ -4,7 +4,7 @@
     <a class="footer-wordmark" href="<%= url_for('/') %>">Nocturne<span>夜曲</span></a>
     <% if (footerHasPlayer) { %>
     <section class="footer-player" data-footer-player aria-label="Route Six 播放器">
-      <div class="footer-disc" aria-hidden="true"><div class="footer-disc-label"><span>Route<br>Six</span></div></div>
+      <div class="footer-disc" aria-hidden="true"><div class="footer-disc-rotor"><span class="footer-disc-label"></span></div></div>
       <div class="footer-player-copy">
         <% if (footerSong) { %><a class="footer-track-title" href="<%= url_for(footerSong.path) %>" aria-label="Route Six，歌词与创作说明" lang="en">Route Six</a><% } else { %><span class="footer-track-title" lang="en">Route Six</span><% } %>
         <div class="footer-audio-controls" data-audio-player hidden>
