@@ -68,7 +68,7 @@ node tools/nocturne-check.cjs --subpath
 - 魔方成绩：关于页 Cubing 一节展示 WCA 个人最佳，2026-10-25 与 [WCA 数据](https://www.worldcubeassociation.org/api/v0/persons/2023YANG65)及[粗饼个人页](https://cubing.com/results/person/2023YANG65)核对。7 个有效项目的单次/平均、3 场比赛与 62 次成功复原作为静态快照保存在 `source/about/index.md`，不在访客浏览时请求第三方；更新时同步修改表格与核对日期。原文斜转 3.14 秒的非官方纪录单独保留。
 - 阅读：目录定位、进度、续读、字号切换、专注模式、收藏、复制链接、图片放大。收藏在空搜索窗口里显示。
 - 收藏、阅读位置、字号与配色仅保存于当前浏览器；清理浏览器数据会删除记录，没有账号同步或上传。
-- Route Six 点击后播放，页面加载不自动下载整首音频。音色模型及 AI 音乐说明仍在原歌曲文章里。
+- Route Six 点击后播放，页面加载不自动下载整首音频。首页展示卡和页脚链接共用 `home.song` 指定的文章，播放器读取该文章的 `audio` 字段；当前为《Route Six，再坐一站》的 Suno 版本，完整歌词和 Style 提示词收在新文章中。旧歌曲文章与音频仍保留。
 - 兼容 marked / Pandoc statement 两条数学路径、MathJax、TikZ、定理证明折叠与交叉引用、原诗歌版式、AI 使用说明和现有 Giscus 讨论映射。
 - AI 使用说明支持在文章 `ai.label` 中指定实际参与方式，例如“AI 协助整理”“AI 协作撰写”“AI 辅助音乐”；未指定时沿用 `ai.level` 的默认标签。展开说明仍取原有 `ai.note`，等级与正文不随展示标签改变。
 - 评论按需加载；本地预览不会连接 Giscus。在线评论与 MathJax 依赖外部服务。

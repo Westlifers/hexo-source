@@ -1,4 +1,4 @@
-<% const footerHasPlayer = is_home() && page.current === 1; const footerSong = footerHasPlayer ? n_post(theme.home.song || 'route-six-song.md') : null; %>
+<% const footerHasPlayer = is_home() && page.current === 1; const footerSong = footerHasPlayer ? n_post(theme.home.song || 'route-six-suno.md') : null; %>
 <footer class="site-footer nocturne-footer shell">
   <div class="footer-main">
     <a class="footer-wordmark" href="<%= url_for('/') %>">Nocturne<span>夜曲</span></a>
@@ -15,7 +15,7 @@
             <div class="footer-audio-time"><span class="sr-only" data-audio-label>听听 Route Six</span><span><time data-audio-current>0:00</time> / <time data-audio-duration>—:—</time></span></div>
           </div>
         </div>
-        <audio class="footer-audio-native" controls data-home-audio preload="none" src="<%= url_for('/audio/route-six-matikane-tannhauser-v2-softer.mp3') %>"></audio>
+        <audio class="footer-audio-native" controls data-home-audio preload="none" src="<%= url_for(footerSong && footerSong.audio || '/audio/route-six-suno.mp3') %>"></audio>
         <p class="footer-audio-status" data-audio-status role="status"></p>
       </div>
     </section>

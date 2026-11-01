@@ -37,7 +37,7 @@
     if(audio.error)audio.load();
     if(!metadataSet && 'mediaSession' in navigator && 'MediaMetadata' in window){
       const artwork=new URL('images/city.webp',document.querySelector('script[src$="/nocturne/home.js"]').src).href;
-      navigator.mediaSession.metadata=new MediaMetadata({title:'Route Six',artist:'Yougi · Noema',album:'夜曲',artwork:[{src:artwork,type:'image/webp'}]});
+      navigator.mediaSession.metadata=new MediaMetadata({title:'Route Six',artist:'Suno 生成音乐',album:'夜曲',artwork:[{src:artwork,type:'image/webp'}]});
       metadataSet=true;
     }
     try{await audio.play();}catch{status.textContent='音频暂时无法播放。可以重试，或在歌曲文章中收听。';}sync();
