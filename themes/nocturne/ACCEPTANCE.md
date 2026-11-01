@@ -167,3 +167,9 @@
 - The homepage now features four distinct articles. The original Route Six poem uses its own night-bus img1.png and original two-line quotation; the Suno song has a separate compact record card. The footer remains connected to the Suno version.
 - The asymmetric desktop grid pairs poem/music on the left with the cat/mathematics on the right; narrow screens stack the four cards. Real browser checks covered desktop and 320px viewport, with no horizontal overflow (305px client and scroll widths) or overlap between the song text and record. Generated links and the poem image were independently checked against their source articles.
 - Root and /journal/ builds/checks passed: 20 posts, 156 routes, 68 HTML pages and 2440 local references. No article bodies, audio files or production configuration changed. Screenshot: .nocturne-preview/four-works-desktop.png.
+
+## 2026-11-01 Production adoption
+
+- At the author's explicit request, `_config.yml` now selects Nocturne. Afterlight and Icarus remain installed. The existing master-triggered deployment workflow is unchanged.
+- A clean production build generated 156 routes. The generated site passed the content, media, local-link, search and Atom checks: 68 HTML pages, 2440 local references, 21 preserved article/page bodies and 20 feed entries. The four works, poem image, Suno audio, production canonical origin, CNAME and enabled production comment controls were checked separately.
+- DisCoCat geometry, atlas interaction and mathematical summary checks passed. An independent read-only audit found no release blocker in Node 20 compatibility, tracked assets, production configuration or Giscus mapping. Build output includes existing Pandoc deprecation warnings for --mathjax; generation succeeds. Remote deployment is verified after the push rather than inferred from local checks.
