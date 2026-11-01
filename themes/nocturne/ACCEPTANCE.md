@@ -1,0 +1,175 @@
+# Nocturne 本地验收
+
+日期：2026-10-24（Asia/Shanghai）
+
+开发分支：`feature/nocturne-theme`，从 `master` 的 `6e7ff3b` 新建。
+
+首页已确定为 E：`The city I watch is full of other people's evenings.`。数据采用 `strings/evenings.json` 单对象，浏览器加载 `strings/evenings-runtime.json`，原图与解析依据保留 E 的文件。
+
+本轮完成 E 的单句整理，并重新执行构建、内容检查、弦图检查与浏览器复核。以下通用交互记录保留此前结果；本轮复核范围单独列出。
+
+## 已记录的构建与内容检查
+
+- 实际 Hexo 构建成功：19 篇已发布文章，66 个 HTML 页面，包含独立 `/atlas/` 页面。
+- 根目录 `/` 与子目录 `/journal/` 的独立预览检查均通过；本轮重建为 133 条路由、66 个 HTML 页面，分别核验 1682 条本地链接与媒体引用。每页主导航都指向四个一致的页面地址。
+- 对 19 篇文章和关于页逐篇比较正文、原有锚点、媒体和 AI 说明；保留 TikZ 图的生成和原文章 URL。没有改动 `source/`。
+- 搜索包含 20 条符合条件的文章与页面，排除草稿和透传资源。检查摘要中无 CSS/HTML 源码泄漏。
+- 站点旧阅读脚本没有重复注入；本地没有自动请求评论服务。
+- 预览服务器仅监听 127.0.0.1；目录穿越请求返回 404；音频 Range 请求返回 206。
+- 无 JavaScript 的 HTML 响应含完整正文；未单独模拟关闭 JavaScript 的整站视觉。公式排版和增强交互仍需 JavaScript。
+
+## 已记录的浏览器检查
+
+通过 Codex 内置 Chromium 浏览器检查过桌面、820×900 平板尺寸，以及 390×844、320×760 手机尺寸。以下保留仍适用的主题功能结果；首页 E 的本轮复核单独列于下节。
+
+- 搜索：中英文关键字、正文匹配、方向键选择及 Enter 打开文章成功；空搜索显示收藏。
+- 星图：20 个节点，数学筛选得到 8 篇；在真实浏览器快速切换数学、随笔、诗与声音时镜头平滑接续，节点的全部原始 transform 保持相同，动画完成后 camera-running 为 false。点选 Route Six 和键盘 Enter 选择 Co/End Calculus 均显示真实详情。手机收起未选中的标题，保留普通文章列表。独立 DOM 测试另验证节点身份不变、整个宇宙精确归位、减少动态即时定位、聚焦时 Tab/方向键排除其他主题，以及跨主题时清空失效详情。
+- 关于页：大字姓名、人像、自然变换背景、错落分栏、山景和 Noema 收尾在深浅配色均可阅读；原有 3 张图片加载成功、照片放大和关闭正常。人像指针反馈实际产生倾斜与高光变量，指针离开恢复；流光在首屏运行，滚出首屏后为 paused。390px 与 320px 均无整页横向溢出。
+- 音频：用户点击后实际播放 Route Six，浏览器媒体就绪状态为 4，时长约 216.66 秒，暂停正常。
+- 数学文章：Integral quantaloid 长文的 164 个 MathJax 容器与 4 个可折叠证明正常；目录跳转、证明折叠、深浅配色、公式局部滚动正常。深色 TikZ 使用浅底并放大最小尺寸，黑色图线可辨。
+- 阅读：收藏/取消收藏、专注模式、字号、续读按钮验证通过。真实鼠标点击切换专注模式时，同一标题的位置保持在 75.17px；改变字号后为 75.13px。续读位置刷新后仍保留。
+- 文章兼容：Sheldon 的 10 张截图加载成功；原有图表从“出现次数”切到“每千句频次”后更新为 Sheldon 第 7/7。白猫的 5 张照片、原有图文布局及带链接照片放大均检查；关于页手机布局与 Route Six 专属诗歌容器未出现整页溢出。
+- 抽样浏览器日志没有主题脚本错误。
+
+## 首页 E 的本轮验收
+
+- `node tools/nocturne-evenings-check.cjs` 通过：24 个终端（23 个词端口与单个 `s` 输出）、12 条连续线、1 个 cap、1 个 swap 与 1 处交叉；原始端口连接和解析依据保留。
+- 使用本地环境重新导出后，四个 E 数据文件逐字节一致。原始 SVG、CCG 和 diagram 文件相对此前版本未改动。完整数据与 6823 字节的运行时数据生成完全相同的 SVG。
+- 根目录和 `/journal/` 均仅保留 E 的数据、原图与解析依据；文章、关于页、星图、搜索与资源检查通过。旧候选 URL `?sentence=X` 在实际浏览器中仍显示 E，候选选择器已移除。
+- 桌面浏览器验证：点击 `watch` 突出 3 条相接线，Escape 取消固定选择，右方向键移至 `is`；类型展开/收起与暂停/继续流动均成功。日间配色下保留夜间舞台。
+- 390×844 手机检查全图和放大阅读；End 键聚焦 `evenings` 并使图内横滚至右端，页面宽度为 375px，没有整页横向溢出。抽查 Route Six 文章版式也无整页溢出。浏览器日志未见错误或警告。
+- 加载失败保留 SSR 图、减少动态和后台暂停的代码路径保持原有逻辑；本轮未重新模拟网络故障或切换系统减少动态设置，不将此前测试列作本轮实测。
+- 其余句子和已退役首页资产从工作树移除。旧实验室、对比页、导出中间文件、截图与构建缓存移入系统回收站；4187 实验预览已停止。当前构建会自动清理自身临时缓存。
+
+## 2026-10-24 无框排字与银弦改版复核
+
+- 首页英文由图中无框斜体词语承担，译文放入右下留白；手机另保留可读整句。词语有透明点击区和可见键盘焦点，原始数据及导出 SVG 均未修改。
+- 所有展示曲线重新调整：纯 cup 使用悬垂弧线，复杂折返保留 cap 与 swap 的关键连接。增强几何检查通过：端口一一对应，只有 `strand-0` / `strand-3` 相交一次，12 条曲线均未检出自交（每段三次贝塞尔采样 64 次）。这属于数值回归检查，不是拓扑形式证明。
+- 根目录与 `/journal/` 重新构建并通过内容、链接、媒体和样式资源检查：19 篇文章、133 条路由、66 个 HTML 页面。完整数据与精简运行时数据仍生成一致 SVG。
+- Chromium 实查 1440×1000、820×900、390×844、320×760。桌面和平板弦图无内部横向溢出；320px 下标题保持一行；手机全图与放大读图均无整页横向溢出。手机 End 键可聚焦 `evenings` 并横滚至末端。
+- Enter 选中 `watch` 后突出 3 条相接线；Escape 取消固定，右方向键移至 `is` 且焦点标记可见。类型展开/收起正常。入场描线和流光的暂停状态实测均为 paused，继续后入场状态正常结束。
+- 抽查 Route Six 手机正文，确认未加载首页专用样式且无整页横向溢出。浏览器未出现错误或警告。
+- 减少动态使用 CSS 与已有偏好监听停用新动画；本轮没有改变系统偏好或重新模拟网络故障。
+
+## 2026-10-24 左侧走线收紧
+
+- 仅重绘 `strand-0` 与 `strand-3` 的展示路径：长线竖直进出，折返采用共同高度与 22px 圆角；cap 独立成小拱，swap 收束到原坐标 `[8,10.5] × [4,4.5]` 的局部区域。没有更改原始图数据、词语端点或右侧曲线。
+- 根目录和子目录构建与内容检查再次通过；几何检查仍为同一对弦的一次交叉、零采样自交、所有端点匹配。
+- 浏览器检查桌面完整图与 390px 手机放大读图，选中 `watch` 仍突出三条相接线，手机没有整页横向溢出。
+
+## 2026-10-24 曲率统一、精简文字与说明动画
+
+- 左侧两条复杂线改为分层通道内的宽浅椭圆过渡，保留竖直进出、层高、小 cap 与局部 swap；现有几何检查通过，仍只有指定两线的一次交叉，无采样自交。
+- 移除首屏操作提示、手机横滑提示句及底部重复简介；保留作者、句文、译文和必要按钮。Nocturne、夜曲与“关于这幅图”改为共同基线，320px 视口实查无整页横向溢出。
+- 原生 details 保留为后备交互；增强后高度展开约 380ms、收起约 280ms，文字同步淡入淡出。快速键盘反向操作实测从约 53px 的中间高度继续展开，最终清除固定高度。手机展开高度从约 6px 过渡到完整的约 96px，原图链接可见。
+- 图与译文改用独立定位容器。实测展开前后译文文档坐标约 519.14px，未随说明高度移动。桌面译文在逗号处分行，手机按正常文本流显示。
+- 根目录与 `/journal/` 构建及内容检查均通过。减少动态偏好走即时展开/收起路径；本轮未手工修改系统偏好或禁用 JavaScript。
+
+## 2026-10-24 交叉弧线与首页题句
+
+- 首页题句改为“世俗的形状。”，承接《做一首世俗的诗》的用语与当前弦图；英文 E 句及译文保持原文。
+- 将左侧 swap 前后的四段紧凑转弯并入两条连续大弧，保留小 cap 与上下 cup 的最低点；交叉由大弧自然形成。所有接缝的切线方向一致，类型标注沿新路径定位。
+- 现有几何检查通过：24 个终端一一对应，只有 `strand-0` 与 `strand-3` 相交一次，无采样自交。原始 SVG、CCG 与图数据未改动。完整数据与精简运行时数据生成完全相同的 SVG。
+- 根目录与 `/journal/` 构建及内容检查通过：19 篇文章、133 条路由、66 个 HTML 页面，分别核验 1682 条本地引用，正文与媒体保持不变。
+- Chromium 实查 1100×900 桌面与 320×760 手机：标题保持一行，手机无整页横向溢出；放大读图并聚焦 `watch` 时，三条关联弦正确高亮，Escape 解除固定。展开类型后的标注位置与新路径对应，浏览器日志无错误或警告。
+- 本轮没有重测减少动态、网络失败或其他浏览器；原有说明展开动画与文章页面逻辑未改动。
+
+## 2026-10-25 整站视觉、内容发现与阅读升级
+
+- 首页保留 E 句与原弦图，重排后续作品区、作者引言和三条真实文章阅读路线；统一全站微交互、页脚与原生跨页转场。研究来源和设计取舍记录在 README。
+- 根目录 `/` 与 `/journal/` 分别构建通过：19 篇文章、141 条路由、66 个 HTML 页面，每种部署路径核验 2283 条本地引用。逐篇验证正文、原有锚点、媒体、TikZ 与 AI 说明保持不变；没有修改 `source/` 或正式 `_config.yml`。
+- Atom 订阅源包含 19 篇已发布文章，XML 命名空间、唯一标识、时间和原文地址检查通过。搜索包含 20 条文章/页面；全文仍可检索数学源码，展示用上下文单独去除公式和代码。
+- Chromium 实查桌面 1100px、手机 390px 和 320px。首页深浅配色和新作品区可读，320px 首页、星图和关于页没有整页横向溢出；关于页三张原图正常加载。归档桌面与 390px 布局检查通过。
+- 归档实际操作：搜索 topos 得到 2 篇；收藏 Integral 后收藏筛选得到 1 篇，取消收藏后显示空态，重置得到全部 19 篇。筛选与收藏 URL 正常同步；测试新增收藏已清除。独立 DOM 检查覆盖年份、主题、短篇排序、输入法和子目录路径。
+- 星图实际操作：数学子宇宙聚焦、选中 Integral、显示带原因的 7 篇关联；启用共同标签/分类后剩 2 篇。复制链接后刷新，主题、文章与关系模式均恢复。新增独立检查覆盖空间键盘导航、镜头中断、节点身份、链接恢复、复制失败、减少动态、手机、空数据和加载重试。
+- 数学文章仍有 164 个 MathJax 容器。连续切换 19px、舒展行距并关闭设置后，原标题从 74.80px 保持在 75.91px；已恢复默认排版。手机目录等待弹窗关闭和滚动锁解除后导航，第三节实测位于 74.72px，焦点、当前章节和目录状态一致。
+- 鼠标选中《再到江安》首句，实际复制摘录得到原句、文章标题和带 `#paragraph-…` 的链接；复制段落链接并打开后命中相同段落。短句也生成稳定锚点。段落标识的幂等与插入其他段落后稳定性、手动复制回退和数学选区限制另经独立 DOM 验证。
+- 全文查询 effective binary unions 实测命中正文，高亮三个词，展示上下文不再泄漏 TeX。音频实际播放、键盘调整进度与暂停通过，时长约 216.66 秒；系统媒体控制未在系统界面实测。
+- 首页 E 的几何回归检查仍通过：24 个终端、12 条连续线、1 个 cap、指定两线的 1 次交叉，无采样自交。所有主题前端脚本语法与差异空白检查通过。
+- 快速连续跳转时记录过一次浏览器原生 View Transition 的 “Page already revealed” 中止提示，页面仍正常呈现，未见主题脚本异常。没有对转场做跨浏览器或逐帧性能测量；减少动态、无 JS、剪贴板失败等主要由代码路径和独立 DOM 检查覆盖，没有把它们列作本轮系统设置实测。
+
+## 2026-10-25 星图减密与关于页收敛
+
+- 星图保留 20 个节点、75 条真实关系；总览仅画 18 条代表连线，默认显示 7 个标题。进入子宇宙展开组内标题；选中或悬停文章时显示完整邻域。背景星点与轨道装饰同步减弱，关联列表没有删减。
+- 新增稀疏图回归：12 个节点的 66 条关系缩为 11 条常态线，连通性保持；选中后非骨架关系重新显露，完整关联列表保留，Escape 恢复同一组骨架。原镜头、键盘、分享、低动效、空态和重试检查通过。
+- Chromium 实查数学聚焦后选中 Integral，显示 7 条关联；总览实际常态线数 18。状态栏移除重复的关系原因，说明压为“图上的线”和简短键盘提示。
+- 说明展开约 380ms、收起约 280ms，文字同步淡入淡出。实际捕捉到高度由 6.41px 过渡至 110.78px；关闭途中约 102px 再次展开，最终恢复自动高度。展开前后横坐标和宽度保持不变；320px 下按新行高完整显示 152.56px，无整页溢出。系统减少动态与 resize 走即时归位路径，状态机另经只读审查；本轮未改变系统动态偏好。
+- 关于页取消巨幅肖像、倾斜双框和指针聚光，照片收进姓名旁的小幅署名区；山景改为随文小照片。姓名、自述、数学背景和全部原文、照片及锚点保留。320px 实查无整页溢出，照片正常加载且仍可键盘打开大图；深浅配色均检查。
+- 后续反馈确认位置后，仅调整肖像表面：低饱和调色、夜紫内衬、单层淡色细框与轻微边缘暗角。保持署名区外宽，覆层不接收指针事件；桌面、320px、日间与夜间复查，放大图片仍正常。
+- 根目录与 `/journal/` 构建、正文与资源检查通过：19 篇文章、141 条路由、66 个 HTML 页面、每种路径 2283 条本地引用。主题 JavaScript 语法与差异检查通过。
+
+## 2026-10-25 关于页魔方成绩
+
+- 按用户要求增补 `source/about/index.md` 的 Cubing 一节。通过原粗饼链接与 WCA 官方公开数据核对 `2023YANG65`：三阶、二阶、四阶、三阶单手、魔表、金字塔、斜转共 7 项有效个人最佳，3 场比赛、62 次成功复原。表格注明单位、来源和核对日期 2026-10-25；没有填入三盲 DNF 或把非官方斜转 3.14 秒当成 WCA 成绩。
+- 一次性核验将表格 14 个时间逐项与实时 WCA 返回的百分秒值比较，全部相符；去除新增成绩区后，与上一提交的原自述文本完全一致。既有照片与文章未修改。
+- 桌面采用左侧自述、右侧轻量成绩表；Elsewhere 与原山景放入下一行。Chromium 实查 1100px 与 320px：7 行完整，320px 下表宽与内部内容宽均为 273px，页面无横向溢出。
+- 成绩为静态快照，无访客端抓取或定时更新。根目录与 `/journal/` 构建及正文、链接、资源检查通过。
+
+## 边界
+
+- 当前首页不使用 WebGL；初始 SVG 直接存在于 HTML。减少动画、离屏/后台暂停与请求失败保留静态图属于增强行为；本轮核验范围见上节。没有在浏览器手工切换全部系统设置或模拟全部网络故障。
+- Giscus 继承原映射并按需加载。本地预览关闭评论网络连接，未进行线上登录、评论提交或回帖测试。
+- 未做 Safari / Firefox / 实体移动设备测试。
+- 收藏与阅读位置只在当前浏览器保存。外部 MathJax 和 Giscus 的可用性仍取决于网络。
+- 正式 `_config.yml` 继续选择 Afterlight；本次没有合并 `master`、推送或部署。
+
+## 2026-10-25 页尾与文案减法、归档下拉
+
+- 合并首页独立音乐区与全站 Nocturne 页脚。桌面实测150px高，保留版权、收藏和RSS；唱片56px，文字中心与标签中心偏差小于0.01px。手机自然换行，原生音频后备保留。
+- 弦图移除重复Nocturne字样，仍保留说明、类型与暂停操作及说明动画。主页删去独处引文，改为“有时埋首纸间，有时流连街头。”与“关于我”。关于页、归档、文章页移除重复收尾文案，保留文章标签与前后导航。
+- 星图移除图下图例、说明折叠和未选中占位；点选后的文章与关联不变。既有星图回归和E句几何检查通过。
+- 年份/排序的主题化弹层保留原select值与change事件，支持键盘、焦点返回、外部关闭、文本定位及向上展开。独立DOM检查覆盖导航与URL恢复。浏览器实测2025年4篇、Home/Enter恢复19篇、先读短篇排序及Escape关闭。
+- Chromium检查桌面、390px和320px；深浅配色菜单与手机播放器无整页横向溢出。实际播放、暂停、Home/End调整进度正常，时长216.98秒，无音频错误；结束时恢复夜间模式并暂停播放。浏览器错误日志为空。
+- 根目录与/journal/构建、内容检查通过：19篇文章、142条路由、66个HTML，每种部署路径核验2280条本地引用。20份正文、锚点和媒体保持不变。未修改正式主题配置，未推送或部署。
+- 无JS后备与系统MediaSession沿用原实现并经静态检查；本轮未在系统界面测试媒体按键、修改减少动态偏好或运行其他浏览器。
+
+## 2026-10-25 魔方项目图标与唱片细节
+
+- 关于页成绩表增加7个cubing/icons项目图标，保留中文名称与所有数值。原SVG来自固定提交，MIT许可和来源记录与素材一起本地保存；单手与斜转使用对应专用图形，没有引入图标字体或外部请求。
+- 页尾唱片移除中心文字，采用细刻纹、无字小中心标、固定轴孔和侧光。播放时整个盘面10秒旋转一周，暂停保留角度；减少动态偏好下保持静态。仅改样式/装饰结构，原音频操作和MediaSession不变。
+- Chromium验证播放时盘面transform随时间变化，暂停后两次采样transform完全相同；实测播放暂停正常。桌面及320px窄屏的七项图标、成绩与唱片均可辨认，无整页横向溢出；日间图标配色另经实查，结束恢复夜间并暂停播放。浏览器错误日志为空。
+- 根目录与/journal/构建检查均通过：19篇文章、151条路由、66个HTML，2280条本地引用正确；新增CSS图标资源路径检查通过。20份原文/页面内容、锚点与媒体保持不变。减少动态分支仅代码核查，未在系统界面切换偏好。
+
+## 2026-10-25 Homepage simplification, signature, and sentence-output entrance
+
+- Removed the hero owner line, standalone introduction/about link, and reading-route section. The requested Chinese caption now belongs to the selected-works heading; the Route Six cover uses the two supplied English lines. The existing #journal anchor now targets selected works. Archive tag heading renamed as requested.
+- Adapted the existing Afterlight handwritten signature, retaining letterforms while refining stroke weights, tail and whitespace. Checked desktop and 320px navigation plus dark/light archive contrast. Afterlight source is unchanged.
+- Fixed the zero-width sentence-output gradient with userSpaceOnUse coordinates. In Chromium, the s thread was visibly partly drawn while the rest of the entrance was still active; successive stroke-dashoffset samples were 547.159, 491.646, 441.366 and 391.483. Pausing froze the partial line and resuming completed it. No timing, geometry, ports or connectivity changed.
+- Existing E geometry validation passed: 24 ports, 12 strands, one cap, one designated crossing, zero sampled self-crossings. Static and interactive render checks confirm the other gradients and paths remain unchanged; reduced-motion logic was not modified.
+- Desktop cover text fits the intended two lines; 320px wraps naturally with over 126px clearance before the title and no document horizontal overflow. Root and /journal/ builds/checks pass: 19 posts, 153 routes, 66 HTML pages, 2336 local references; authored content, media and anchors preserved.
+
+## 2026-10-25 Independent-review follow-up
+
+- Mathematical previews now retain letters, common operators and script/double-struck distinctions instead of removing formulas. Verified Q-Set, Q-valued sets, D versus 𝒟, countable unions and epsilon in 14 extraction regressions and five real articles. Search context and truncation preserve complete Unicode characters; unknown TeX is retained conservatively. Homepage composition and article bodies are unchanged.
+- Selected atlas nodes reveal a single 48px title/action strip above the graph. Real Chromium checks cover long titles at desktop, 390px and 320px, detail scrolling/focus, clearing with focus returned to the node, and clearing on a different-topic filter. At 320px there is no horizontal overflow and the clear target measures 44×44px. Counts distinguish 19 posts plus the about page; relationship wording distinguishes original categories from theme groups. Existing camera, sparse edges, keyboard, URL, retry and reduced-motion checks pass, alongside new selection/count regressions. Reduced motion was simulated in DOM checks, not changed in system settings.
+- Search now has a visible “关闭” button, with Esc supplementary on desktop only. Checked 390px/320px placement, 44px button height, mobile keyboard-hint removal, click-to-close focus restoration, desktop Esc close and readable topos/sheaf results. Sheaf snippets retain 𝒬 without broken Unicode characters.
+- Added explicit per-article AI labels for manuscript assistance, collaborative writing and music assistance. Existing levels and expanded notes are unchanged. Integral quantaloid's displayed label and expanded original note were checked in Chromium. Shared metadata fallback checks passed; the legacy injector escapes custom label text.
+- Final root and /journal/ builds and checks pass: 19 posts, 153 routes, 66 HTML pages, 2336 local references, 20 preserved bodies/pages and 19 Atom entries. The new mathematical-preview regression passed for both builds. Only three AI frontmatter labels changed in source articles. No production-theme configuration, push or deployment changed.
+- Screenshots: .nocturne-preview/review-fix-atlas-mobile.png, review-fix-search-mobile.png, review-fix-archives.png, review-fix-ai-label.png. Narrow screens are browser viewport simulations; this round did not test audio, external comments or live network performance.
+
+## 2026-10-25 Node-anchored atlas popover
+
+- Replaced the in-flow selection strip with an absolute popover inside the plot. A two-line title, introduction action and close button sit in a translucent panel whose small pointer faces the selected star. Selection no longer changes the graph's layout height.
+- The star core's screen-space centre anchors the popover, including SVG letterboxing and camera transforms. Placement prefers above, flips below when needed, and clamps within a 12px plot inset. Camera tracking keeps the current side while it still fits. Resize and breakpoint rebuilds preserve one correctly anchored panel.
+- Card entrance/reselection/exit animate for 300/220/150ms; a new selection cancels the previous animation. Exiting cards are inert and hidden from accessibility before removal. Reduced-motion and background transitions settle immediately. Tab from a selected star enters its action; Shift-Tab and Escape return focus to the star.
+- Chromium checks covered the home atlas and standalone atlas, desktop and 390px/320px views, long titles, below placement near the top, detail navigation, Tab/Escape, and camera tracking. During and after a camera move, the measured star-to-card gap was 17.996px and 18.005px. Entrance styles progressed from opacity 0 / scale .96 to opacity 1 / no transform; exit state progressed from closing to hidden. Narrow-screen cards remained inside the plot without document horizontal overflow.
+- Expanded DOM regressions cover anchor geometry, letterboxing, camera motion, flipping and side retention, all-edge clamping, resize, one-panel rebuild, animation cancellation/stale callbacks, keyboard access and reduced motion. Root and /journal/ build checks pass: 19 posts, 153 routes, 66 HTML pages and 2336 local references; article content and URLs remain unchanged. Reduced-motion behavior was simulated, not toggled in the user's system. No push or deployment performed.
+
+## 2026-11-01 Route Six — Suno version
+
+- Added `route-six-suno.md`, retaining the previous song's 音乐 category and Noema / AI音乐 tags. The supplied lyrics, section cues and four Style paragraphs were independently checked against the request. The AI label and article explicitly identify Suno-generated music and vocals.
+- Copied the supplied MP3 without transformation; source and destination SHA-256 match. The homepage feature and footer link now open the new article; the footer uses its audio field and system media metadata identifies Suno. The original poem, earlier song and audio are preserved.
+- Root and /journal/ builds/checks passed: 20 posts, 156 routes, 68 HTML pages, 2439 local references, 21 preserved article/page bodies and 20 Atom entries. Real browser checks confirmed both homepage and article playback advance without media errors; duration is 207.648 seconds and the homepage record rotates during playback. Playback was paused after checking.
+- Desktop and 390px browser viewport checks confirmed readable lyric line breaks and Style paragraphs; mobile document width and scroll width both measured 375px. Both homepage entry links opened the new post. No browser errors/warnings were reported. Screenshot: `.nocturne-preview/route-six-suno-article.png`. Local preview only; no push or deployment.
+
+## 2026-11-01 Separate poem and music features
+
+- The homepage now features four distinct articles. The original Route Six poem uses its own night-bus img1.png and original two-line quotation; the Suno song has a separate compact record card. The footer remains connected to the Suno version.
+- The asymmetric desktop grid pairs poem/music on the left with the cat/mathematics on the right; narrow screens stack the four cards. Real browser checks covered desktop and 320px viewport, with no horizontal overflow (305px client and scroll widths) or overlap between the song text and record. Generated links and the poem image were independently checked against their source articles.
+- Root and /journal/ builds/checks passed: 20 posts, 156 routes, 68 HTML pages and 2440 local references. No article bodies, audio files or production configuration changed. Screenshot: .nocturne-preview/four-works-desktop.png.
+
+## 2026-11-01 Production adoption
+
+- At the author's explicit request, `_config.yml` now selects Nocturne. Afterlight and Icarus remain installed. The existing master-triggered deployment workflow is unchanged.
+- A clean production build generated 156 routes. The generated site passed the content, media, local-link, search and Atom checks: 68 HTML pages, 2440 local references, 21 preserved article/page bodies and 20 feed entries. The four works, poem image, Suno audio, production canonical origin, CNAME and enabled production comment controls were checked separately.
+- DisCoCat geometry, atlas interaction and mathematical summary checks passed. An independent read-only audit found no release blocker in Node 20 compatibility, tracked assets, production configuration or Giscus mapping. Build output includes existing Pandoc deprecation warnings for --mathjax; generation succeeds. Remote deployment is verified after the push rather than inferred from local checks.

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title><%= page.title ? n_plain(page.title) + ' · ' : '' %><%= theme.brand.name %> — Nocturne</title>
+  <meta name="description" content="<%= page.content ? n_summary(page, 150) : theme.home.introduction %>">
+  <link rel="canonical" href="<%= full_url_for(page.path || '') %>">
+  <meta property="og:type" content="<%= is_post() ? 'article' : 'website' %>">
+  <meta property="og:site_name" content="<%= theme.brand.name %> — Nocturne">
+  <meta property="og:title" content="<%= page.title ? n_plain(page.title) : theme.brand.name + ' — 世俗的形状。' %>">
+  <meta property="og:description" content="<%= page.content ? n_summary(page, 150) : theme.home.introduction %>">
+  <meta property="og:url" content="<%= full_url_for(page.path || '') %>">
+  <meta property="og:image" content="<%= full_url_for('/nocturne/images/city.webp') %>">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="alternate" type="application/atom+xml" title="Yougi 的文字" href="<%= url_for('/atom.xml') %>">
+  <link rel="icon" href="<%= url_for('/nocturne/favicon.svg') %>" type="image/svg+xml">
+  <link rel="stylesheet" href="<%= url_for('/nocturne/theme.css') %>">
+  <link rel="stylesheet" href="<%= url_for('/nocturne/experience.css') %>">
+  <link rel="stylesheet" href="<%= url_for('/nocturne/brand.css') %>">
+  <link rel="stylesheet" href="<%= url_for('/nocturne/footer.css') %>">
+  <script src="<%= url_for('/nocturne/appearance.js') %>"></script>
+  <% if (is_home() && page.current === 1) { %><link rel="stylesheet" href="<%= url_for('/nocturne/string-hero.css') %>"><link rel="stylesheet" href="<%= url_for('/nocturne/string-diagram.css') %>"><link rel="stylesheet" href="<%= url_for('/nocturne/home.css') %>"><% } %>
+  <% if ((is_home() && page.current === 1) || page.nocturne_atlas) { %><link rel="stylesheet" href="<%= url_for('/nocturne/atlas.css') %>"><% } %>
+  <% if (page.source === 'about/index.md') { %><link rel="stylesheet" href="<%= url_for('/nocturne/about.css') %>"><% } %>
+  <% if (is_archive()) { %><link rel="stylesheet" href="<%= url_for('/nocturne/archive.css') %>"><% } %>
+  <% if (page.content && page.source !== 'about/index.md') { %><link rel="stylesheet" href="<%= url_for('/nocturne/reader.css') %>"><% } %>
+  <% if (page.content && (page.plugins?.mathjax || page.engine === 'statement' || page.tikzjax)) { %>
+  <link rel="stylesheet" href="<%= url_for('/nocturne/math.css') %>">
+  <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]},chtml:{matchFontHeight:false},startup:{typeset:false}};</script>
+  <% } %>
+</head>
+<body class="nocturne <%= is_home() && page.current === 1 ? 'is-home' : 'is-inner' %> <%= page.nocturne_atlas ? 'is-atlas' : '' %> <%= page.source === 'about/index.md' ? 'is-about' : '' %>">
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-header shell">
+    <a class="brand nocturne-brand" href="<%= url_for('/') %>" aria-label="Yougi 首页"><span class="nocturne-signature" style="--brand-signature:url('<%= url_for('/nocturne/signature.svg') %>')" aria-hidden="true"></span></a>
+    <nav aria-label="主导航"><a href="<%= url_for('/') %>" <%- is_home() ? 'aria-current="page"' : '' %>>序章</a><a href="<%= url_for('/archives/') %>" <%- is_archive() ? 'aria-current="page"' : '' %>>所有文字</a><a href="<%= url_for('/atlas/') %>" <%- page.nocturne_atlas ? 'aria-current="page"' : '' %>>星图</a><a href="<%= url_for('/about/') %>" <%- page.source === 'about/index.md' ? 'aria-current="page"' : '' %>>关于</a></nav>
+    <div class="header-tools"><button class="search-trigger" data-search-open aria-label="搜索文章"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span>搜索</span><kbd>⌘ K</kbd></button><button class="icon-button" data-theme-toggle aria-label="切换到日间阅读">◐</button></div>
+  </header>
+  <main id="main"><%- body %></main>
+  <%- partial('partial/footer') %>
+  <dialog class="search-dialog" data-search-dialog aria-labelledby="search-title" data-index="<%= url_for('/nocturne/search.json') %>"><div class="dialog-top"><h2 id="search-title">在文字之间寻找</h2><button type="button" class="search-close" data-dialog-close aria-label="关闭搜索"><span>关闭</span><kbd aria-hidden="true">Esc</kbd></button></div><label class="search-field"><span class="sr-only">搜索标题、正文或标签</span><input type="search" data-search-input placeholder="一个词，一段记忆，一个定理…" autocomplete="off"></label><p class="search-status" data-search-status role="status">输入关键词，搜索全部文章。</p><div data-search-results></div><div class="search-hint">↑ ↓ 选择 <span>Enter 打开</span><span>Esc 关闭</span></div></dialog>
+  <dialog class="image-dialog" data-image-dialog aria-label="图片预览"><button data-dialog-close aria-label="关闭图片">关闭 ×</button><img alt=""><p></p></dialog>
+  <div class="toast" role="status" data-toast></div>
+  <script defer src="<%= url_for('/nocturne/app.js') %>"></script>
+  <% if (is_archive()) { %><script defer src="<%= url_for('/nocturne/archive.js') %>"></script><% } %>
+  <% if (page.source === 'about/index.md') { %><script defer src="<%= url_for('/nocturne/about.js') %>"></script><% } %>
+  <% if (is_home() && page.current === 1) { %><script defer src="<%= url_for('/nocturne/string-diagram.js') %>"></script><script defer src="<%= url_for('/nocturne/string-hero.js') %>"></script><script defer src="<%= url_for('/nocturne/home.js') %>"></script><% } %>
+  <% if ((is_home() && page.current === 1) || page.nocturne_atlas) { %><script defer src="<%= url_for('/nocturne/atlas.js') %>"></script><% } %>
+  <% if (page.content) { %><% if (page.source !== 'about/index.md') { %><script defer src="<%= url_for('/nocturne/reading.js') %>"></script><script defer src="<%= url_for('/nocturne/reader-enhancements.js') %>"></script><% } %><script defer src="<%= url_for('/nocturne/comments.js') %>"></script><% if (page.plugins?.mathjax || page.engine === 'statement' || page.tikzjax) { %><script defer src="<%= url_for('/nocturne/math.js') %>" data-math-src="<%= theme.math.src %>"></script><% } %><% } %>
+</body>
+</html>

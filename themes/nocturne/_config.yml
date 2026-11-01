@@ -1,0 +1,20 @@
+brand:
+  name: Yougi
+  author: 杨荻
+  subtitle: 数学、文字与世俗生活
+home:
+  song: route-six-suno.md
+  title_lines:
+    - 世俗的形状。
+  introduction: 研究抽象的结构，也记录具体的生活。在数学、城市与诗之间，寻找世界的另一种读法。
+math:
+  src: https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js
+comments:
+  enable: true
+  repo: Westlifers/Westlifers.github.io
+  repo_id: R_kgDOGtkQCQ
+  category: Announcements
+  category_id: DIC_kwDOGtkQCc4CA2IO
+  mapping: pathname
+  lang: zh-CN
+plugins: {}
