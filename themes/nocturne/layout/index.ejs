@@ -1,16 +1,22 @@
 <% if (page.current > 1) { %>
 <div class="shell collection"><header class="collection-heading"><p class="small-note">沿着时间，继续向前</p><h1>所有文字</h1></header><%- partial('partial/post-list', { entries: page.posts }) %><%- partial('partial/pagination') %></div>
-<% } else { const stats = n_stats(); const song=n_post(theme.home.song || 'route-six-suno.md'), cat=n_post('日光之下，有一只白猫.md'), math=n_post('integral-quantaloids-weak-tabularity-topos.md'); %>
+<% } else { const stats = n_stats(); const poem=n_post('Route-Six.md'), song=n_post(theme.home.song || 'route-six-suno.md'), cat=n_post('日光之下，有一只白猫.md'), math=n_post('integral-quantaloids-weak-tabularity-topos.md'); %>
 <%- partial('partial/string-hero') %>
 <section class="home-works shell" id="journal" aria-labelledby="selected-title">
   <header class="home-works-heading"><h2 id="selected-title">几种抵达世界的方式</h2><p>埋首之间，或流连街头</p></header>
   <div class="home-works-grid">
-    <% if(song) { %><a class="work work-poem" href="<%= url_for(song.path) %>">
-      <img src="<%= url_for('/nocturne/images/city.webp') %>" alt="杭州的城市天际线" width="1200" height="800" loading="lazy" decoding="async">
-      <div class="work-caption"><span>诗与声音</span><span><%= date(song.date,'YYYY.MM.DD') %></span></div>
-      <div class="work-verse" lang="en"><span>I let the six roll on</span>
-        <span>One more stop, then one more</span></div>
+    <% if(poem) { %><a class="work work-poem" href="<%= url_for(poem.path) %>">
+      <img src="<%= url_for(poem.path + 'img1.png') %>" alt="夜间公交车内，乘客望向映着街灯的车窗" width="1122" height="1402" loading="lazy" decoding="async">
+      <div class="work-caption"><span>诗</span><span><%= date(poem.date,'YYYY.MM.DD') %></span></div>
+      <div class="work-verse" lang="en"><span>I don’t know where to go tonight,</span>
+        <span>so I let the bus decide.</span></div>
       <div><h3 lang="en">Route Six</h3><p>把夜色，坐过几站。</p></div><span class="work-arrow" aria-hidden="true">↗</span>
+    </a><% } %>
+    <% if(song) { %><a class="work work-song" href="<%= url_for(song.path) %>">
+      <div class="work-caption"><span>音乐</span><span lang="en">Suno</span></div>
+      <span class="work-song-disc" aria-hidden="true"></span>
+      <div class="work-song-copy"><h3 lang="en">Route Six</h3><p>再坐一站</p></div>
+      <span class="work-song-lyric" lang="en">I let the six roll on</span>
     </a><% } %>
     <% if(cat) { %><a class="work work-cat" href="<%= url_for(cat.path) %>">
       <img src="<%= url_for('/nocturne/images/cat.webp') %>" alt="日光下的一只白猫" width="800" height="1067" loading="lazy" decoding="async">

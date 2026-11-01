@@ -161,3 +161,9 @@
 - Copied the supplied MP3 without transformation; source and destination SHA-256 match. The homepage feature and footer link now open the new article; the footer uses its audio field and system media metadata identifies Suno. The original poem, earlier song and audio are preserved.
 - Root and /journal/ builds/checks passed: 20 posts, 156 routes, 68 HTML pages, 2439 local references, 21 preserved article/page bodies and 20 Atom entries. Real browser checks confirmed both homepage and article playback advance without media errors; duration is 207.648 seconds and the homepage record rotates during playback. Playback was paused after checking.
 - Desktop and 390px browser viewport checks confirmed readable lyric line breaks and Style paragraphs; mobile document width and scroll width both measured 375px. Both homepage entry links opened the new post. No browser errors/warnings were reported. Screenshot: `.nocturne-preview/route-six-suno-article.png`. Local preview only; no push or deployment.
+
+## 2026-11-01 Separate poem and music features
+
+- The homepage now features four distinct articles. The original Route Six poem uses its own night-bus img1.png and original two-line quotation; the Suno song has a separate compact record card. The footer remains connected to the Suno version.
+- The asymmetric desktop grid pairs poem/music on the left with the cat/mathematics on the right; narrow screens stack the four cards. Real browser checks covered desktop and 320px viewport, with no horizontal overflow (305px client and scroll widths) or overlap between the song text and record. Generated links and the poem image were independently checked against their source articles.
+- Root and /journal/ builds/checks passed: 20 posts, 156 routes, 68 HTML pages and 2440 local references. No article bodies, audio files or production configuration changed. Screenshot: .nocturne-preview/four-works-desktop.png.
