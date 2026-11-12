@@ -335,8 +335,8 @@ plugins:
     <p>
       我目前就读于四川大学数学学院，研究兴趣主要集中在
       <strong>范畴论、拓扑学与序结构</strong>，
-      特别是 quantaloid-enriched categories 及其与
-      sheaf theory、topos theory 等方向的联系。
+      特别是 quantale/quantaloid-enriched categories 及其与
+      序理论、topos理论、模糊数学等方向的联系。
     </p>
     <p>
       这个博客记录一些数学学习笔记、研究中的想法。
