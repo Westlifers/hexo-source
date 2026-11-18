@@ -327,7 +327,7 @@ plugins:
   </section>
 
 
-  <section class="about-section">
+  <section class="about-section about-research-section">
     <div class="about-section-title">
       <span class="about-section-mark">01</span>
       <h2>Mathematics</h2>
@@ -344,10 +344,26 @@ plugins:
   </section>
 
 
+  <section class="about-section about-research-section" id="publications" aria-labelledby="publications-title">
+    <div class="about-section-title">
+      <span class="about-section-mark">02</span>
+      <h2 id="publications-title">Publications</h2>
+    </div>
+    <section class="about-publication-group" aria-labelledby="preprints-title">
+      <h3 id="preprints-title">预印本 <span lang="en">Preprints</span></h3>
+      <div class="about-publication" lang="en">
+        <h4><a href="https://arxiv.org/abs/2611.22843">Quantitative FS-domains over continuous t-norms</a></h4>
+        <p>Yuxu Chen and <strong>Di Yang</strong></p>
+        <p class="about-publication-meta">arXiv:2611.22843 [math.CT] · <time datetime="2026-11-17">2026.11.17</time></p>
+      </div>
+    </section>
+  </section>
+
+
   <section class="about-section about-cubing">
     <div class="about-cubing-copy">
     <div class="about-section-title">
-      <span class="about-section-mark">02</span>
+      <span class="about-section-mark">03</span>
       <h2>Cubing</h2>
     </div>
     <p>
@@ -390,7 +406,7 @@ plugins:
 
   <section class="about-section about-elsewhere">
     <div class="about-section-title">
-      <span class="about-section-mark">03</span>
+      <span class="about-section-mark">04</span>
       <h2>Elsewhere</h2>
     </div>
     <p>
@@ -417,7 +433,7 @@ plugins:
 
   <section class="about-section" id="noema-assistant">
     <div class="about-section-title">
-      <span class="about-section-mark">04</span>
+      <span class="about-section-mark">05</span>
       <h2>Noema · AI 助手</h2>
     </div>
     <div class="about-assistant-profile">
